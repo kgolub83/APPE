@@ -124,6 +124,8 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 typedef uint32_t sample_data_t;
+typedef uint8_t data_vector_no_t;
+typedef uint16_t data_attribute_t;
 typedef uint32_t samples_no_t;
 typedef uint32_t acs_flags_t; 
 typedef uint32_t time_stamp_t; 
@@ -141,6 +143,17 @@ typedef enum
     ACS_FATAL_SAFE_STOP
 } acs_state_e;
 
+typedef struct
+{
+    data_attribute_t resolution;
+    data_attribute_t guardRegion;
+    data_attribute_t sampleRate;
+    data_attribute_t samplesNo;
+    data_attribute_t decoderRange;
+} tst_data_attributes_t;
+
+typedef tst_data_attributes_t* const tst_data_attributes_pt;  /*const pointer to tst_data_attributes_t*/
+ 
 typedef struct
 {
     sample_data_t sensorSampleA;
@@ -178,8 +191,11 @@ typedef output_data_t* const output_data_pt; /*const pointer to output_data_t*/
 **                     Public function prototypes - API
 *******************************************************************************/
 
-extern void processorCode(input_data_pt inputData, com_data_pt outputData);  
+extern void processorCodeA(input_data_pt, com_data_pt);  
+extern void processorCodeB(input_data_pt, com_data_pt);  
 extern void supervisorCode(com_data_pt, com_data_pt, output_data_pt);
+extern void setTestDataAttributes(tst_data_attributes_pt);
+extern void getTestDataAttributes(tst_data_attributes_pt);
 
 #ifdef __cplusplus
 } /* extern "C" */

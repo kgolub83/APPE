@@ -48,6 +48,7 @@ int main(int argc, char **argv)
     IOdata testData;
     ComDataObj* comChannels = ComDataObj::getInstance();   //Instanciate communication queues-FIFOs
     samples_vector_t inputDataA, inputDataB;
+    tst_data_attributes_t inputDataAttributes;
     output_vector_t outputData;
 
     std::cout << mainTerminalStrings[initCom] << std::hex << comChannels << std::endl;
@@ -61,23 +62,30 @@ int main(int argc, char **argv)
     std::cout << mainTerminalStrings[initFramework] << std::endl;   
     std::cout << std::thread::hardware_concurrency() 
               << mainTerminalStrings[infoConcurrency] << std::endl;
-              
-    codedProcesorA.installUserCalback(processorCode);
+    
+    //configure processing unit A           
+    codedProcesorA.installUserCalback(processorCodeA);
     codedProcesorA.setRunCycles(testData.getSamplesNo());
     codedProcesorA.setOutputCom(COM_SOCKET_A,PROC_A_OUT_COM_CHANNEL);
     
-    codedProcesorB.installUserCalback(processorCode);
+    //configure processing unit B
+    codedProcesorB.installUserCalback(processorCodeB);
     codedProcesorB.setRunCycles(testData.getSamplesNo());
     codedProcesorB.setOutputCom(COM_SOCKET_A, PROC_B_OUT_COM_CHANNEL);
     
+    //configure supervisor processing unit
     supervisor.installSupervisor(supervisorCode);
     supervisor.setRunCycles(testData.getSamplesNo());
     supervisor.setInputCom(COM_SOCKET_C, PROC_A_OUT_COM_CHANNEL);
     supervisor.setInputCom(COM_SOCKET_D, PROC_B_OUT_COM_CHANNEL);
     
+    //set test data and parameters
     inputDataA = testData.getSensorData(DATA_VECTOR_A);
     inputDataB = testData.getSensorData(DATA_VECTOR_B);
+    testData.getDataAttributes(inputDataAttributes);
+    setTestDataAttributes(&inputDataAttributes);
 
+    //start virtual processing units as threads
     std::thread threadProcA(&VirtualProcessor::executeUserProgram, &codedProcesorA,
                             std::ref(inputDataA), std::ref(inputDataB));
 

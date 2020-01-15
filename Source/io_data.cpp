@@ -57,8 +57,8 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     std::stringstream streamBuffer;
     uint32_t sample;
     bool flagEmpty, flagDataInconsistency;
+    settings_vector_t inputDataSettings;
     IOdata_ret_val_t retVal;
-    
     
     inputFile.clear();
     inputFile.open(fileName, std::fstream::in);   //open input data *.csv file
@@ -69,6 +69,26 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     flagEmpty = false;      
     flagDataInconsistency = false;
     
+    /****** Read test data settings ******/
+    inputFile >> line;          //get test data format and meta data
+    streamBuffer.clear();
+    streamBuffer.str(line);     //convert string data to stream for stream manipulations
+    
+    inputDataSettings.clear();
+    for(int i=0; i < TST_DATA_ATTRIBUTES; i++)
+    {
+        std::getline(streamBuffer, word, CSV_SEPARATOR);     //read every attributes
+        sample = stoi(word);        // convert string to integer
+        inputDataSettings.push_back(sample);      // add data to vector
+    }
+    
+    dataSampleRate = inputDataSettings[TST_DATA_SAMPLE_RATE];
+    dataSamplesNo = inputDataSettings[TST_DATA_SAMPLES_NO];
+    dataResolution = inputDataSettings[TST_DATA_RESOLUTION];
+    dataGuardRegion = inputDataSettings[TST_DATA_GUARD_REGION];
+    decoderRange = inputDataSettings[TST_DATA_OUTPUT_DECODER_RANGE];
+    
+    /****** Read input test data vectors ******/
     for(int i = 0; i< DATA_VECTORS_NO; i++) 
     {   
         inputFile >> line;          //read rows untill the end of file
@@ -87,7 +107,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
             flagEmpty = true;
         }
         
-        if(dataSamples[0].size() != dataSamples[i].size())
+        if(dataSamplesNo != dataSamples[i].size())
         {
             flagDataInconsistency = true;
         }
@@ -108,7 +128,6 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     } 
     else
     {
-        dataSamplesNo = dataSamples[0].size();
         std::cout << dataSamplesNo << " data points successfuly loaded!" << std::endl;
         retVal = IO_DATA_SUCCESS;
     }
@@ -159,6 +178,15 @@ IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
 samples_vector_t IOdata::getSensorData(data_vector_no_t vectorNo)
 {
     return dataSamples[vectorNo];
+}
+
+void IOdata::getDataAttributes(tst_data_attributes_t& attributes)
+{
+    attributes.sampleRate = dataSampleRate;
+    attributes.samplesNo = dataSamplesNo;
+    attributes.resolution = dataResolution;
+    attributes.guardRegion = dataGuardRegion;
+    attributes.decoderRange = decoderRange;
 }
 
 samples_no_t IOdata::getSamplesNo(void)

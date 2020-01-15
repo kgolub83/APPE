@@ -29,9 +29,30 @@
 **                       Global and static variables
 *******************************************************************************/
 
+/* holds input tetst data settings */
+static tst_data_attributes_t testDataAtributes; 
+
 /*******************************************************************************
 **                                 Code
 *******************************************************************************/
+
+void setTestDataAttributes(tst_data_attributes_pt attributes)
+{
+    testDataAtributes.decoderRange = attributes->decoderRange;
+    testDataAtributes.guardRegion = attributes->guardRegion;
+    testDataAtributes.resolution = attributes->resolution;
+    testDataAtributes.sampleRate = attributes->sampleRate;
+    testDataAtributes.samplesNo = attributes->samplesNo;
+}
+
+void getTestDataAttributes(tst_data_attributes_pt attributes)
+{
+    attributes->decoderRange = testDataAtributes.decoderRange;
+    attributes->guardRegion = testDataAtributes.guardRegion;
+    testDataAtributes.resolution = attributes->resolution;
+    testDataAtributes.sampleRate = attributes->sampleRate;
+    testDataAtributes.samplesNo = attributes->samplesNo;
+}
 
 /*!*****************************************************************************
 * @function 
@@ -43,27 +64,50 @@
 * @returns 
 *******************************************************************************/
 
-__weak void processorCode(input_data_pt inputData, com_data_pt outputData) 
+static inline void testProcCode(input_data_pt inputData, com_data_pt outputData)
 {
     int resultSample;
+    int inputDataRange;
+    
+    inputDataRange = testDataAtributes.resolution - 2*testDataAtributes.guardRegion;
     
     outputData->seqNo = inputData->sampleNo;
-    resultSample = ((int)(inputData->sensorSampleA - inputData->sensorSampleB + 818)/2)+102;
+    resultSample = ((int)(inputData->sensorSampleA - inputData->sensorSampleB + inputDataRange)/2)+testDataAtributes.guardRegion;
     outputData->dataSample = (sample_data_t)resultSample;
-    outputData->time = clock();
+    outputData->time = clock();    
+}
+
+static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
+{
+    uint32_t acsOutput;
     
-    //printf("|*%d: %d %d %d *|", inputData->sampleNo, inputData->sensorSamlpleA, inputData->sensorSampleB, outputData->dataSample);
+    if(comDataProcA->dataSample == comDataProcB->dataSample)
+    {
+        acsOutput = acsDecodingLUT[comDataProcA->dataSample];
+        printf(" |*A: %d B: %d O: %d*| ", comDataProcA->dataSample, comDataProcB->dataSample, acsOutput);
+    } else
+    {
+        printf("\n\n###SAMPLE FAULT###\n\n");
+    }
+    
+    outputData->output = acsOutput;
+    outputData->state = ACS_ACTIVE;    
+}
+
+/**** Function place holders for user implementation ****/
+__weak void processorCodeA(input_data_pt inputData, com_data_pt outputData) 
+{
+    testProcCode(inputData, outputData);
+}
+
+__weak void processorCodeB(input_data_pt inputData, com_data_pt outputData) 
+{
+    testProcCode(inputData, outputData);
 }
 
 __weak void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {
-    uint32_t acsOutput;
-    
-    acsOutput = acsDecodingLUT[comDataProcA->dataSample];
-    printf(" |*A: %d B: %d O: %d*| ", comDataProcA->dataSample, comDataProcB->dataSample, acsOutput);
-    
-    outputData->output = acsOutput;
-    outputData->state = ACS_ACTIVE;
+    tetsSupervisorCode(comDataProcA, comDataProcB, outputData);
 }
 
 /******************************************************************************

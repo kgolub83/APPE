@@ -22,15 +22,16 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     input_data_t inputData;
     com_data_t comFrame;
     com_socket_e activeSocket;
-    samples_no_t samples_no;
+    samples_no_t samplesNo;
     
     std::cout << "User application " << +id << " started..." << std::endl;
+    
     //!@TODO check socket-channel consistency - should be only one communication channel installed
     activeSocket = outSockets.front();
     
-    samples_no = inputDataA.size();
+    samplesNo = inputDataA.size();
     
-    for(samples_no_t i=0; i < samples_no; i++)
+    for(samples_no_t i=0; i < samplesNo; i++)
     {
         inputData.sensorSampleA = inputDataA[i]; 
         inputData.sensorSampleB = inputDataB[i]; 
