@@ -113,7 +113,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
         }
         
         line.clear();
-    } 
+    }
     
     inputFile.close();
     

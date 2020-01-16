@@ -37,6 +37,8 @@ extern "C"
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
+
+/*bit mask deffinitions*/
 #define BIT0    0x00000001U
 #define BIT1    0x00000002U
 #define BIT2    0x00000004U
@@ -106,11 +108,15 @@ extern "C"
 
 #define ACS_SUPERVISOR_FAULTS_MASK  0xFFFF0000
 
-#define XTEA_WORD_LENGTH            2
-#define MD5_WORD_LENGTH             4
-#define AES256_WORD_LENGTH          8
+#define XTEA_WORD_LENGTH        2
+#define MD5_WORD_LENGTH         4
+#define AES256_WORD_LENGTH      8
 
-#define SIGNATURE_WORDS             XTEA_WORD_LENGTH
+#define SIGNATURE_WORDS         XTEA_WORD_LENGTH
+
+#define DATA_VECTORS_NO         2
+#define DATA_VECTOR_A           0
+#define DATA_VECTOR_B           1
 
 /*******************************************************************************
 **                                Macros
@@ -123,16 +129,18 @@ extern "C"
 /*******************************************************************************
 **                            Data Structures
 *******************************************************************************/
-typedef uint32_t sample_data_t;
-typedef uint8_t data_vector_no_t;
-typedef uint16_t data_attribute_t;
-typedef uint32_t samples_no_t;
-typedef uint32_t acs_flags_t; 
-typedef uint32_t time_stamp_t; 
-typedef uint8_t sequence_no_t;
-typedef uint32_t authentication_t;
-typedef uint16_t crc_t;
 
+typedef uint32_t sample_data_t;     /*input data sample type deffinition*/
+typedef uint8_t data_vector_no_t;   /*number of input data vectors type*/
+typedef uint16_t data_attribute_t;  /*test data attributes type*/
+typedef uint32_t samples_no_t;      /*number of test data samples type*/
+typedef uint32_t acs_flags_t;       /*acs system flags register type*/
+typedef uint32_t time_stamp_t;      /*communication time stamp type*/
+typedef uint8_t sequence_no_t;      /*communication mesage sequence number type*/
+typedef uint32_t authentication_t;  /*communication authentication signature type*/
+typedef uint16_t crc_t;             /*communication CRC checksum type*/
+
+/*ACS system states definitions*/
 typedef enum
 {
     ACS_IDLE,
@@ -143,6 +151,7 @@ typedef enum
     ACS_FATAL_SAFE_STOP
 } acs_state_e;
 
+/*Test data attributes and meta data structure*/
 typedef struct
 {
     data_attribute_t resolution;
@@ -153,7 +162,8 @@ typedef struct
 } tst_data_attributes_t;
 
 typedef tst_data_attributes_t* const tst_data_attributes_pt;  /*const pointer to tst_data_attributes_t*/
- 
+
+/*Input data strucutre - mocks actual ADC data*/ 
 typedef struct
 {
     sample_data_t sensorSampleA;
@@ -163,17 +173,20 @@ typedef struct
 
 typedef input_data_t* const input_data_pt;  /*const pointer to proces_data_t*/
 
+/*communication data structure between processors and supervisor*/
 typedef struct
 {
     sample_data_t dataSample;
+    acs_flags_t flags;
     time_stamp_t time;
     sequence_no_t seqNo;
     authentication_t signature[SIGNATURE_WORDS];
-    crc_t crc;    
+    crc_t crc;
 } com_data_t;
 
 typedef com_data_t* const com_data_pt;  /*const pointer to com_data_t*/
 
+/*supervisor output data structure - ACS processed data and flags*/
 typedef struct
 {
     sample_data_t output;
@@ -186,6 +199,8 @@ typedef output_data_t* const output_data_pt; /*const pointer to output_data_t*/
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
+
+extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 
 /*******************************************************************************
 **                     Public function prototypes - API

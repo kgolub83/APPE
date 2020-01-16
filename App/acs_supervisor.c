@@ -20,6 +20,7 @@
 **                                Includes
 *******************************************************************************/
 
+#include "../Framework/c_wrapper.h"
 #include "acs_supervisor.h"
 
 /*******************************************************************************
@@ -39,6 +40,12 @@
 *
 * @returns 
 *******************************************************************************/
+
+void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
+{
+    outputData->output = acsDecodingLUT[comDataProcA->dataSample];
+    outputData->state = ACS_ACTIVE;
+}
 
 /******************************************************************************
 **                               End Of File

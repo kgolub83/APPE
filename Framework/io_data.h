@@ -6,9 +6,6 @@
 #include <string>
 #include "c_wrapper.h"
 
-#define DATA_VECTORS_NO         2
-#define DATA_VECTOR_A           0
-#define DATA_VECTOR_B           1
 #define TST_DATA_ATTRIBUTES     5
 #define CSV_SEPARATOR           ','
 

@@ -1,6 +1,6 @@
-#include "stdint.h"
+#include <stdint.h>
 
-uint32_t acsDecodingLUT[] =
+const uint32_t acsDecodingLUT[] =
 {
    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, 
    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, 

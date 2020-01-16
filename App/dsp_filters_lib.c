@@ -39,14 +39,15 @@
 *
 * @returns 
 *******************************************************************************/
-inline void recoursiveAverage(recoursive_avg_t * const filter)
+inline void recoursiveAverage(recoursive_avg_pt filter)
 {
     iir_avg_buffer_samples_t i;
 
     for (i=0; i < filter->bufferSamples; i++)
     {
       filter->outputData[i] = filter->coeficient*(filter->inputData[i] - filter->lastSample) + filter->lastSample;
-    }     
+      filter->lastSample = filter->outputData[i];
+    }
 }
 
 /*!********************************************************
@@ -59,7 +60,7 @@ inline void recoursiveAverage(recoursive_avg_t * const filter)
 *         filter structure
 * @returns void function
 **********************************************************/
-dsp_filter_return_e movingAvgInit(moving_avg_t * const filter, mov_avg_data_t initData)
+dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
 {
     mov_avg_window_samples_t i;
     dsp_filter_return_e retVal;
@@ -101,7 +102,7 @@ dsp_filter_return_e movingAvgInit(moving_avg_t * const filter, mov_avg_data_t in
 *                         filter structure
 * @returns void function
 **********************************************************/
-inline void movingAvgFilter(moving_avg_t *filter)
+inline void movingAvgFilter(moving_avg_pt filter)
 {
     mov_avg_buffer_samples_t i;
 
@@ -123,6 +124,12 @@ inline void movingAvgFilter(moving_avg_t *filter)
         /*calculate output sample */
         filter->outputData[i] = filter->sum * filter->coeficient;
     }
+}
+
+
+inline dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin)
+{
+    return (origin - inputSignal);
 }
 
 /******************************************************************************

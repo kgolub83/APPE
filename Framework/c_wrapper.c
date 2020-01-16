@@ -91,7 +91,7 @@ static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comD
     }
     
     outputData->output = acsOutput;
-    outputData->state = ACS_ACTIVE;    
+    outputData->state = ACS_ACTIVE;
 }
 
 /**** Function place holders for user implementation ****/
