@@ -103,12 +103,14 @@ typedef moving_avg_t * const moving_avg_pt;     /*const pointer to moving_avg_t 
 *******************************************************************************/
 
 extern void recoursiveAverage(recoursive_avg_t * const filter);
+extern void movingAverage(moving_avg_pt filter);
+extern dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData);
 
 extern dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern "C" */
+#endif /* nextern "C" */
 
 #endif /* FILTER_LIB_H */
 

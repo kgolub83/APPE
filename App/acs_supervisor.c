@@ -22,6 +22,7 @@
 
 #include "../Framework/c_wrapper.h"
 #include "acs_supervisor.h"
+#include <stdio.h>
 
 /*******************************************************************************
 **                       Global and static variables
@@ -43,8 +44,13 @@
 
 void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {
-    outputData->output = acsDecodingLUT[comDataProcA->dataSample];
+    sample_data_t resultSample;
+    
+    resultSample = (comDataProcA->dataSample + comDataProcB->dataSample)*0.5;
+    outputData->output = acsDecodingLUT[resultSample];
+
     outputData->state = ACS_ACTIVE;
+    printf("%d ", outputData->output);
 }
 
 /******************************************************************************

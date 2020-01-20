@@ -11,6 +11,7 @@
 #define VP_SLEEP_TIMEOUT                10  //virtual processor sleep timeout
 #define SUPERVISOR_OVERRUN_FACTOR       3   //mximum alowable supervisor itterations times number of sample points 
 
+typedef void(*initFncPtr)(uint8_t);
 typedef void (*usrFncPtr)(input_data_pt, com_data_pt);
 typedef void (*supervisorFncPtr)(com_data_pt, com_data_pt, output_data_pt);
 typedef uint32_t run_cycles_t;
@@ -19,6 +20,7 @@ class VirtualProcessor
 {
 private:
     uint8_t id;
+    initFncPtr initFnCallback;
     usrFncPtr userCallback;
     supervisorFncPtr supervisorCallback;
     run_cycles_t runCycles;
@@ -31,8 +33,10 @@ public:
     VirtualProcessor();
     ~VirtualProcessor();
     
+    void installInitCalback(initFncPtr);
     void installUserCalback(usrFncPtr);
-    void installSupervisor(supervisorFncPtr);    
+    void installSupervisor(supervisorFncPtr);   
+    void initProcessor(uint8_t);
     void executeUserProgram(samples_vector_t&, samples_vector_t&);
     void executeSupervisor(output_vector_t&);
     void setRunCycles(run_cycles_t);

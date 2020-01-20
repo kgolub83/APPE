@@ -205,9 +205,11 @@ extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 /*******************************************************************************
 **                     Public function prototypes - API
 *******************************************************************************/
-
+extern void procInitCodeA(uint8_t procID);
 extern void processorCodeA(input_data_pt, com_data_pt);  
-extern void processorCodeB(input_data_pt, com_data_pt);  
+extern void procInitCodeB(uint8_t procID);
+extern void processorCodeB(input_data_pt, com_data_pt); 
+extern void supervisorInitCode(uint8_t procID); 
 extern void supervisorCode(com_data_pt, com_data_pt, output_data_pt);
 extern void setTestDataAttributes(tst_data_attributes_pt);
 extern void getTestDataAttributes(tst_data_attributes_pt);

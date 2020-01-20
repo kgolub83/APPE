@@ -2,6 +2,7 @@
 #include "communication_queue.h"
 #include <iostream>
 #include <thread>
+#include <cassert>
 
 static uint8_t processor_count; 
 
@@ -9,11 +10,20 @@ VirtualProcessor::VirtualProcessor()
 {
     std::cout << "Virtual processor crearted..." << +processor_count << std::endl;
     id = processor_count++;
+    
+    /*init function call pointers as NULL pointers*/
+    userCallback = NULL;
+    supervisorCallback = NULL;
 }
 
 VirtualProcessor::~VirtualProcessor()
 {
     std::cout << "Virtual processor " << +id << " shut down!" << std::endl;
+}
+
+void VirtualProcessor::initProcessor(uint8_t id)
+{
+    initFnCallback(id);
 }
 
 void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_vector_t &inputDataB)
@@ -23,6 +33,11 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     com_data_t comFrame;
     com_socket_e activeSocket;
     samples_no_t samplesNo;
+    
+    assert(initFnCallback);     //chek if initialistion function is installed
+    assert(userCallback);       //checks if user callback function is set
+    
+    initProcessor(id);
     
     std::cout << "User application " << +id << " started..." << std::endl;
     
@@ -55,11 +70,14 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     com_channel_e inChannelA, inChannelB;
     bool syncFlagA, syncFlagB;
     
+    assert(supervisorCallback);   //checks if user callback function is set
+    
     //init buffer flags - indicates unprocessed data
     syncFlagA = false;
     syncFlagB = false;
     iterations = 0;
     iterationCount = 0;
+    
     //!@TODO check socket-channel consistency - it should be only two input communication channels defined
     inChannelA = inComChannel[inSockets.front()];
     inChannelB = inComChannel[inSockets.back()];
@@ -100,6 +118,11 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
         iterationCount++;
         std::this_thread::sleep_for(std::chrono::milliseconds(VP_SLEEP_TIMEOUT));
     }
+}
+
+void VirtualProcessor::installInitCalback(initFncPtr function)
+{
+    initFnCallback = function;
 }
 
 void VirtualProcessor::installUserCalback(usrFncPtr function)

@@ -81,7 +81,7 @@ dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
     
     if(ctrlLogic)
     {
-        filter->coeficient = 1/filter->avgWinSamples;
+        filter->coeficient = 1/(float)filter->avgWinSamples;
         retVal = DSP_FILTER_SUCCESS;
     } else
     {
@@ -102,7 +102,7 @@ dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
 *                         filter structure
 * @returns void function
 **********************************************************/
-inline void movingAvgFilter(moving_avg_pt filter)
+inline void movingAverage(moving_avg_pt filter)
 {
     mov_avg_buffer_samples_t i;
 

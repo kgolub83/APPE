@@ -42,7 +42,7 @@ static recoursive_avg_t iirAvgFilterA_g =
     .bufferSamples = FILTER_BUFFERING_SAMPLES,
     .inputData = &iirFilterInBuffA,
     .outputData = &iirFilterOutBuffA,
-    .lastSample = IIR_INIT_VALUE_A
+    .lastSample = FILTER_INIT_VALUE_A
 };
 
 static recoursive_avg_t iirAvgFilterB_g = 
@@ -51,7 +51,7 @@ static recoursive_avg_t iirAvgFilterB_g =
     .bufferSamples = FILTER_BUFFERING_SAMPLES,
     .inputData = &iirFilterInBuffB,
     .outputData = &iirFilterOutBuffB,
-    .lastSample = IIR_INIT_VALUE_B
+    .lastSample = FILTER_INIT_VALUE_B
 };
 
 /*IIR average filter static const pointers to static data objects*/
@@ -141,7 +141,7 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
     packComData();
     
     outputData->dataSample = processedSignal;
-    printf("%f ", processedSignal);
+    //printf("%f ", processedSignal);
 }
 
 /******************************************************************************

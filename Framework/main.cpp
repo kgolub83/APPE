@@ -63,12 +63,14 @@ int main(int argc, char **argv)
     std::cout << std::thread::hardware_concurrency() 
               << mainTerminalStrings[infoConcurrency] << std::endl;
     
-    //configure processing unit A           
+    //configure processing unit A  
+    codedProcesorA.installInitCalback(procInitCodeA);
     codedProcesorA.installUserCalback(processorCodeA);
     codedProcesorA.setRunCycles(testData.getSamplesNo());
     codedProcesorA.setOutputCom(COM_SOCKET_A,PROC_A_OUT_COM_CHANNEL);
     
     //configure processing unit B
+    codedProcesorB.installInitCalback(procInitCodeB);
     codedProcesorB.installUserCalback(processorCodeB);
     codedProcesorB.setRunCycles(testData.getSamplesNo());
     codedProcesorB.setOutputCom(COM_SOCKET_A, PROC_B_OUT_COM_CHANNEL);

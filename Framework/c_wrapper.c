@@ -77,6 +77,11 @@ static inline void testProcCode(input_data_pt inputData, com_data_pt outputData)
     outputData->time = clock();    
 }
 
+static inline void testInitCode(uint8_t id)
+{
+    printf("Processor %d initialised!", id);
+}
+
 static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {
     uint32_t acsOutput;
@@ -95,6 +100,11 @@ static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comD
 }
 
 /**** Function place holders for user implementation ****/
+__weak void procInitCodeA(uint8_t procID)
+{
+    testInitCode(procID);
+}
+
 __weak void processorCodeA(input_data_pt inputData, com_data_pt outputData) 
 {
     testProcCode(inputData, outputData);
@@ -105,9 +115,19 @@ __weak void processorCodeB(input_data_pt inputData, com_data_pt outputData)
     testProcCode(inputData, outputData);
 }
 
+__weak void procInitCodeB(uint8_t procID)
+{
+    testInitCode(procID);
+}
+
 __weak void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {
     tetsSupervisorCode(comDataProcA, comDataProcB, outputData);
+}
+
+__weak void supervisorInitCode(uint8_t procID)
+{
+    testInitCode(procID);
 }
 
 /******************************************************************************

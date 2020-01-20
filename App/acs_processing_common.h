@@ -38,10 +38,9 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-#define IIR_AVG_COEFICIENT          0.10435f
 #define FILTER_BUFFERING_SAMPLES    1
-#define IIR_INIT_VALUE_A            102
-#define IIR_INIT_VALUE_B            914
+#define FILTER_INIT_VALUE_A         102
+#define FILTER_INIT_VALUE_B         914
 #define ADC_RANGE                   1023
 
 /*******************************************************************************
