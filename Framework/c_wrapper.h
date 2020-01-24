@@ -80,7 +80,7 @@ extern "C"
 #define ACS_SENS_A_WARNING          BIT4
 #define ACS_SENS_A_FAULT            BIT5
 
-#define ACS_SENS_A_FAULTS_MASK      0x000000FF
+#define ACS_SENS_A_FAULTS_MASK      0x000000FFU
 
 /*Sensor B flags*/
 #define ACS_SENS_B_OUT_OF_BOUNDS    BIT8
@@ -90,7 +90,7 @@ extern "C"
 #define ACS_SENS_B_WARNING          BIT12
 #define ACS_SENS_B_FAULT            BIT13
 
-#define ACS_SENS_B_FAULTS_MASK      0x0000FF00
+#define ACS_SENS_B_FAULTS_MASK      0x0000FF00U
 
 /*ACS System flags*/
 #define ACS_WATCHDOG_A              BIT16
@@ -102,21 +102,24 @@ extern "C"
 #define ACS_TIME_INTEGRITY_B        BIT22
 #define ACS_AUTHENTICATION_B        BIT23
 
-#define ACS_DATA_ASYMETRY           BIT24
-#define ACS_INVALID_DATA            BIT25
-#define ACS_SYSTEM_FAULT            BIT26
+#define ACS_SIGNALS_ASYMMETRY       BIT24
+#define ACS_DATA_ASYMMETRY          BIT25
+#define ACS_INVALID_DATA            BIT26
+#define ACS_SYSTEM_FAULT            BIT27
 
-#define ACS_SUPERVISOR_FAULTS_MASK  0xFFFF0000
+#define ACS_SYSTEM_OK               0x00000000U
 
-#define XTEA_WORD_LENGTH        2
-#define MD5_WORD_LENGTH         4
-#define AES256_WORD_LENGTH      8
+#define ACS_SUPERVISOR_FAULTS_MASK  0xFFFF0000U
+
+#define XTEA_WORD_LENGTH        2U
+#define MD5_WORD_LENGTH         4U
+#define AES256_WORD_LENGTH      8U
 
 #define SIGNATURE_WORDS         XTEA_WORD_LENGTH
 
-#define DATA_VECTORS_NO         2
-#define DATA_VECTOR_A           0
-#define DATA_VECTOR_B           1
+#define DATA_VECTORS_NO         2U
+#define DATA_VECTOR_A           0U
+#define DATA_VECTOR_B           1U
 
 /*******************************************************************************
 **                                Macros
@@ -139,6 +142,7 @@ typedef uint32_t time_stamp_t;      /*communication time stamp type*/
 typedef uint8_t sequence_no_t;      /*communication mesage sequence number type*/
 typedef uint32_t authentication_t;  /*communication authentication signature type*/
 typedef uint16_t crc_t;             /*communication CRC checksum type*/
+typedef uint32_t debug_vector_data_t;
 
 /*ACS system states definitions*/
 typedef enum
@@ -150,6 +154,14 @@ typedef enum
     ACS_ERROR_SPEED_LIMIT,
     ACS_FATAL_SAFE_STOP
 } acs_state_e;
+
+enum debugVectorsNames
+{
+    DEBUG_CHANNEL_A = 0,
+    DEBUG_CHANNEL_B,
+    /*Number of debug vectors*/
+    DEBUG_VECTORS
+};
 
 /*Test data attributes and meta data structure*/
 typedef struct
@@ -181,6 +193,7 @@ typedef struct
     time_stamp_t time;
     sequence_no_t seqNo;
     authentication_t signature[SIGNATURE_WORDS];
+    debug_vector_data_t channelDebug[DEBUG_VECTORS];
     crc_t crc;
 } com_data_t;
 
@@ -192,6 +205,7 @@ typedef struct
     sample_data_t output;
     acs_flags_t flags;
     acs_state_e state;
+    debug_vector_data_t outputDebug[DEBUG_VECTORS*DATA_VECTORS_NO];    
 } output_data_t;
 
 typedef output_data_t* const output_data_pt; /*const pointer to output_data_t*/
@@ -205,6 +219,7 @@ extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 /*******************************************************************************
 **                     Public function prototypes - API
 *******************************************************************************/
+
 extern void procInitCodeA(uint8_t procID);
 extern void processorCodeA(input_data_pt, com_data_pt);  
 extern void procInitCodeB(uint8_t procID);

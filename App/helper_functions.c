@@ -20,9 +20,7 @@
 **                                Includes
 *******************************************************************************/
 
-#include "../Framework/c_wrapper.h"
-#include "acs_supervisor.h"
-#include <stdio.h>
+#include "helper_functions.h"
 
 /*******************************************************************************
 **                       Global and static variables
@@ -42,25 +40,32 @@
 * @returns 
 *******************************************************************************/
 
-void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
+inline bool isInRange (const signalVar_t var, const signalVar_t min, const signalVar_t max)
 {
-    sample_data_t resultSample;
-    
-    resultSample = (comDataProcA->dataSample + comDataProcB->dataSample)*0.5;
-    outputData->output = acsDecodingLUT[resultSample];
-    outputData->flags = comDataProcA->flags;
-    outputData->state = ACS_ACTIVE;
-    
-    outputData->outputDebug[DEBUG_CHANNEL_A] = comDataProcA->channelDebug[DEBUG_CHANNEL_A];
-    outputData->outputDebug[DEBUG_CHANNEL_B] = comDataProcA->channelDebug[DEBUG_CHANNEL_B];
-    
-    outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_A] = comDataProcB->channelDebug[DEBUG_CHANNEL_A];
-    outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_B] = comDataProcB->channelDebug[DEBUG_CHANNEL_B];
-    
-    printf("|%x %x|", comDataProcA->flags, comDataProcB->flags);
+    if ((var >= min) && (var <= max))
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
 }
+
+inline signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, const signalVar_t max)
+{
+    signalCheck_e retVal;
+    
+    retVal = SIGNAL_FAULT;
+    
+    retVal = isInRange_m(var,min,max) ? SIGNAL_IN_RANGE : retVal; 
+    retVal = (var < min) ? SIGNAL_UNDER : retVal;
+    retVal = (var > max) ? SIGNAL_OVER : retVal;
+    retVal = (var == min) ? SIGNAL_IDLE : retVal;
+    retVal = (var == max) ? SIGNAL_PEAK : retVal;
+    
+    return retVal;
+ }
 
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
-

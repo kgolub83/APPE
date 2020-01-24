@@ -6,7 +6,7 @@
 #include <string>
 #include "c_wrapper.h"
 
-#define TST_DATA_ATTRIBUTES     5
+#define TST_DATA_ATTRIBUTES     5U
 #define CSV_SEPARATOR           ','
 
 typedef std::vector<sample_data_t> samples_vector_t;

@@ -75,7 +75,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     streamBuffer.str(line);     //convert string data to stream for stream manipulations
     
     inputDataSettings.clear();
-    for(int i=0; i < TST_DATA_ATTRIBUTES; i++)
+    for(uint8_t i=0; i < TST_DATA_ATTRIBUTES; i++)
     {
         std::getline(streamBuffer, word, CSV_SEPARATOR);     //read every attributes
         sample = stoi(word);        // convert string to integer
@@ -89,7 +89,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     decoderRange = inputDataSettings[TST_DATA_OUTPUT_DECODER_RANGE];
     
     /****** Read input test data vectors ******/
-    for(int i = 0; i< DATA_VECTORS_NO; i++) 
+    for(data_vector_no_t i = 0; i< DATA_VECTORS_NO; i++) 
     {   
         inputFile >> line;          //read rows untill the end of file
         dataSamples[i].clear(); 
@@ -147,7 +147,8 @@ IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
     
     std::cout << data.size();
     
-    for(int i = 0; i<DATA_VECTORS_NO; i++)
+    /* write input data vectors */
+    for(data_vector_no_t i = 0; i<DATA_VECTORS_NO; i++)
     {
         for(auto &i: dataSamples[i])
         {
@@ -159,15 +160,48 @@ IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
         outFile << std::endl;
     }
     
+    /* write processed outupt data */
     for(auto &i: data)
     {
         outFile << i.output;
         lastEntry = outFile.tellp();    //record last entry position 
         outFile << CSV_SEPARATOR;
     }
-    
     outFile.seekp(lastEntry, std::ios::beg);    //set position before last separator 
     outFile << std::endl;
+    
+    /* write processing flags */
+    for(auto &i: data)
+    {
+        outFile << i.flags;
+        lastEntry = outFile.tellp();    //record last entry position 
+        outFile << CSV_SEPARATOR;
+    }
+    outFile.seekp(lastEntry, std::ios::beg);    //set position before last separator 
+    outFile << std::endl;
+    
+    /* write output states */
+    for(auto &i: data)
+    {
+        outFile << i.state;
+        lastEntry = outFile.tellp();    //record last entry position 
+        outFile << CSV_SEPARATOR;
+    }
+    outFile.seekp(lastEntry, std::ios::beg);    //set position before last separator 
+    outFile << std::endl;    
+    
+    /*write debug data*/
+    for(data_vector_no_t k = 0; k<(DEBUG_VECTORS*DATA_VECTORS_NO); k++)
+    {
+        for(auto &i: data)
+        {
+            outFile << i.outputDebug[k];
+            lastEntry = outFile.tellp();    //record last entry position 
+            outFile << CSV_SEPARATOR;
+        }
+        outFile.seekp(lastEntry, std::ios::beg);    //set position before last separator 
+        outFile << std::endl;
+    }
     
     outFile.close();
     retVal = IO_DATA_SUCCESS;

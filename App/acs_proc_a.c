@@ -22,49 +22,63 @@
 
 #include "acs_proc_a.h"
 #include "acs_processing_common.h"
-#include "dsp_filters_lib.h"
 #include "acs_communications.h"
+#include "fletcher32.h"
 #include <stdio.h>
 
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
 
-/*IIR average filters static data objects and initialisation*/
-static iir_avg_data_t iirFilterInBuffA;
-static iir_avg_data_t iirFilterOutBuffA;
-static iir_avg_data_t iirFilterInBuffB;
-static iir_avg_data_t iirFilterOutBuffB;
-
-static recoursive_avg_t iirAvgFilterA_g =
-{
-    .coeficient = IIR_AVG_COEFICIENT,
-    .bufferSamples = FILTER_BUFFERING_SAMPLES,
-    .inputData = &iirFilterInBuffA,
-    .outputData = &iirFilterOutBuffA,
-    .lastSample = FILTER_INIT_VALUE_A
-};
-
-static recoursive_avg_t iirAvgFilterB_g = 
-{
-    .coeficient = IIR_AVG_COEFICIENT,
-    .bufferSamples = FILTER_BUFFERING_SAMPLES,
-    .inputData = &iirFilterInBuffB,
-    .outputData = &iirFilterOutBuffB,
-    .lastSample = FILTER_INIT_VALUE_B
-};
-
-/*IIR average filter static const pointers to static data objects*/
-static recoursive_avg_pt iirAvgFilterA_gp = &iirAvgFilterA_g;
-static recoursive_avg_pt iirAvgFilterB_gp = &iirAvgFilterB_g;
+/*IIR average filter static pointers to static data objects*/
+static recoursive_avg_t *iirAvgFilterA_gp;
+static recoursive_avg_t *iirAvgFilterB_gp;
 
 /*******************************************************************************
 **                                 Code
 *******************************************************************************/
 
-void initProcA(void)
+void procInitCodeA(uint8_t id)
 {
+    /*IIR average filters static data objects and initialisation*/
+    static iir_avg_data_t iirFilterInBuffA;
+    static iir_avg_data_t iirFilterOutBuffA;
+    static iir_avg_data_t iirFilterInBuffB;
+    static iir_avg_data_t iirFilterOutBuffB;
+    tst_data_attributes_t dataAttributes;
+    
+    getTestDataAttributes(&dataAttributes);    
 
+    static recoursive_avg_t iirAvgFilterA =
+    {
+        .coeficient = IIR_AVG_COEFICIENT,
+        .bufferSamples = FILTER_BUFFERING_SAMPLES,
+        .inputData = &iirFilterInBuffA,
+        .outputData = &iirFilterOutBuffA
+    };
+
+    static recoursive_avg_t iirAvgFilterB = 
+    {
+        .coeficient = IIR_AVG_COEFICIENT,
+        .bufferSamples = FILTER_BUFFERING_SAMPLES,
+        .inputData = &iirFilterInBuffB,
+        .outputData = &iirFilterOutBuffB
+    };
+    
+    iirAvgFilterA.lastSample = dataAttributes.guardRegion;
+    iirAvgFilterA_gp = &iirAvgFilterA;
+    
+    iirAvgFilterB.lastSample = dataAttributes.resolution - dataAttributes.guardRegion;
+    iirAvgFilterB_gp = &iirAvgFilterB;
+    
+//    uint16_t test[] = {'e'<<8 | 'd', 'c'<<8 | 'b', 'a'<<8};
+//    uint16_t test[] = {'a', 'c'<<8 | 'b','e'<<8 | 'd'};
+    uint8_t test[] ="abcdefgh";
+    uint32_t cs;
+    
+    cs = fletcher32((uint16_t*)test, 4);
+    
+    printf("#*FCS: %X*#\n", cs);
 }
 
 /*!*****************************************************************************
@@ -82,66 +96,97 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
     processing_state_e state;
     dsp_data_t processedSignalA, processedSignalB, invertedSignalB;
     dsp_data_t processedSignal;
+    tst_data_attributes_t dataAttributes;
+    acs_flags_t flags;
+    bool signalAsymmetry;
+    
+    getTestDataAttributes(&dataAttributes);
     
     /*load data samples to filter*/
-    *iirAvgFilterA_g.inputData = (iir_avg_data_t)inputData->sensorSampleA;
-    *iirAvgFilterB_g.inputData = (iir_avg_data_t)inputData->sensorSampleB;
+    *iirAvgFilterA_gp->inputData = (iir_avg_data_t)inputData->sensorSampleA;
+    *iirAvgFilterB_gp->inputData = (iir_avg_data_t)inputData->sensorSampleB;
     
     /*Filter signals A and B*/
     recoursiveAverage(iirAvgFilterA_gp);
-    processedSignalA = *iirAvgFilterA_g.outputData;
+    processedSignalA = *iirAvgFilterA_gp->outputData;
     recoursiveAverage(iirAvgFilterB_gp);
-    processedSignalB = *iirAvgFilterB_g.outputData;
+    processedSignalB = *iirAvgFilterB_gp->outputData;
     
     /*Check constraints for signals A and B*/
-    checkSignalIntegrity();
-    checkComplementarity();
+    flags = checkSignalConstraints(processedSignalA, processedSignalB, &dataAttributes);
     
-    state = PROC_FSM_SIGNAL_HEALTHY;
+    if(ACS_SYSTEM_OK == flags)  /*check if everithing OK*/
+    {
+        state = PROC_FSM_SIGNAL_HEALTHY; 
+    } else if (!(flags & ACS_SENS_A_FAULTS_MASK)) /*check if signal A OK*/
+    {
+        state = PROC_FSM_SIGNAL_B_FAIL; 
+    } else if (!(flags & ACS_SENS_B_FAULTS_MASK)) /*check if signal B OK*/
+    {
+        state = PROC_FSM_SIGNAL_A_FAIL;
+    } else
+    {
+        state = PROC_FSM_SIGNAL_FAIL;
+    }
+    
+    signalAsymmetry = !checkComplementarity(processedSignalA, processedSignalB, &dataAttributes);
+    
+    if(signalAsymmetry && PROC_FSM_SIGNAL_HEALTHY == state)
+    {
+        state = PROC_FSM_COMPLEMENTARITY_FAIL;
+    }
     
     switch (state)
     {
         case PROC_FSM_SIGNAL_HEALTHY:
-            invertedSignalB = invertSignal(processedSignalB, (dsp_data_t)ADC_RANGE); /*invert signal B*/
-            processedSignal = (processedSignalA + invertedSignalB)/2.0;   /*average signals*/
-            //set flags
-        break;
+            invertedSignalB = invertSignal(processedSignalB, (dsp_data_t)dataAttributes.resolution); /*invert signal B*/
+            processedSignal = (int)(processedSignalA + invertedSignalB) >> 1;   /*average signals*/
+            flags = ACS_SYSTEM_OK;
+            break;
         
         case PROC_FSM_SIGNAL_A_FAIL:
-            //integrate_error
-            //invert signal A
-            //set flags
-        break;
+            /*Invert signal B and use as output signal*/
+            processedSignal = invertSignal(processedSignalB, (dsp_data_t)dataAttributes.resolution);
+            
+            if(signalAsymmetry) /*check asymmetry*/
+            {
+                flags |= ACS_SIGNALS_ASYMMETRY;
+            } 
+            break;
         
         case PROC_FSM_SIGNAL_B_FAIL:
-            //integrate_error
-            //invert signal A
-            //set flags
-        break;
-        
-        case PROC_FSM_COMPLEMENTARITY_WAR:
-            //integrate_error
-            //invert signal A
-            //set flags
-        break;
+            processedSignal = processedSignalA; /*set signal A as valid signal*/
+            
+            if(signalAsymmetry) /*check asymmetry*/
+            {
+                flags |= ACS_SIGNALS_ASYMMETRY;
+            }
+            break;
         
         case PROC_FSM_COMPLEMENTARITY_FAIL:
-            //set flags
-        break;
+            invertedSignalB = invertSignal(processedSignalB, (dsp_data_t)dataAttributes.resolution); /*invert signal B*/
+            processedSignal = (int)(processedSignalA + invertedSignalB) >> 1;   /*average signals*/        
+            flags |= ACS_SIGNALS_ASYMMETRY;
+            break;
         
         case PROC_FSM_SIGNAL_FAIL:
-            //set flags
-        break;
+            processedSignal = 0;
+            flags |= ACS_SYSTEM_FAULT;
+            break;
         
         default:
-            break;
+            processedSignal = 0;
+            flags |= ACS_SYSTEM_FAULT;
     }
 
-
-    packComData();
+    /* set output data */
+    outputData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
+    outputData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
     
     outputData->dataSample = processedSignal;
-    //printf("%f ", processedSignal);
+    outputData->flags = flags;
+    
+    packComData();
 }
 
 /******************************************************************************

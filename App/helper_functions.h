@@ -1,7 +1,7 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file .h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
@@ -20,66 +20,73 @@
 **                                 Guards
 *******************************************************************************/
 
-#ifndef ACS_PROCESSING_COMMON_H
-#define ACS_PROCESSING_COMMON_H
+#ifndef HELPER_FUNCTIONS_H
+#define HELPER_FUNCTIONS_H
 
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern "C" */
 
 /*******************************************************************************
 **                                Includes
 *******************************************************************************/
 
-#include "../Framework/c_wrapper.h"
 #include <stdbool.h>
-#include "dsp_filters_lib.h"
 
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
 
-#define FILTER_BUFFERING_SAMPLES    1U
-#define SIGNAL_TOLERANCE            0.05f
-
-/*******************************************************************************
-**                                Macros
-*******************************************************************************/
-
 /*******************************************************************************
 **                            Data Structures
 *******************************************************************************/
 
-typedef enum
+typedef int signalVar_t;
+
+typedef enum 
 {
-    PROC_FSM_SIGNAL_HEALTHY,
-    PROC_FSM_SIGNAL_A_FAIL,
-    PROC_FSM_SIGNAL_B_FAIL,
-    PROC_FSM_COMPLEMENTARITY_WAR,
-    PROC_FSM_COMPLEMENTARITY_FAIL,
-    PROC_FSM_SIGNAL_FAIL
-} processing_state_e;
+    SIGNAL_IN_RANGE = 0,
+    SIGNAL_OVER,
+    SIGNAL_UNDER,
+    SIGNAL_PEAK,
+    SIGNAL_IDLE,
+    SIGNAL_FAULT
+} signalCheck_e;
 
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
 
 /*******************************************************************************
+**                                Macros
+*******************************************************************************/
+
+/*checks if var is in between min and max including boundaries*/ 
+#define isInRange_m(var, min, max) ((((var) >= (min)) && ((var) <= (max))) ? true : false)
+
+/*returns a if a is smaller then b, in other cases returns b*/
+#define min_m(a,b) (((a) < (b)) ? (a) : (b))
+
+/*returns a if a is greater then b, in other cases returns b*/
+#define max_m(a,b) (((a) > (b)) ? (a) : (b))
+
+/*******************************************************************************
 **                     Public function prototypes - API
 *******************************************************************************/
 
-acs_flags_t checkSignalIntegrity(const input_data_pt data);
-acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
-bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
+extern bool isInRange (const int var, int min, int max);
+extern signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, const signalVar_t max);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern "C" */
+#endif /* nextern "C" */
 
-#endif /* ACS_PROCESSING_COMMON_H */
+#endif /* HELPER_FUNCTIONS_H */
 
 
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
+
+

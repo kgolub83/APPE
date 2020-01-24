@@ -126,7 +126,6 @@ inline void movingAverage(moving_avg_pt filter)
     }
 }
 
-
 inline dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin)
 {
     return (origin - inputSignal);

@@ -49,9 +49,9 @@ void getTestDataAttributes(tst_data_attributes_pt attributes)
 {
     attributes->decoderRange = testDataAtributes.decoderRange;
     attributes->guardRegion = testDataAtributes.guardRegion;
-    testDataAtributes.resolution = attributes->resolution;
-    testDataAtributes.sampleRate = attributes->sampleRate;
-    testDataAtributes.samplesNo = attributes->samplesNo;
+    attributes->resolution = testDataAtributes.resolution ;
+    attributes->sampleRate = testDataAtributes.sampleRate; 
+    attributes->samplesNo = testDataAtributes.samplesNo;
 }
 
 /*!*****************************************************************************

@@ -1,15 +1,32 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file .h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
  * @date 2019-12-20
  * 
- * @brief 
+ * @brief   Efficient Flacher32 check sum algorithm. Implemented as described at
+ *          https://en.wikipedia.org/wiki/Fletcher%27s_checksum .This reduces to the 
+ *          range 1..65535 rather than 0..65534. Modulo 65535, the values 65535 = 0xffff 
+ *          and 0 are equivalent, but it is easier to detect overflow if the former 
+ *          convention is used. This also provides the guarantee that the resultant 
+ *          checksum will never be zero, so that value is available for a special flag, 
+ *          such as "checksum not yet computed".
+ *          65536 ? 1 mod 65535, so the end-around carry expression (x & 0xffff) + (x >> 16) 
+ *          reduces x modulo 65535. Only doing it once is not guaranteed to be complete, but 
+ *          it will be in the range 1..0x1fffe. A second repetition guarantees a fully 
+ *          reduced sum in the range of 1..0xffff.
+ *          This uses a 32-bit accumulator to perform a number of sums before doing any 
+ *          modular reduction. The magic value 359 is the largest number of sums that
+ *          can be performed without numeric overflow, given the possible initial starting 
+ *          value of sum1 = 0x1fffe. Any smaller value is also permissible; 256 may be 
+ *          convenient in many cases. The limit is 360 if starting from sum1 = 0xffff, 
+ *          but the example code only partially reduces sum1 between inner loops. 
+ *          TODO: provjeriti razliku izmedju little endian i big endian
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
  *  - KG 2019-12-20 Initial implementation 
@@ -20,28 +37,27 @@
 **                                 Guards
 *******************************************************************************/
 
-#ifndef ACS_PROCESSING_COMMON_H
-#define ACS_PROCESSING_COMMON_H
+#ifndef FLETCHER32_H
+#define FLETCHER32_H
 
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern "C" */
 
 /*******************************************************************************
 **                                Includes
 *******************************************************************************/
 
-#include "../Framework/c_wrapper.h"
-#include <stdbool.h>
-#include "dsp_filters_lib.h"
+#include <stdint.h>
 
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
 
-#define FILTER_BUFFERING_SAMPLES    1U
-#define SIGNAL_TOLERANCE            0.05f
+#define FCS32_ACCUMULATOR_WORDS      359U
+#define FCS32_16BIT_MASK             0xFFFFU
+#define FCS32_INITIAL_SUM            0U
 
 /*******************************************************************************
 **                                Macros
@@ -51,16 +67,6 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 
-typedef enum
-{
-    PROC_FSM_SIGNAL_HEALTHY,
-    PROC_FSM_SIGNAL_A_FAIL,
-    PROC_FSM_SIGNAL_B_FAIL,
-    PROC_FSM_COMPLEMENTARITY_WAR,
-    PROC_FSM_COMPLEMENTARITY_FAIL,
-    PROC_FSM_SIGNAL_FAIL
-} processing_state_e;
-
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
@@ -69,16 +75,13 @@ typedef enum
 **                     Public function prototypes - API
 *******************************************************************************/
 
-acs_flags_t checkSignalIntegrity(const input_data_pt data);
-acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
-bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
+extern uint32_t fletcher32(uint16_t const *data, int words);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern "C" */
+#endif /* nextern "C" */
 
-#endif /* ACS_PROCESSING_COMMON_H */
-
+#endif /* FLETCHER32_H */
 
 /******************************************************************************
 **                               End Of File
