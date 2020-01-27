@@ -1,6 +1,6 @@
 /***************************************Copyright (c)*********************************************
- *									
- * 									
+ *
+ * 
  * 
  * File:   crc16.c
  *
@@ -9,39 +9,39 @@
  * Date: 2017-02-02
  * 
  * Description:
- * 		CRC-16-CCITT is an error detection scheme that does not impose any 
- * 		additional transmission overhead. This scheme was first employed by IBM 
- * 		in its SDLC data link protocol and is used today in other modern data 
- * 		link protocols such as HDLC, SS7, and ISDN. Like a checksum, the CCITT-CRC 
- * 		does not impose any additional transmission overhead at the character level.
- * 		It can detect errors in any arbitrary number of bits of data, and its 
- * 		error detection rate is 99.9984 percent, worse case.
- * 		The basic idea is to treat the entire message as a binary number, which 
- * 		both the sender and receiver divide using the same divisor. The quotient 
- * 		is discarded, and the remainder is sent as the CRC. If the message is 
- * 		received without error, the receiver's calculation will match the 
- * 		sender's calculation, and the CRC's will agree. The CRC is actually 
- * 		the one's complement of the remainder obtained from modulo 2 division 
- * 		of the message by a generation polynomial.
- * 		The CCITT-CRC uses polynomial: x16 + x12 + x5 + 1
+ *      CRC-16-CCITT is an error detection scheme that does not impose any 
+ *      additional transmission overhead. This scheme was first employed by IBM 
+ *      in its SDLC data link protocol and is used today in other modern data 
+ *      link protocols such as HDLC, SS7, and ISDN. Like a checksum, the CCITT-CRC 
+ *      does not impose any additional transmission overhead at the character level.
+ *      It can detect errors in any arbitrary number of bits of data, and its 
+ *      error detection rate is 99.9984 percent, worse case.
+ *      The basic idea is to treat the entire message as a binary number, which 
+ *      both the sender and receiver divide using the same divisor. The quotient 
+ *      is discarded, and the remainder is sent as the CRC. If the message is 
+ *      received without error, the receiver's calculation will match the 
+ *      sender's calculation, and the CRC's will agree. The CRC is actually 
+ *      the one's complement of the remainder obtained from modulo 2 division 
+ *      of the message by a generation polynomial.
+ *      The CCITT-CRC uses polynomial: x16 + x12 + x5 + 1
  *
- * 		Implemented as described on: https://ghsi.de/CRC/index.php
+ *      Implemented as described on: http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/
  * 
- * Generating polinoomial: 0x1021 - normal representation x^16 omitted
+ * Generating polynomial: 0x1021 - normal representation x^16 omitted
  *
  * Dependences:
  *
  * Revision history:
- *  	KG	02.02.2017 
+ *      KG  02.02.2017 
  *      
  ************************************************************************************************/
 
 #include <stdio.h>
 #include "crc16.h"
 
-uint16_t crc16_lut[256];			//used for runtime CRC LUT generation
+uint16_t crc16Lut[256];        /*used for runtime CRC LUT generation*/
 
-const uint16_t crc_ccitt_table[256] = {
+const uint16_t crcCcittTable[256] = {
     0X0000, 0X1021, 0X2042, 0X3063, 0X4084, 0X50A5, 0X60C6, 0X70E7, 
     0X8108, 0X9129, 0XA14A, 0XB16B, 0XC18C, 0XD1AD, 0XE1CE, 0XF1EF, 
     0X1231, 0X0210, 0X3273, 0X2252, 0X52B5, 0X4294, 0X72F7, 0X62D6, 
@@ -76,40 +76,37 @@ const uint16_t crc_ccitt_table[256] = {
     0X6E17, 0X7E36, 0X4E55, 0X5E74, 0X2E93, 0X3EB2, 0X0ED1, 0X1EF0
 };
     
-uint16_t crc16_calc(uint8_t *data, uint16_t length, crc_mode_e mode)
+uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode)
 {
-
     uint16_t count;
     uint32_t crc = CRC16_SEED;
     uint32_t temp;
     
-    if(mode == REVERSE) //reverse calculation 
+    if(mode == REVERSE) /*reverse calculation*/ 
     {
         uint8_t *pt;
         pt = data + length -1;
         for (count = 0; count < length; ++count)
         {
 #ifdef CRC_DEBUG
-            PRINTF("\n%X ", *pt);
+            printf("\n%X ", *pt);
 #endif
             temp = ((*pt--) ^ (crc >> 8)) & 0xFF;
-        //		crc = crc16_lut[temp] ^ (crc << 8);		//read from runtime pre calculated table
-            crc = crc_ccitt_table[temp] ^ (crc << 8);	//read from pre compiled LUT
-        }	
+            crc = crcCcittTable[temp] ^ (crc << 8);     /*read from pre compiled LUT*/
+        }
     } else //normal calculation
     {
         for (count = 0; count < length; ++count)
         {
 #ifdef CRC_DEBUG
-            PRINTF("\n%X ", *data);
-#endif			
+            printf("\n%X ", *data);
+#endif
             temp = ((*data++) ^ (crc >> 8)) & 0xFF;
-        //		crc = crc16_lut[temp] ^ (crc << 8);		//read from runtime pre calculated table
-            crc = crc_ccitt_table[temp] ^ (crc << 8);	//read from pre compiled LUT
+            crc = crcCcittTable[temp] ^ (crc << 8);     /*read from pre compiled LUT*/
         }
     }
 #ifdef CRC_DEBUG
-            PRINTF("\n%X ", (uint16_t)(crc ^ CRC16_FINAL_XOR));
+            printf("\n%X ", (uint16_t)(crc ^ CRC16_FINAL_XOR));
 #endif
     return (uint16_t)(crc ^ CRC16_FINAL_XOR);
 }
@@ -118,29 +115,29 @@ uint16_t crc16_calc(uint8_t *data, uint16_t length, crc_mode_e mode)
  *
  * Function:    crcInit()
  *
- * Description: Populate the partial CRC lookup table.
+ * Description: Generates partial CRC16 lookup table.
  *
- * Notes:		This function must be rerun any time the CRC standard
- *				is changed.  If desired, it can be run "offline" and
- *				the table results stored in an embedded system's ROM.
+ * Notes:   This function must be rerun any time the CRC standard
+ *          is changed.  If desired, it can be run "offline" and
+ *          the table results stored in an embedded system's ROM.
  *
- * Returns:		None defined.
+ * Returns: void function
  *
  *********************************************************************/
 
-void crc16_init(void)
+void crc16LutGenerate(void)
 {
     uint16_t remainder;
     uint32_t dividend;
     unsigned char bit;
 
-    for (dividend = 0; dividend < 256; ++dividend)		//Compute the remainder of each possible dividend
+    for (dividend = 0; dividend < 256; ++dividend)      //Compute the remainder of each possible dividend
     {
-        remainder = dividend << (WIDTH_16 - 8);					//Start with the dividend followed by zeros
+        remainder = dividend << (WIDTH_16 - 8);         //Start with the dividend followed by zeros
 
-        for (bit = 8; bit > 0; --bit)										//Perform modulo-2 division, a bit at a time
+        for (bit = 8; bit > 0; --bit)                   //Perform modulo-2 division, a bit at a time
         {
-            if (remainder & TOPBIT_16)										//Try to divide the current data bit
+            if (remainder & TOPBIT_16)                  //Try to divide the current data bit
             {
                 remainder = (remainder << 1) ^ POLYNOMIAL_16;
             }
@@ -149,6 +146,30 @@ void crc16_init(void)
                 remainder = (remainder << 1);
             }
         }
-        crc16_lut[dividend] = remainder;				//Store the result into the table.
+        crc16Lut[dividend] = remainder;             //Store the result into the table.
     }
+}
+
+bool crc16Test(void)
+{
+    uint16_t crcResult;
+    bool retVal;
+    const uint8_t ccitTestData[] = {0xE1, 0x00, 0xCA, 0xFE, 0xDE, 0xAD, 0xBE, 0xEF};
+    const uint32_t ccitTestResult = 0x3B71;
+    
+    retVal = false;
+    
+    crcResult = crc16Calculate((uint8_t*)&ccitTestData, sizeof(ccitTestData), NORMAL);
+    
+    if(ccitTestResult == crcResult)
+    {
+        printf("CRC test OK...");
+        retVal = true;
+    } else
+    {
+        printf("#CRC#ERROR: %X\n", crcResult);
+        retVal = false;
+    }
+    
+    return retVal;
 }
