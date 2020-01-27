@@ -20,7 +20,7 @@
 **                                Includes
 *******************************************************************************/
 
-#include "helper_functions.h"
+#include "acs_communications.h"
 
 /*******************************************************************************
 **                       Global and static variables
@@ -37,34 +37,12 @@
 *
 * @param 
 *
-* @return 
+* @returns 
 *******************************************************************************/
-
-inline bool isInRange (const signalVar_t var, const signalVar_t min, const signalVar_t max)
+void packComData()
 {
-    if ((var >= min) && (var <= max))
-    {
-        return true;
-    } else
-    {
-        return false;
-    }
+    
 }
-
-inline signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, const signalVar_t max)
-{
-    signalCheck_e retVal;
-    
-    retVal = SIGNAL_FAULT;
-    
-    retVal = isInRange_m(var,min,max) ? SIGNAL_IN_RANGE : retVal; 
-    retVal = (var < min) ? SIGNAL_UNDER : retVal;
-    retVal = (var > max) ? SIGNAL_OVER : retVal;
-    retVal = (var == min) ? SIGNAL_IDLE : retVal;
-    retVal = (var == max) ? SIGNAL_PEAK : retVal;
-    
-    return retVal;
- }
 
 /******************************************************************************
 **                               End Of File

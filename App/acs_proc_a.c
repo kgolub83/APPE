@@ -23,7 +23,7 @@
 #include "acs_proc_a.h"
 #include "acs_processing_common.h"
 #include "acs_communications.h"
-#include "fletcher32.h"
+#include "fletcher.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -38,7 +38,7 @@ static recoursive_avg_t *iirAvgFilterB_gp;
 **                                 Code
 *******************************************************************************/
 
-void procInitCodeA(uint8_t id)
+void procInitCodeA(uint8_t procID)
 {
     /*IIR average filters static data objects and initialisation*/
     static iir_avg_data_t iirFilterInBuffA;
@@ -71,14 +71,8 @@ void procInitCodeA(uint8_t id)
     iirAvgFilterB.lastSample = dataAttributes.resolution - dataAttributes.guardRegion;
     iirAvgFilterB_gp = &iirAvgFilterB;
     
-//    uint16_t test[] = {'e'<<8 | 'd', 'c'<<8 | 'b', 'a'<<8};
-//    uint16_t test[] = {'a', 'c'<<8 | 'b','e'<<8 | 'd'};
-    uint8_t test[] ="abcdefgh";
-    uint32_t cs;
+    printf("Processor ID:%d init OK...\n", procID);
     
-    cs = fletcher32((uint16_t*)test, 4);
-    
-    printf("#*FCS: %X*#\n", cs);
 }
 
 /*!*****************************************************************************
@@ -88,7 +82,7 @@ void procInitCodeA(uint8_t id)
 *
 * @param 
 *
-* @returns 
+* @return 
 *******************************************************************************/
 
 void processorCodeA(input_data_pt inputData, com_data_pt outputData) 

@@ -22,7 +22,10 @@
 
 #include "../Framework/c_wrapper.h"
 #include "acs_supervisor.h"
+#include "fletcher.h"
+#include "sip_hash.h"
 #include <stdio.h>
+#include <assert.h>
 
 /*******************************************************************************
 **                       Global and static variables
@@ -39,8 +42,15 @@
 *
 * @param 
 *
-* @returns 
+* @return
 *******************************************************************************/
+
+void supervisorInitCode(uint8_t procID)
+{
+    assert(fletcher32Test());       /*test fletcher32 implementation*/ 
+    sipHashTest();
+    printf("Supervisor ID:%d init OK...\n", procID);
+}
 
 void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {
@@ -57,7 +67,7 @@ void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_d
     outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_A] = comDataProcB->channelDebug[DEBUG_CHANNEL_A];
     outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_B] = comDataProcB->channelDebug[DEBUG_CHANNEL_B];
     
-    printf("|%x %x|", comDataProcA->flags, comDataProcB->flags);
+    //printf("|%x %x|", comDataProcA->flags, comDataProcB->flags);
 }
 
 /******************************************************************************

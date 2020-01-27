@@ -20,6 +20,7 @@
 **                                Includes
 *******************************************************************************/
 
+#include "xtea.h"
 #include "helper_functions.h"
 
 /*******************************************************************************
@@ -40,31 +41,47 @@
 * @return 
 *******************************************************************************/
 
-inline bool isInRange (const signalVar_t var, const signalVar_t min, const signalVar_t max)
+/*
+ * XTEA encrypt function
+ */
+int xteaEncrypt( mbedtls_xtea_context *ctx, int mode,
+                    const unsigned char input[8], unsigned char output[8])
 {
-    if ((var >= min) && (var <= max))
-    {
-        return true;
-    } else
-    {
-        return false;
-    }
-}
+    uint32_t *k, v0, v1, i;
 
-inline signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, const signalVar_t max)
-{
-    signalCheck_e retVal;
-    
-    retVal = SIGNAL_FAULT;
-    
-    retVal = isInRange_m(var,min,max) ? SIGNAL_IN_RANGE : retVal; 
-    retVal = (var < min) ? SIGNAL_UNDER : retVal;
-    retVal = (var > max) ? SIGNAL_OVER : retVal;
-    retVal = (var == min) ? SIGNAL_IDLE : retVal;
-    retVal = (var == max) ? SIGNAL_PEAK : retVal;
-    
-    return retVal;
- }
+    k = ctx->k;
+
+    bytesToUint32_m( v0, input, 0 );
+    bytesToUint32_m( v1, input, 4 );
+
+    if( mode == MBEDTLS_XTEA_ENCRYPT )
+    {
+        uint32_t sum = 0, delta = XTEA_DELTA_FACTOR;
+
+        for( i = 0; i < 32; i++ )
+        {
+            v0 += (((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + k[sum & 3]);
+            sum += delta;
+            v1 += (((v0 << 4) ^ (v0 >> 5)) + v0) ^ (sum + k[(sum>>11) & 3]);
+        }
+    }
+    else /* MBEDTLS_XTEA_DECRYPT */
+    {
+        uint32_t delta = XTEA_DELTA_FACTOR, sum = delta * 32;
+
+        for( i = 0; i < 32; i++ )
+        {
+            v1 -= (((v0 << 4) ^ (v0 >> 5)) + v0) ^ (sum + k[(sum>>11) & 3]);
+            sum -= delta;
+            v0 -= (((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + k[sum & 3]);
+        }
+    }
+
+    uint32ToBytes( v0, output, 0 );
+    uint32ToBytes( v1, output, 4 );
+
+    return( 0 );
+}
 
 /******************************************************************************
 **                               End Of File

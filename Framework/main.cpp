@@ -37,7 +37,7 @@
 *
 * @param 
 *
-* @returns 
+* @return
 *******************************************************************************/
 
 int main(int argc, char **argv)
@@ -54,7 +54,6 @@ int main(int argc, char **argv)
     std::cout << mainTerminalStrings[initCom] << std::hex << comChannels << std::endl;
     std::cout << std::dec << std::endl;
 
-    //read input data
     assert(!testData.readCSV(INPUT_DATA_FILE));    //read input data and check consistency
     
     std::cout << mainTerminalStrings[initData] << std::endl;
@@ -76,6 +75,7 @@ int main(int argc, char **argv)
     codedProcesorB.setOutputCom(COM_SOCKET_A, PROC_B_OUT_COM_CHANNEL);
     
     //configure supervisor processing unit
+    supervisor.installInitCalback(supervisorInitCode);
     supervisor.installSupervisor(supervisorCode);
     supervisor.setRunCycles(testData.getSamplesNo());
     supervisor.setInputCom(COM_SOCKET_C, PROC_A_OUT_COM_CHANNEL);
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     threadSupervisor.join();
     
     testData.writeCSV("acs_output_data.csv", outputData);
-
+    
     return 0;
 }
 

@@ -44,9 +44,9 @@ static moving_avg_t *movAvgFilterB_gp;
 *
 * @param 
 *
-* @returns 
+* @return 
 *******************************************************************************/
-void procInitCodeB(uint8_t id)
+void procInitCodeB(uint8_t procID)
 {
     /*Moving average filters static data objects and initialisation*/
     static mov_avg_data_t movAvgInBuffA;
@@ -85,6 +85,8 @@ void procInitCodeB(uint8_t id)
     /*Set filter global pointer and initialises filter*/
     movAvgFilterB_gp = &movAvgFilterB;
     movingAvgInit(movAvgFilterB_gp, dataAttributes.resolution - dataAttributes.guardRegion);
+    
+    printf("Processor ID:%d init OK...\n", procID);
 }
 
 void processorCodeB(input_data_pt inputData, com_data_pt outputData) 

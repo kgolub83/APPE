@@ -38,7 +38,7 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-/*bit mask deffinitions*/
+/*32 bit register bit mask deffinitions*/
 #define BIT0    0x00000001U
 #define BIT1    0x00000002U
 #define BIT2    0x00000004U
@@ -192,8 +192,8 @@ typedef struct
     acs_flags_t flags;
     time_stamp_t time;
     sequence_no_t seqNo;
+    debug_vector_data_t channelDebug[DEBUG_VECTORS];    
     authentication_t signature[SIGNATURE_WORDS];
-    debug_vector_data_t channelDebug[DEBUG_VECTORS];
     crc_t crc;
 } com_data_t;
 

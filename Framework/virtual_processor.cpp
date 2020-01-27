@@ -72,6 +72,8 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     
     assert(supervisorCallback);   //checks if user callback function is set
     
+    initProcessor(id);
+    
     //init buffer flags - indicates unprocessed data
     syncFlagA = false;
     syncFlagB = false;
