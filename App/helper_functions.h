@@ -43,6 +43,7 @@ extern "C"
 #define BYTE_BITS           8U
 #define	WORD16_MASK         0x0000FFFF
 #define WORD16_MSBYTE_MASK  0x0000FF00
+#define WORD32_MASK         0xFFFFFFFF
 #define WORD16_BITS         16U
 #define LOW_NIBBLE_MASK     0x0F
 #define HI_NIBBLE_MASK      0xF0
@@ -153,7 +154,7 @@ typedef union{
         | ( (uint32_t) (bytes)[(index) + 3]       );    \
 }
 
-#define uint32ToBytes(var32, bytes, index)       \
+#define uint32ToBytes_m(var32, bytes, index)       \
 {                                                       \
     (bytes)[(index)    ] = (uint8_t) ( (var32)       ); \
     (bytes)[(index) + 1] = (uint8_t) ( (var32) >>  8 ); \
@@ -161,7 +162,7 @@ typedef union{
     (bytes)[(index) + 3] = (uint8_t) ( (var32) >> 24 ); \
 }
 
-#define uint32ToBytesReverse(var32, bytes, index)       \
+#define uint32ToBytesReverse_m(var32, bytes, index)       \
 {                                                       \
     (bytes)[(index)    ] = (uint8_t) ( (var32) >> 24 ); \
     (bytes)[(index) + 1] = (uint8_t) ( (var32) >> 16 ); \

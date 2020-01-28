@@ -8,7 +8,7 @@
  * @date 2019-12-20
  * 
  * @brief   32bit SipHash implementation - Half SIP Hash
- *          pseudorandom functions cripto hashing alghorithm optimized for speed 
+ *          pseudorandom functions crypto hashing algorithm optimized for speed 
  *          and short messages
  *          https://131002.net/siphash/
  *
@@ -149,11 +149,11 @@ bool sipHashTest(void)
     uint32_t hash;
     bool retVal;
     
-    retVal = false;
+    retVal = true;
     /* generate test keys */
     for (i = 0; i < SIP32_KEY_BYTES; ++i)
     {
-        k[i] = i;    
+        k[i] = i;
     }
     
     for(i=0; i<SIP32_32BIT_KEYS; i++)
@@ -172,10 +172,13 @@ bool sipHashTest(void)
             printf("SIP#ERR %d: %08X\n", i, hash);
             retVal = false;
         }
+        
     }
-    
-    retVal = true;
-    printf("#SIP Test OK...\n");
+
+    if(true == retVal)
+    {
+        printf("SIP Test OK...\n");
+    }
     
     return retVal;
 }

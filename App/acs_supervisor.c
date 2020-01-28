@@ -24,6 +24,8 @@
 #include "acs_supervisor.h"
 #include "fletcher.h"
 #include "sip_hash.h"
+#include "crc16.h"
+#include "xtea.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -47,8 +49,11 @@
 
 void supervisorInitCode(uint8_t procID)
 {
-    assert(fletcher32Test());       /*test fletcher32 implementation*/ 
-    sipHashTest();
+    assert(fletcher32Test());       /*test fletcher32 checksum implementation*/ 
+    assert(sipHashTest());          /*test SIP hash implementation*/
+    assert(crc16Test());            /*test CRC checksum implementation*/
+    xteaTest();                     /*test XTEA encryption implementation*/
+    
     printf("Supervisor ID:%d init OK...\n", procID);
 }
 

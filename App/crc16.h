@@ -57,8 +57,8 @@ typedef enum
     REVERSE     /*LSB first - from BIG ENDIAN perspective*/
 } crc_mode_e;
 
-extern void crc16_init(void);
-extern uint16_t crc16_calc(uint8_t *data, uint16_t length, crc_mode_e mode);
+extern void crc16LutGenerate(void);
+extern uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode);
 extern bool crc16Test(void);
 
 #endif /*CRC16_H*/

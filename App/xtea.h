@@ -33,14 +33,21 @@ extern "C"
 *******************************************************************************/
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
 
+#define XTEA_DATA_BYTES         8
+#define XTEA_32BIT_KEYS         4
 #define XTEA_DELTA_FACTOR       0x9E3779B9
-#define MBEDTLS_XTEA_ENCRYPT     1
-#define MBEDTLS_XTEA_DECRYPT     0
+#define XTEA_ROUNDS             32
+#define XTEA_LSHIFT             4
+#define XTEA_RSHIFT             5
+#define XTEA_SUM_SHIFT          11
+#define MBEDTLS_XTEA_ENCRYPT    1
+#define MBEDTLS_XTEA_DECRYPT    0
 
 /*******************************************************************************
 **                                Macros
@@ -63,6 +70,10 @@ mbedtls_xtea_context;
 /*******************************************************************************
 **                     Public function prototypes - API
 *******************************************************************************/
+
+extern void xteaEncrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_DATA_BYTES], uint8_t output[XTEA_DATA_BYTES]);
+extern void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_DATA_BYTES], uint8_t output[XTEA_DATA_BYTES]);
+extern bool xteaTest(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

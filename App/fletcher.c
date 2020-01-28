@@ -40,6 +40,7 @@
 
 #include "fletcher.h"
 #include "helper_functions.h"
+#include <stdio.h>
 
 /*******************************************************************************
 **                       Global and static variables
@@ -97,7 +98,7 @@ bool fletcher32Test(void)
     uint8_t testData1[] = "abcdef"; 
     uint8_t testData2[] = "abcdefgh";
     
-    flatcehr32Test_t testArray[] = 
+    fletcher32Test_t testArray[] = 
     {
         {   /*test structure element 0*/
             .testData = (uint16_t*)testData0,
@@ -116,8 +117,9 @@ bool fletcher32Test(void)
         }        
     };
     
-    const uint32_t testElements = sizeof(testArray)/sizeof(flatcehr32Test_t);
+    const uint32_t testElements = sizeof(testArray)/sizeof(fletcher32Test_t);
     uint32_t  passedTests, i;
+    bool retVal;
     
     passedTests = 0;
     
@@ -129,7 +131,16 @@ bool fletcher32Test(void)
         }
     }
     
-    return isEqual_m(testElements, passedTests);
+    if(testElements == passedTests)
+    {
+        retVal = true;
+        printf("Fletcher Test OK...\n");
+    } else
+    {
+        retVal = false;
+        printf("#FLETCHER TEST ERROR\n");
+    }
+    return retVal;
 }
 
 /******************************************************************************

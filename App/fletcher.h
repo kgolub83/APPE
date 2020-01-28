@@ -73,7 +73,7 @@ typedef struct
     const uint32_t testResult;    
     const uint32_t dataWordsNo;
     const uint16_t *testData;    
-} flatcehr32Test_t;
+} fletcher32Test_t;
 
 /*******************************************************************************
 **                       Global and static variables

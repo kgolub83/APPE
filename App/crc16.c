@@ -121,7 +121,7 @@ uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode)
  *          is changed.  If desired, it can be run "offline" and
  *          the table results stored in an embedded system's ROM.
  *
- * Returns: void function
+ * Return: void function
  *
  *********************************************************************/
 
@@ -131,13 +131,13 @@ void crc16LutGenerate(void)
     uint32_t dividend;
     unsigned char bit;
 
-    for (dividend = 0; dividend < 256; ++dividend)      //Compute the remainder of each possible dividend
+    for (dividend = 0; dividend < 256; ++dividend)      /*Compute the remainder of each possible dividend*/
     {
-        remainder = dividend << (WIDTH_16 - 8);         //Start with the dividend followed by zeros
+        remainder = dividend << (WIDTH_16 - 8);         /*Start with the dividend followed by zeros*/
 
-        for (bit = 8; bit > 0; --bit)                   //Perform modulo-2 division, a bit at a time
+        for (bit = 8; bit > 0; --bit)                   /*Perform modulo-2 division, a bit at a time*/
         {
-            if (remainder & TOPBIT_16)                  //Try to divide the current data bit
+            if (remainder & TOPBIT_16)                  /*Try to divide the current data bit*/
             {
                 remainder = (remainder << 1) ^ POLYNOMIAL_16;
             }
@@ -146,7 +146,7 @@ void crc16LutGenerate(void)
                 remainder = (remainder << 1);
             }
         }
-        crc16Lut[dividend] = remainder;             //Store the result into the table.
+        crc16Lut[dividend] = remainder;             /*Store the result into the table*/
     }
 }
 
@@ -163,7 +163,7 @@ bool crc16Test(void)
     
     if(ccitTestResult == crcResult)
     {
-        printf("CRC test OK...");
+        printf("CRC test OK...\n");
         retVal = true;
     } else
     {
