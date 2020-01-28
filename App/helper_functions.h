@@ -45,6 +45,7 @@ extern "C"
 #define WORD16_MSBYTE_MASK  0x0000FF00
 #define WORD32_MASK         0xFFFFFFFF
 #define WORD16_BITS         16U
+#define WORD32_BITS         32U
 #define LOW_NIBBLE_MASK     0x0F
 #define HI_NIBBLE_MASK      0xF0
 #define NIBBLE_BITS         4U
