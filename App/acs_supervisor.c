@@ -26,6 +26,7 @@
 #include "sip_hash.h"
 #include "crc16.h"
 #include "xtea.h"
+#include "logger.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -52,7 +53,27 @@ void supervisorInitCode(uint8_t procID)
     assert(fletcher32Test());       /*test fletcher32 checksum implementation*/ 
     assert(sipHashTest());          /*test SIP hash implementation*/
     assert(crc16Test());            /*test CRC checksum implementation*/
-    xteaTest();                     /*test XTEA encryption implementation*/
+    assert(xteaTest());             /*test XTEA encryption implementation*/
+    
+    int i;
+    
+    /*setup logging parameters*/
+    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
+    
+    /*demo use example -> generate all logger level mesages - Full logging executed */
+    for(i=0; i<LOG_LEVELS_NO; i++)
+    {
+        LogFull_m((LOG_LEVEL_POSITION*i), "This is a C logger!", 2, 100, i);
+    }
+    
+        /*demo use example -> log user event - Compact logging executed */
+    LogCompact_m(PROGRAM_START_SUCCESS, "Program started successfully, with codes:", 5, 10, 20, 30, 40, 50);
+    
+    /*demo use example -> log user event - Basic logging executed */
+    LogBasic_m(PROGRAM_START_SUCCESS, 5, 10, 20, 30, 40, 50);
+    
+    /*Flush log events from RAM FIFO to destinatin*/
+    logWrite();
     
     printf("Supervisor ID:%d init OK...\n", procID);
 }

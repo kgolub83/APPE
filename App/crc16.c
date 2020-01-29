@@ -29,7 +29,7 @@
  * 
  * Generating polynomial: 0x1021 - normal representation x^16 omitted
  *
- * Dependences:
+ * Dependencies:
  *
  * Revision history:
  *      KG  02.02.2017 

@@ -61,7 +61,7 @@ void getTestDataAttributes(tst_data_attributes_pt attributes)
 *
 * @param 
 *
-* @returns 
+*@return 
 *******************************************************************************/
 
 static inline void testProcCode(input_data_pt inputData, com_data_pt outputData)

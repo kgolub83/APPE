@@ -39,7 +39,7 @@
 *
 * @param 
 *
-* @returns 
+*@return 
 *******************************************************************************/
 acs_flags_t checkSignalIntegrity(const input_data_pt data)
 {

@@ -1,7 +1,7 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file main.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
@@ -37,7 +37,7 @@
 *
 * @param 
 *
-* @returns 
+* @return 
 *******************************************************************************/
 void packComData()
 {

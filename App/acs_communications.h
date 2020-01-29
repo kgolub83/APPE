@@ -1,7 +1,7 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file .h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *

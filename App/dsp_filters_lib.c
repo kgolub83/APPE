@@ -37,7 +37,7 @@
 *
 * @param 
 *
-* @returns 
+*@return 
 *******************************************************************************/
 inline void recoursiveAverage(recoursive_avg_pt filter)
 {
@@ -58,7 +58,7 @@ inline void recoursiveAverage(recoursive_avg_pt filter)
 *
 * @param *movingAvgFilter pointer to moving average
 *         filter structure
-* @returns void function
+*@return void function
 **********************************************************/
 dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
 {
@@ -100,7 +100,7 @@ dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
 *
 * @param *movingAvgFilter pointer to moving average
 *                         filter structure
-* @returns void function
+*@return void function
 **********************************************************/
 inline void movingAverage(moving_avg_pt filter)
 {

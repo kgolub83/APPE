@@ -59,7 +59,7 @@ static uint8_t test[] = "abcdefgh";
 *
 * @param 
 *
-* @returns 
+*@return 
 *******************************************************************************/
 
 uint32_t fletcher32(uint16_t const *data, int words)
