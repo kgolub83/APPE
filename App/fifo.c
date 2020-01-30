@@ -1,8 +1,23 @@
 /*******************************************************************************
 **                             Includes
-*******************************************************************************/    
+*******************************************************************************/  
+
 #include "fifo.h"
 #include <string.h>
+
+#ifdef __LINUX
+#include <pthread.h>
+#include <errno.h>
+#endif  /*__LINUX*/
+
+/*******************************************************************************
+**                       Global and static variables
+*******************************************************************************/
+
+#ifdef __LINUX
+/* static MUTEX lock object */ 
+static pthread_mutex_t mutexLock;
+#endif /*__LINUX*/
 
 /*******************************************************************************
 **                             Code
@@ -98,7 +113,7 @@ static inline void fifo_read_ctl(struct fifo_ctrl *this)
 *
 * @return whether writing is executed properly
 **********************************************************/
-int fifoWrite(circ_fifo_t * const this, const void *data)
+fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data)
 {
     if(this->ctrl.head == this->ctrl.tail && (this->ctrl.empty == false))
     {
@@ -106,9 +121,9 @@ int fifoWrite(circ_fifo_t * const this, const void *data)
     }
     
     /* load data to fifo */
-    FifoCriticalSectionLock_m();        //Enter critical section
+    FifoCriticalSectionLock_m(&mutexLock);        /*Enter critical section*/
     memcpy(this->buffer + this->ctrl.dataElementSize*(this->ctrl.head++), data, this->ctrl.dataElementSize); 
-    FifoCriticalSectionUnlock_m();        //Leave critical section
+    FifoCriticalSectionUnlock_m(&mutexLock);        /*Leave critical section*/
 
     /* menage fifo controll variables */
     fifo_write_ctl(&this->ctrl); 
@@ -128,7 +143,7 @@ int fifoWrite(circ_fifo_t * const this, const void *data)
 *
 * @return whether writing is executed properly
 **********************************************************/
-int fifoRead(circ_fifo_t * const this, void *data)
+fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data)
 {
     /* check if fifo is empty */
     if ((this->ctrl.head == this->ctrl.tail) && (this->ctrl.full == false))        

@@ -16,32 +16,21 @@
 **                               Constants
 *******************************************************************************/   
 
-/*#define STD_ERR_OUT               stderr        standard error output definition */
+/*l#define STD_ERR_OUT               stderr        standard error output definition */
 #define STD_ERR_OUT                 (fopen("std_err_redirect.log", "a+"))
 #define LOG_FILE                    "log_file.log"  /*log file name*/
 #define LOG_STRING_CHARACTERS       64U             /*user defined logger mesage max characters*/
 #define LOG_FILENAME_CHARACTERS     24U             /*current log file source record max characters*/
 #define LOG_FUNCTION_CHARACTERS     24U             /*urrent log function record max character*/
 #define LOG_MAX_DATA                5U              /*max data containers per record*/
-#define LOG_BUFFER_RECORDS          20U             /*RAM log records FIFO buffer elements*/
+#define LOG_BUFFER_RECORDS          1024U           /*RAM log records FIFO buffer elements*/
 
-#define LOG_LEVEL_POSITION          0x1000          /*1 represents nible (4 bits) position for log level encoding*/
+#define LOG_LEVEL_POSITION          0x1000          /*1 represents nibble (4 bits) position for log level encoding*/
 #define LOG_LEVEL_MASK              (LOG_LEVEL_POSITION * 0xF)
 #define LOG_LEVEL_OFFSET            (uint8_t)(log(LOG_LEVEL_POSITION)/log(2))
-#define EVENT_SUBTYPE_POSITION      0x0100          /*1 represents nible (4 bits) position for log event subtype encoding*/
+#define EVENT_SUBTYPE_POSITION      0x0100          /*1 represents nibble (4 bits) position for log event subtype encoding*/
 #define EVENT_SUBTYPE_MASK          (EVENT_SUBTYPE_POSITION * 0xF)
 #define EVENT_SUBTYPE_OFFSET        (uint8_t)(log(EVENT_SUBTYPE_POSITION)/log(2))
-
-/*Return function values definitions for logger functions */
-typedef enum 
-{
-    LOG_SUCCESS = 0,
-    LOG_FAIL,             
-    LOG_DISABLED,          
-    LOG_FILE_CREATION_FAIL,
-    LOG_FILE_OPEN_FAIL,     
-    LOG_BUFFER_EMPTY        
-} log_ret_val_e;
 
 #define VT100_ENABLED               true
 #define VT100_DISABLED              false
@@ -62,6 +51,17 @@ typedef enum
 /*******************************************************************************
 **                              Data Structures
 *******************************************************************************/
+
+/*Return function values definitions for logger functions */
+typedef enum 
+{
+    LOG_SUCCESS = 0,
+    LOG_FAIL,             
+    LOG_DISABLED,          
+    LOG_FILE_CREATION_FAIL,
+    LOG_FILE_OPEN_FAIL,     
+    LOG_BUFFER_EMPTY        
+} log_ret_val_e;
 
 /*log levels definitions*/
 typedef enum
@@ -244,6 +244,7 @@ extern void installUserLogDumpFn(log_arg_fnp userFunction);
 extern log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool logToFileEna, bool stderrEna, bool vt100FormatingEna);
 extern log_ret_val_e logData(const char *filename, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, int dataNo, ...);
 extern log_ret_val_e logWrite(void);
+extern void logTest(const char *message);
 
 #endif /* LOGGER_H */
 

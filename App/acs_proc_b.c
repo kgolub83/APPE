@@ -23,6 +23,7 @@
 #include "acs_proc_b.h"
 #include "acs_processing_common.h"
 #include "acs_communications.h"
+#include "logger.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -77,6 +78,8 @@ void procInitCodeB(uint8_t procID)
     };
 
     getTestDataAttributes(&dataAttributes);
+    
+    logTest("ProcB test");
     
     /*Set filter global pointer and initialises filter*/
     movAvgFilterA_gp = &movAvgFilterA;

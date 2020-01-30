@@ -88,14 +88,14 @@ int main(int argc, char **argv)
     setTestDataAttributes(&inputDataAttributes);
 
     //start virtual processing units as threads
+    std::thread threadSupervisor(&VirtualProcessor::executeSupervisor, &supervisor,
+                                std::ref(outputData));    
+    
     std::thread threadProcA(&VirtualProcessor::executeUserProgram, &codedProcesorA,
                             std::ref(inputDataA), std::ref(inputDataB));
 
     std::thread threadProcB(&VirtualProcessor::executeUserProgram, &codedProcesorB, 
                             std::ref(inputDataA), std::ref(inputDataB));
-
-    std::thread threadSupervisor(&VirtualProcessor::executeSupervisor, &supervisor,
-                                std::ref(outputData));
     
     threadProcA.join();
     threadProcB.join();

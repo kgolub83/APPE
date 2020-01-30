@@ -24,6 +24,7 @@
 #include "acs_processing_common.h"
 #include "acs_communications.h"
 #include "fletcher.h"
+#include "logger.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -47,8 +48,6 @@ void procInitCodeA(uint8_t procID)
     static iir_avg_data_t iirFilterOutBuffB;
     tst_data_attributes_t dataAttributes;
     
-    getTestDataAttributes(&dataAttributes);    
-
     static recoursive_avg_t iirAvgFilterA =
     {
         .coeficient = IIR_AVG_COEFICIENT,
@@ -64,6 +63,14 @@ void procInitCodeA(uint8_t procID)
         .inputData = &iirFilterInBuffB,
         .outputData = &iirFilterOutBuffB
     };
+    
+    getTestDataAttributes(&dataAttributes);    
+    
+    int i;
+    for(i=0; i< 100; i++)
+    {
+        logTest("ProcA test");
+    }
     
     iirAvgFilterA.lastSample = dataAttributes.guardRegion;
     iirAvgFilterA_gp = &iirAvgFilterA;

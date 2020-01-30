@@ -7,12 +7,30 @@
 
 /*******************************************************************************
 **                    Global and static variables
-*******************************************************************************/  
-static log_settings_t logSettings;        //private logger settings
+*******************************************************************************/
 
-static circ_fifo_t logFifo =            //private logger fifo instance
+/*static logger settings to enshure only one instance - default settings*/
+static log_settings_t logSettings =
 {
-    .ctrl.dataElementSize = sizeof(log_record_t)     //logger data record structure size
+    .lock = false,
+    .level = VERBOSE,
+    .writeLevel = LOG_WRITE_FULL,
+    .stdErrEnable = true,
+    .logToFile = true,
+    .vt100FormatingEnable = true
+};
+
+/* logger fifo instance - initialisation*/
+static circ_fifo_t logFifo =            
+{
+    .buffer = (void *) &logSettings.recordBuffer,
+    .ctrl.dataElementSize = sizeof(log_record_t),     /*logger data record structure size*/
+    .ctrl.elements = LOG_BUFFER_RECORDS,
+    .ctrl.fifoLock = false,
+    .ctrl.head = 0,
+    .ctrl.tail = 0,
+    .ctrl.full = false,
+    .ctrl.empty = true
 };
 
 /*VT100 coloring definitions*/
@@ -73,11 +91,6 @@ static const char *eventSubtypeNames[] =
 
 log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool logToFileEna, bool stderrEna, bool vt100FormatingEna)
 {
-    
-    /*initialise intermideate RAM circular fifo buffer for fast logging*/ 
-    logFifo.ctrl.elements = LOG_BUFFER_RECORDS;
-    logFifo.buffer = (void *) &logSettings.recordBuffer; 
-    fifoInit(&logFifo.ctrl);
     
     /*general logger settings*/
     logSettings.level = logLevel;
@@ -152,7 +165,10 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
     time(&record.dateTime);
     record.cpuTime = clock();
     
-    fifoWrite(&logFifo, &record);
+    if(fifoWrite(&logFifo, &record))
+    {
+        printf("#ERR: Logger memory buffer write fail!\n");
+    }
     
     return LOG_SUCCESS;
 }
@@ -293,6 +309,26 @@ log_ret_val_e logWrite(void)
 void installUserLogDumpFn(log_arg_fnp userFunction)
 {
     logSettings.executeUserFn = userFunction;
+}
+
+void logTest(const char *message)
+{
+    uint8_t i;
+    
+    /*setup logging parameters*/
+    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
+    
+    /*demo use example -> generate all logger level mesages - Full logging executed */
+    for(i=0; i<LOG_LEVELS_NO; i++)
+    {
+        LogFull_m((LOG_LEVEL_POSITION*i), message, 2, 100, i);
+    }
+    
+    /*demo use example -> log user event - Compact logging executed */
+    LogCompact_m(PROGRAM_START_SUCCESS, "Program started successfully, with codes:", 5, 10, 20, 30, 40, 50);
+    
+    /*demo use example -> log user event - Basic logging executed */
+    LogBasic_m(PROGRAM_START_SUCCESS, 5, 10, 20, 30, 40, 50);
 }
 
 /******************************************************************************

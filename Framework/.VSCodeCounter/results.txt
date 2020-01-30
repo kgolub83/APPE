@@ -1,0 +1,38 @@
+Date : 2020-01-29 13:54:00
+Directory : /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework
+Total : 13 files,  801 codes, 271 comments, 232 blanks, all 1304 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         11 |        659 |        231 |        208 |      1,098 |
+| C        |          2 |        142 |         40 |         24 |        206 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                           | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                              |         13 |        801 |        271 |        232 |      1,304 |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                       | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/acs_decoder.c           | C        |         68 |          0 |          2 |         70 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/acs_decoder.h           | C++      |          3 |          0 |          6 |          9 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/c_wrapper.c             | C        |         74 |         40 |         22 |        136 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/c_wrapper.h             | C++      |        150 |         51 |         41 |        242 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/communication_queue.cpp | C++      |         39 |          1 |         13 |         53 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/communication_queue.h   | C++      |         37 |          6 |         13 |         56 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/io_data.cpp             | C++      |        152 |         46 |         39 |        237 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/io_data.h               | C++      |         46 |          1 |         11 |         58 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/main.cpp                | C++      |         47 |         43 |         23 |        113 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/main_functions.cpp      | C++      |          8 |         38 |          5 |         51 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/main_functions.h        | C++      |         20 |         41 |         15 |         76 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/virtual_processor.cpp   | C++      |        117 |          4 |         34 |        155 |
+| /home/fsuser/CodeLiteProjects/CppWorkspace/FSProcessingModel/Framework/virtual_processor.h     | C++      |         40 |          0 |          8 |         48 |
+| Total                                                                                          |          |        801 |        271 |        232 |      1,304 |
++------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

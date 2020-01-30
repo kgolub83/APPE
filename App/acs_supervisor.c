@@ -55,22 +55,7 @@ void supervisorInitCode(uint8_t procID)
     assert(crc16Test());            /*test CRC checksum implementation*/
     assert(xteaTest());             /*test XTEA encryption implementation*/
     
-    int i;
-    
-    /*setup logging parameters*/
-    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
-    
-    /*demo use example -> generate all logger level mesages - Full logging executed */
-    for(i=0; i<LOG_LEVELS_NO; i++)
-    {
-        LogFull_m((LOG_LEVEL_POSITION*i), "This is a C logger!", 2, 100, i);
-    }
-    
-        /*demo use example -> log user event - Compact logging executed */
-    LogCompact_m(PROGRAM_START_SUCCESS, "Program started successfully, with codes:", 5, 10, 20, 30, 40, 50);
-    
-    /*demo use example -> log user event - Basic logging executed */
-    LogBasic_m(PROGRAM_START_SUCCESS, 5, 10, 20, 30, 40, 50);
+    logTest("Test Supervisor");
     
     /*Flush log events from RAM FIFO to destinatin*/
     logWrite();
