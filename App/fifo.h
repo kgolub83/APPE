@@ -1,5 +1,33 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file fifo.c
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief signal procesing digital filters implementations
+ *
+ * @version 0.1
+ *
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+**                                 Guards
+*******************************************************************************/
+
 #ifndef FIFO_H
 #define FIFO_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* extern */
+
 /*******************************************************************************
 **                               Includes
 *******************************************************************************/
@@ -66,6 +94,10 @@ extern fifo_ret_val_t fifoDelElement(struct fifo_ctrl *this);
 
 extern fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data);
 extern fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* extern "C" */
 
 #endif /* FIFO_H */
 

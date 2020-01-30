@@ -5,14 +5,14 @@
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
  * @brief 
  *
  * @version
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 

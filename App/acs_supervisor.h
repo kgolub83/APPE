@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file acs_supervisor.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
+ * @brief supervisor processing model implementation
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern */
 
 /*******************************************************************************
 **                                Includes
@@ -53,11 +53,10 @@ extern "C"
 *******************************************************************************/
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern */
+#endif /* extern */
 
 #endif // ACS_SUPERVISOR_H
-
 
 /******************************************************************************
 **                               End Of File

@@ -5,14 +5,14 @@
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
  * @brief main function call 
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -40,7 +40,7 @@
 *
 * @param 
 *
-*@return 
+* @return
 *******************************************************************************/
 IOdata::IOdata()
 {

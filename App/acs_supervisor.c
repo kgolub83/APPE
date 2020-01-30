@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file acs_supervisor.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
+ * @brief supervisor processing model implementation
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -39,13 +39,13 @@
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function supervisorInitCode
 * 
-* @brief 
+* @brief supervisor processor model initialisation code
 *
-* @param 
+* @param virtual processor ID - concurent thread ID
 *
-* @return
+* @return void function
 *******************************************************************************/
 
 void supervisorInitCode(uint8_t procID)
@@ -62,6 +62,18 @@ void supervisorInitCode(uint8_t procID)
     
     printf("Supervisor ID:%d init OK...\n", procID);
 }
+
+/*!*****************************************************************************
+* @function supervisorCode
+* 
+* @brief supervisor (arbitration) processor model implementation code
+*
+* @param comDataProcA - processor A communication channel data
+* @param comDataProcB - processor B communication channel data
+* @param outputData - arbitration output
+*
+* @return void function
+*******************************************************************************/
 
 void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
 {

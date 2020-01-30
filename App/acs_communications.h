@@ -1,18 +1,21 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .h
+ * @file main.cpp
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
- *
- * @version
+ * @brief   - redundant - asymmetric processor A implementation 
+ *          - one of two acceleration pedal position encoder processing models 
+ *          - procesing, filtering and domain checking of two orthogonal position 
+ *          sensor signals  
+ * 
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -26,11 +29,13 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern "C" */
 
 /*******************************************************************************
 **                                Includes
 *******************************************************************************/
+
+#include "../Framework/c_wrapper.h"
 
 /*******************************************************************************
 **                               Constants
@@ -52,11 +57,11 @@ extern "C"
 **                     Public function prototypes - API
 *******************************************************************************/
 
-extern void packComData(void);
+extern void packComData(com_data_pt comData);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern */
+#endif /* extern */
 
 #endif /* ACS_COMMUNICATIONS_H */ 
 

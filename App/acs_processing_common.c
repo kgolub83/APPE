@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file acs_processing_common.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
+ * @brief common processing functions for modeled processors A and B 
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -33,13 +33,13 @@
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function checkSignalIntegrity
 * 
-* @brief 
+* @brief checks input signal constraints
 *
-* @param 
+* @param data - signal data pointer
 *
-*@return 
+* @returnacs_flag_t signal classification 
 *******************************************************************************/
 acs_flags_t checkSignalIntegrity(const input_data_pt data)
 {
@@ -119,6 +119,15 @@ acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sa
     return retVal;
 }
 
+/*!*****************************************************************************
+* @function checkComplementarity 
+* 
+* @brief checks input signals  
+*
+* @param data - signal data pointer
+*
+* @returnacs_flag_t signal classification 
+*******************************************************************************/
 bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints)
 {
     dsp_data_t signalSum, signalTolerance, signalOffset;

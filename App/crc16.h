@@ -1,14 +1,13 @@
-/***************************************Copyright (c)*********************************************
- *
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
  * 
- * 
- * File:   crc16.c
+ * @file acs_supervisor.h
  *
- * Author: Kristijan Golub
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * Date: 2017-02-02
+ * @date 2020-01-08
  * 
- * Description:
+ * @brief supervisor processing model implementation
  *      CRC-16-CCITT is an error detection scheme that does not impose any 
  *      additional transmission overhead. This scheme was first employed by IBM 
  *      in its SDLC data link protocol and is used today in other modern data 
@@ -24,23 +23,39 @@
  *      the one's complement of the remainder obtained from modulo 2 division 
  *      of the message by a generation polynomial.
  *      The CCITT-CRC uses polynomial: x16 + x12 + x5 + 1
- *
- *      Implemented as described on: http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/
  * 
- * Generating polynomial: 0x1021 - normal representation x^16 omitted
+  *     Implemented as described on: http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/
+ * 
+ *      Generating polynomial: 0x1021 - normal representation x^16 omitted
+ * 
+ * @version 0.1
  *
- * Dependences:
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
- * Revision history:
- *      KG  02.02.2017 
- *      
- ************************************************************************************************/
+ ******************************************************************************/
+
+/*******************************************************************************
+**                                 Guards
+*******************************************************************************/
 
 #ifndef CRC16_H
 #define CRC16_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* extern */
+
+/*******************************************************************************
+**                                Includes
+*******************************************************************************/
 #include <stdint.h> 
 #include <stdbool.h>
+
+/*******************************************************************************
+**                               Constants
+*******************************************************************************/  
 
 /*#define CRC_DEBUG  turn on debugging routines*/
 
@@ -51,14 +66,39 @@
 #define WIDTH_16            16
 #define TOPBIT_16           (1 << (WIDTH_16 - 1))
 
+/*******************************************************************************
+**                            Data Structures
+*******************************************************************************/
+
 typedef enum
 {
     NORMAL,     /*MSB first - from BIG ENDIAN perspective*/
     REVERSE     /*LSB first - from BIG ENDIAN perspective*/
 } crc_mode_e;
 
+/*******************************************************************************
+**                                Macros
+*******************************************************************************/ 
+
+/*******************************************************************************
+**                       Global and static variables
+*******************************************************************************/
+
+/*******************************************************************************
+**                     Public function prototypes - API
+*******************************************************************************/
+
 extern void crc16LutGenerate(void);
 extern uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode);
 extern bool crc16Test(void);
 
+#ifdef __cplusplus
+} /* extern */
+#endif /* extern */
+
 #endif /*CRC16_H*/
+
+/******************************************************************************
+**                               End Of File
+*******************************************************************************/
+

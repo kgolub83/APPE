@@ -5,14 +5,14 @@
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief XTEA cryptographic encryption alghoritm 
+ * @brief XTEA cryptographic encryption algorithm 
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -95,7 +95,7 @@ static const uint64_t xteaDataTest[] =
 * 
 * @brief XTEA encryption algorithm
 *
-* @param key[] - 128bit encription key vector 
+* @param key[] - 128bit encrytion key vector 
 * 
 * @param input[] - 64bit input data vector 
 * 
@@ -175,7 +175,7 @@ void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
 * 
 * @brief XTEA algorithm test function
 *
-* @return true if all tests finished successfuly, false if any test fails
+* @return true if all tests finished successfully, false if any test fails
 *******************************************************************************/
 
 bool xteaTest(void)

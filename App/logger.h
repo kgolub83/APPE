@@ -1,5 +1,33 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file logger.h
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief main function call 
+ *
+ * @version 0.1
+ *
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
+/*******************************************************************************
+**                                 Guards
+*******************************************************************************/
+
 #ifndef LOGGER_H
 #define LOGGER_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* extern "C" */
+
 /*******************************************************************************
 **                               Includes
 *******************************************************************************/
@@ -245,6 +273,10 @@ extern log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel
 extern log_ret_val_e logData(const char *filename, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, int dataNo, ...);
 extern log_ret_val_e logWrite(void);
 extern void logTest(const char *message);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* extern "C" */
 
 #endif /* LOGGER_H */
 

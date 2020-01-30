@@ -5,14 +5,14 @@
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
  * @brief wrapper for c functions  
  *
  * @version
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -61,7 +61,7 @@ void getTestDataAttributes(tst_data_attributes_pt attributes)
 *
 * @param 
 *
-*@return 
+* @return
 *******************************************************************************/
 
 static inline void testProcCode(input_data_pt inputData, com_data_pt outputData)

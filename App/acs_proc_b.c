@@ -1,18 +1,21 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file acs_proc.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
- *
+ * @brief   - redundant - asymmetric processor B implementation 
+ *          - one of two acceleration pedal position encoder processing models 
+ *          - procesing, filtering and domain checking of two orthogonal position 
+ *          sensor signals  
+ * 
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -39,13 +42,13 @@ static moving_avg_t *movAvgFilterB_gp;
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function procInitCodeB
 * 
-* @brief 
+* @brief modeled position sensor processor B initialisation function  
 *
-* @param 
+* @param processor ID - concurent thread ID
 *
-* @return 
+* @return void function
 *******************************************************************************/
 void procInitCodeB(uint8_t procID)
 {
@@ -91,6 +94,17 @@ void procInitCodeB(uint8_t procID)
     
     printf("Processor ID:%d init OK...\n", procID);
 }
+
+/*!*****************************************************************************
+* @function processorCodeB
+* 
+* @brief processor B implementation code
+*
+* @param inputData  - pointer to input data samples (ADC mock data) from orthogonal sensors
+* @param outputData - pointer to processed output samples 
+*                   
+* @return void function
+*******************************************************************************/
 
 void processorCodeB(input_data_pt inputData, com_data_pt outputData) 
 {
@@ -192,7 +206,7 @@ void processorCodeB(input_data_pt inputData, com_data_pt outputData)
     outputData->dataSample = processedSignal;
     outputData->flags = flags;
     
-    packComData();
+    packComData(outputData);
 }
 
 /******************************************************************************

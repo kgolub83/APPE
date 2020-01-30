@@ -1,11 +1,11 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file sip_hash.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
  * @brief   32bit SipHash implementation - Half SIP Hash
  *          pseudorandom functions crypto hashing algorithm optimized for speed 
@@ -15,7 +15,7 @@
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -57,7 +57,7 @@ static const uint32_t sip32TestHashVactor[SIP32_TEST_HASHES] =
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function sipHash32
 * 
 * @brief 
 *
@@ -140,6 +140,16 @@ uint32_t sipHash32(const uint8_t *in, const siphash_size_t inlen, const uint32_t
     
     return b;
 }
+
+/*!*****************************************************************************
+* @function sipHashTest
+* 
+* @brief 
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 bool sipHashTest(void)
 {

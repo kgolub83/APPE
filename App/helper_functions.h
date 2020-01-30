@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .h
+ * @file helper_functions.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
  * @brief 
  *
  * @version
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -180,13 +180,10 @@ extern signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, c
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 #endif /* HELPER_FUNCTIONS_H */
-
 
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
-
-

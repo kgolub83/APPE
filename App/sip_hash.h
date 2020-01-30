@@ -1,18 +1,21 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .h
+ * @file sip_hash.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
+ * @brief   32bit SipHash implementation - Half SIP Hash
+ *          pseudorandom functions crypto hashing algorithm optimized for speed 
+ *          and short messages
+ *          https://131002.net/siphash/
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -97,7 +100,6 @@ extern bool sipHashTest(void);
 #endif /* nextern "C" */
 
 #endif /* SIP_HASH_H */
-
 
 /******************************************************************************
 **                               End Of File

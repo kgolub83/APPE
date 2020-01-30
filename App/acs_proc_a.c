@@ -1,18 +1,21 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file acs_proc.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
- *
+ * @brief   - redundant - asymmetric processor A implementation 
+ *          - one of two acceleration pedal position encoder processing models 
+ *          - procesing, filtering and domain checking of two orthogonal position 
+ *          sensor signals  
+ * 
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -25,6 +28,7 @@
 #include "acs_communications.h"
 #include "fletcher.h"
 #include "logger.h"
+#include "dsp_filters_lib.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -32,11 +36,21 @@
 *******************************************************************************/
 
 /*IIR average filter static pointers to static data objects*/
-static recoursive_avg_t *iirAvgFilterA_gp;
-static recoursive_avg_t *iirAvgFilterB_gp;
+static recursive_avg_t *iirAvgFilterA_gp;
+static recursive_avg_t *iirAvgFilterB_gp;
 
 /*******************************************************************************
 **                                 Code
+*******************************************************************************/
+
+/*!*****************************************************************************
+* @function procInitCodeA
+* 
+* @brief modeled position sensor processor A initialisation function  
+*
+* @param processor ID - concurent thread ID
+*
+* @return void function
 *******************************************************************************/
 
 void procInitCodeA(uint8_t procID)
@@ -48,30 +62,28 @@ void procInitCodeA(uint8_t procID)
     static iir_avg_data_t iirFilterOutBuffB;
     tst_data_attributes_t dataAttributes;
     
-    static recoursive_avg_t iirAvgFilterA =
+    static recursive_avg_t iirAvgFilterA =
     {
-        .coeficient = IIR_AVG_COEFICIENT,
+        .coefficient = IIR_AVG_COEFFICIENT,
         .bufferSamples = FILTER_BUFFERING_SAMPLES,
         .inputData = &iirFilterInBuffA,
         .outputData = &iirFilterOutBuffA
     };
 
-    static recoursive_avg_t iirAvgFilterB = 
+    static recursive_avg_t iirAvgFilterB = 
     {
-        .coeficient = IIR_AVG_COEFICIENT,
+        .coefficient = IIR_AVG_COEFFICIENT,
         .bufferSamples = FILTER_BUFFERING_SAMPLES,
         .inputData = &iirFilterInBuffB,
         .outputData = &iirFilterOutBuffB
     };
     
+    /*read test mockup meta data and parameters*/
     getTestDataAttributes(&dataAttributes);    
     
-    int i;
-    for(i=0; i< 100; i++)
-    {
-        logTest("ProcA test");
-    }
-    
+    logTest("ProcA test");
+
+    /* set initial filter conditions */
     iirAvgFilterA.lastSample = dataAttributes.guardRegion;
     iirAvgFilterA_gp = &iirAvgFilterA;
     
@@ -83,13 +95,14 @@ void procInitCodeA(uint8_t procID)
 }
 
 /*!*****************************************************************************
-* @function 
+* @function processorCodeA
 * 
-* @brief 
+* @brief processor A implementation code
 *
-* @param 
-*
-* @return 
+* @param inputData  - pointer to input data samples (ADC mock data) from orthogonal sensors
+* @param outputData - pointer to processed output samples 
+*                   
+* @return void function
 *******************************************************************************/
 
 void processorCodeA(input_data_pt inputData, com_data_pt outputData) 
@@ -101,6 +114,7 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
     acs_flags_t flags;
     bool signalAsymmetry;
     
+    /* get test meta data*/
     getTestDataAttributes(&dataAttributes);
     
     /*load data samples to filter*/
@@ -108,9 +122,9 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
     *iirAvgFilterB_gp->inputData = (iir_avg_data_t)inputData->sensorSampleB;
     
     /*Filter signals A and B*/
-    recoursiveAverage(iirAvgFilterA_gp);
+    recursiveAverage(iirAvgFilterA_gp);
     processedSignalA = *iirAvgFilterA_gp->outputData;
-    recoursiveAverage(iirAvgFilterB_gp);
+    recursiveAverage(iirAvgFilterB_gp);
     processedSignalB = *iirAvgFilterB_gp->outputData;
     
     /*Check constraints for signals A and B*/
@@ -130,13 +144,15 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
         state = PROC_FSM_SIGNAL_FAIL;
     }
     
+    /* check input sensor signals complementarity */
     signalAsymmetry = !checkComplementarity(processedSignalA, processedSignalB, &dataAttributes);
     
-    if(signalAsymmetry && PROC_FSM_SIGNAL_HEALTHY == state)
+    if(signalAsymmetry && (PROC_FSM_SIGNAL_HEALTHY == state))
     {
         state = PROC_FSM_COMPLEMENTARITY_FAIL;
     }
     
+    /* input signal conditional processing multiplexer */
     switch (state)
     {
         case PROC_FSM_SIGNAL_HEALTHY:
@@ -180,14 +196,16 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
             flags |= ACS_SYSTEM_FAULT;
     }
 
-    /* set output data */
+    /* write processor A debug data */
     outputData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
     outputData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
     
+    /* write processed data and processing flags */
     outputData->dataSample = processedSignal;
     outputData->flags = flags;
     
-    packComData();
+    /* pack communication data */
+    packComData(outputData);
 }
 
 /******************************************************************************

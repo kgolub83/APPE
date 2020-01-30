@@ -1,3 +1,21 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file fifo.c
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief signal procesing digital filters implementations
+ *
+ * @version 0.1
+ *
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
 /*******************************************************************************
 **                             Includes
 *******************************************************************************/  
@@ -23,7 +41,7 @@ static pthread_mutex_t mutexLock;
 **                             Code
 *******************************************************************************/
 
-/*!********************************************************
+/*!****************************************************************************
 * @function fifoInit
 * 
 * @brief initializes fifo structure with default values
@@ -31,7 +49,7 @@ static pthread_mutex_t mutexLock;
 * @param *this pointer to fifo structure
 *
 * @return void function
-**********************************************************/
+******************************************************************************/
 void fifoInit(struct fifo_ctrl *this)
 {
     this->fifoLock = false;
@@ -41,7 +59,7 @@ void fifoInit(struct fifo_ctrl *this)
     this->tail = 0;
 }
 
-/*!********************************************************
+/*!****************************************************************************
 * @function fifo_write_ctl
 * 
 * @brief Control function for writing to fifo
@@ -51,7 +69,7 @@ void fifoInit(struct fifo_ctrl *this)
 * @param *this pointer to fifo structure
 *
 * @return void function
-**********************************************************/
+*******************************************************************************/
 static inline void fifo_write_ctl(struct fifo_ctrl *this)
 {
     /* check for the last element in row */
@@ -72,7 +90,7 @@ static inline void fifo_write_ctl(struct fifo_ctrl *this)
     this->empty = false;        
 }
 
-/*!********************************************************
+/*!*****************************************************************************
 * @function fifo_read_ctl
 * 
 * @brief Control function for reading from fifo
@@ -82,7 +100,7 @@ static inline void fifo_write_ctl(struct fifo_ctrl *this)
 * @param *this pointer to fifo structure
 *
 * @return void function
-**********************************************************/
+*******************************************************************************/
 static inline void fifo_read_ctl(struct fifo_ctrl *this)
 {
     if(this->tail >= this->elements)
@@ -101,7 +119,7 @@ static inline void fifo_read_ctl(struct fifo_ctrl *this)
     this->full = false;        
 }
 
-/*!********************************************************
+/*!*****************************************************************************
 * @function fifoWrite
 * 
 * @brief Writes one taskExecutionTime structure to fifo
@@ -112,7 +130,7 @@ static inline void fifo_read_ctl(struct fifo_ctrl *this)
 * @param data element to be written to fifo
 *
 * @return whether writing is executed properly
-**********************************************************/
+*******************************************************************************/
 fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data)
 {
     if(this->ctrl.head == this->ctrl.tail && (this->ctrl.empty == false))
@@ -131,7 +149,7 @@ fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data)
     return FIFO_CLEAN;
 }
 
-/*!********************************************************
+/*!*****************************************************************************
 * @function fifoRead
 * 
 * @brief Reads one taskExecutionTime structure to fifo
@@ -142,7 +160,7 @@ fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data)
 * @param *data pointer to element to be read from fifo
 *
 * @return whether writing is executed properly
-**********************************************************/
+*******************************************************************************/
 fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data)
 {
     /* check if fifo is empty */

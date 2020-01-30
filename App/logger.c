@@ -1,3 +1,21 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file logger.c
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief main function call 
+ *
+ * @version 0.1
+ *
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
 /*******************************************************************************
 **                             Includes
 *******************************************************************************/   
@@ -9,7 +27,7 @@
 **                    Global and static variables
 *******************************************************************************/
 
-/*static logger settings to enshure only one instance - default settings*/
+/*static logger settings to ensure only one instance - default settings*/
 static log_settings_t logSettings =
 {
     .lock = false,
@@ -73,7 +91,7 @@ static const char *eventSubtypeNames[] =
 **                             Code
 *******************************************************************************/
 
-/*!********************************************************
+/*!****************************************************************************
 * @function logInit
 * @brief Logger initialization functrion
 *
@@ -87,7 +105,7 @@ static const char *eventSubtypeNames[] =
 * @param vt100FormatingEna enable VT100 coloring
 *
 * @return whether initialization is executed properly
-**********************************************************/
+******************************************************************************/
 
 log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool logToFileEna, bool stderrEna, bool vt100FormatingEna)
 {
@@ -102,7 +120,7 @@ log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool 
     return LOG_SUCCESS;
 }
 
-/*!********************************************************
+/*!****************************************************************************
 * @function logData
 * @brief Runtime fast loggin function
 *
@@ -116,7 +134,7 @@ log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool 
 * @param ... log data objects values
 * 
 * @return whether logging succeeded
-**********************************************************/
+******************************************************************************/
 log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, int dataNo, ...)
 {
     log_record_t record;
@@ -173,7 +191,7 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
     return LOG_SUCCESS;
 }
 
-/*!********************************************************
+/*!****************************************************************************
 * @function writeData
 * @brief Static function to write data to destination file 
 *
@@ -185,7 +203,7 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
 * @param vt100FormatingEna enable vt100 formating
 * 
 * @return void function
-**********************************************************/
+******************************************************************************/
 
 inline static void writeData(FILE *fp, struct tm *localTime, log_record_t *record, bool vt100FormatingEna)
 {
@@ -235,7 +253,7 @@ inline static void writeData(FILE *fp, struct tm *localTime, log_record_t *recor
     
 } 
 
-/*!********************************************************
+/*!****************************************************************************
 * @function logWrite
 
 * @brief Static function to write data to destination file 
@@ -245,7 +263,7 @@ inline static void writeData(FILE *fp, struct tm *localTime, log_record_t *recor
 * @param *function takes no arguments
 * 
 * @return whether dump succeeded
-**********************************************************/
+******************************************************************************/
 
 log_ret_val_e logWrite(void)
 {
@@ -296,7 +314,7 @@ log_ret_val_e logWrite(void)
     return LOG_SUCCESS;
 }
 
-/*!********************************************************
+/*!****************************************************************************
 * @function installUserLogDumpFn
 * 
 * @brief 
@@ -304,7 +322,7 @@ log_ret_val_e logWrite(void)
 * @param 
 * 
 * @return 
-**********************************************************/
+******************************************************************************/
 
 void installUserLogDumpFn(log_arg_fnp userFunction)
 {
@@ -334,4 +352,3 @@ void logTest(const char *message)
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
-

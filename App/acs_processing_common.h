@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file acs_processing_common.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
+ * @brief common processing functions for modeled processors A and B 
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern */
 
 /*******************************************************************************
 **                                Includes
@@ -40,8 +40,8 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-#define FILTER_BUFFERING_SAMPLES    1U
-#define SIGNAL_TOLERANCE            0.05f
+#define FILTER_BUFFERING_SAMPLES    1U          /* input samples buffering */
+#define SIGNAL_TOLERANCE            0.05f       /* signal classification tolerance*/
 
 /*******************************************************************************
 **                                Macros
@@ -51,6 +51,7 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 
+/* signal processing state enumeration */
 typedef enum
 {
     PROC_FSM_SIGNAL_HEALTHY,
@@ -74,8 +75,8 @@ acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sa
 bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern */
+#endif /* extern */
 
 #endif /* ACS_PROCESSING_COMMON_H */
 

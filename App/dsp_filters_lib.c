@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file dsp_filters_lib.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
+ * @brief signal procesing digital filters implementations
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -31,35 +31,35 @@
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function recursiveAverage
 * 
-* @brief 
+* @brief first order recursive IIR filter implementation
 *
-* @param 
+* @param filter - pointer to filter structure
 *
-*@return 
+* @return void function
 *******************************************************************************/
-inline void recoursiveAverage(recoursive_avg_pt filter)
+inline void recursiveAverage(recursive_avg_pt filter)
 {
     iir_avg_buffer_samples_t i;
 
     for (i=0; i < filter->bufferSamples; i++)
     {
-      filter->outputData[i] = filter->coeficient*(filter->inputData[i] - filter->lastSample) + filter->lastSample;
+      filter->outputData[i] = filter->coefficient*(filter->inputData[i] - filter->lastSample) + filter->lastSample;
       filter->lastSample = filter->outputData[i];
     }
 }
 
-/*!********************************************************
+/*!*****************************************************************************
 * @function movingAvgInit
+* 
 * @brief Initializes moving average filter
 *
-* Initializes movingAvg_t structure
+* @param filter - pointer to moving average filter structure
+* @param initData - initialisation data
 *
-* @param *movingAvgFilter pointer to moving average
-*         filter structure
-*@return void function
-**********************************************************/
+* @return void function
+*******************************************************************************/
 dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
 {
     mov_avg_window_samples_t i;
@@ -81,7 +81,7 @@ dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
     
     if(ctrlLogic)
     {
-        filter->coeficient = 1/(float)filter->avgWinSamples;
+        filter->coefficient = 1/(float)filter->avgWinSamples;
         retVal = DSP_FILTER_SUCCESS;
     } else
     {
@@ -91,17 +91,16 @@ dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData)
     return retVal;
 }
 
-/*!********************************************************
-* @function movingAvgFilter
-* @brief Apply moving average filter
+/*!*****************************************************************************
+* @function movingAvgInit
+* 
+* @brief Apply moving average to data
 *
-* Apply moving average filter to array of data. Results
-* are stored in output array
+* @param filter - pointer to moving average filter structure
+* @param initData - initialisation data
 *
-* @param *movingAvgFilter pointer to moving average
-*                         filter structure
-*@return void function
-**********************************************************/
+* @return void function
+*******************************************************************************/
 inline void movingAverage(moving_avg_pt filter)
 {
     mov_avg_buffer_samples_t i;
@@ -122,10 +121,20 @@ inline void movingAverage(moving_avg_pt filter)
         }
         
         /*calculate output sample */
-        filter->outputData[i] = filter->sum * filter->coeficient;
+        filter->outputData[i] = filter->sum * filter->coefficient;
     }
 }
 
+/*!*****************************************************************************
+* @function invertSignal
+* 
+* @brief Invert data from origin
+*
+* @param inputSignal - input data
+* @param origin - inversion origin
+*
+* @return inverted data
+*******************************************************************************/
 inline dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin)
 {
     return (origin - inputSignal);
@@ -134,4 +143,3 @@ inline dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin)
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
-

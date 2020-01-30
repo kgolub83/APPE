@@ -1,18 +1,21 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file acs_proc_b.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
- *
- * @version
+ * @brief   - redundant - asymmetric processor B implementation 
+ *          - one of two acceleration pedal position encoder processing models 
+ *          - procesing, filtering and domain checking of two orthogonal position 
+ *          sensor signals  
+ * 
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -26,7 +29,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern */
 
 /*******************************************************************************
 **                                Includes
@@ -35,7 +38,9 @@ extern "C"
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
-#define MOV_AVG_WIN_SAMPLES      14
+
+#define MOV_AVG_WIN_SAMPLES      14     /*move average filter averaging window samples*/
+
 /*******************************************************************************
 **                                Macros
 *******************************************************************************/
@@ -53,8 +58,8 @@ extern "C"
 *******************************************************************************/
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // nextern "C"
+} /* extern */
+#endif /* extern */
 
 #endif /* ACS_PROC_B_H */
 

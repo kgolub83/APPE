@@ -1,14 +1,13 @@
-/***************************************Copyright (c)*********************************************
- *
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
  * 
- * 
- * File:   crc16.c
+ * @file acs_supervisor.h
  *
- * Author: Kristijan Golub
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * Date: 2017-02-02
+ * @date 2020-01-08
  * 
- * Description:
+ * @brief supervisor processing model implementation
  *      CRC-16-CCITT is an error detection scheme that does not impose any 
  *      additional transmission overhead. This scheme was first employed by IBM 
  *      in its SDLC data link protocol and is used today in other modern data 
@@ -24,24 +23,32 @@
  *      the one's complement of the remainder obtained from modulo 2 division 
  *      of the message by a generation polynomial.
  *      The CCITT-CRC uses polynomial: x16 + x12 + x5 + 1
- *
- *      Implemented as described on: http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/
  * 
- * Generating polynomial: 0x1021 - normal representation x^16 omitted
+  *     Implemented as described on: http://www.ghsi.de/pages/subpages/Online%20CRC%20Calculation/
+ * 
+ *      Generating polynomial: 0x1021 - normal representation x^16 omitted
+ * 
+ * @version 0.1
  *
- * Dependencies:
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
- * Revision history:
- *      KG  02.02.2017 
- *      
- ************************************************************************************************/
+ ******************************************************************************/
+
+/*******************************************************************************
+**                                Includes
+*******************************************************************************/
 
 #include <stdio.h>
 #include "crc16.h"
 
-uint16_t crc16Lut[256];        /*used for runtime CRC LUT generation*/
+/*******************************************************************************
+**                       Global and static variables
+*******************************************************************************/
 
-const uint16_t crcCcittTable[256] = {
+static uint16_t crc16Lut[256];        /*used for runtime CRC LUT generation*/
+
+static const uint16_t crcCcittTable[256] = {
     0X0000, 0X1021, 0X2042, 0X3063, 0X4084, 0X50A5, 0X60C6, 0X70E7, 
     0X8108, 0X9129, 0XA14A, 0XB16B, 0XC18C, 0XD1AD, 0XE1CE, 0XF1EF, 
     0X1231, 0X0210, 0X3273, 0X2252, 0X52B5, 0X4294, 0X72F7, 0X62D6, 
@@ -75,7 +82,23 @@ const uint16_t crcCcittTable[256] = {
     0XEF1F, 0XFF3E, 0XCF5D, 0XDF7C, 0XAF9B, 0XBFBA, 0X8FD9, 0X9FF8, 
     0X6E17, 0X7E36, 0X4E55, 0X5E74, 0X2E93, 0X3EB2, 0X0ED1, 0X1EF0
 };
-    
+
+/*******************************************************************************
+**                                 Code
+*******************************************************************************/
+
+/*!*****************************************************************************
+* @function crc16Calculate
+* 
+* @brief supervisor processor model initialisation code
+*
+* @param data - pointer to 8bit input data
+* @param length - number of input data bytes
+* @param mode - forward or reverse data input
+*
+* @return 16 bit crc checksum
+*******************************************************************************/
+
 uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode)
 {
     uint16_t count;
@@ -111,19 +134,17 @@ uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode)
     return (uint16_t)(crc ^ CRC16_FINAL_XOR);
 }
 
-/*********************************************************************
- *
- * Function:    crcInit()
- *
- * Description: Generates partial CRC16 lookup table.
- *
- * Notes:   This function must be rerun any time the CRC standard
- *          is changed.  If desired, it can be run "offline" and
- *          the table results stored in an embedded system's ROM.
- *
- * Return: void function
- *
- *********************************************************************/
+/*!*****************************************************************************
+* @function crc16LutGenerate
+* 
+* @brief    - generates partial CRC16 lookup table
+*           - this function must be rerun any time the CRC standard
+*           is changed  
+*           - if desired, it can be run "offline" and
+*           the table results stored in an embedded system's ROM
+*
+* @return void function
+*******************************************************************************/
 
 void crc16LutGenerate(void)
 {
@@ -150,6 +171,13 @@ void crc16LutGenerate(void)
     }
 }
 
+/*!*****************************************************************************
+* @function crc16Test
+* 
+* @brief    - CCITT crc test function
+*
+* @return true in case of successful test
+*******************************************************************************/
 bool crc16Test(void)
 {
     uint16_t crcResult;
@@ -173,3 +201,7 @@ bool crc16Test(void)
     
     return retVal;
 }
+
+/******************************************************************************
+**                               End Of File
+*******************************************************************************/

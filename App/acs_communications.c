@@ -1,18 +1,19 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.c
+ * @file acs_communications.c
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief main function call 
+ * @brief   - acceleration control sensor communication model functions
+ *          - model covers application, data integrity, safety and security layer 
  *
  * @version 0.1
  *
  * @section REVISION HISTORY
- *  - 0.1 KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
  
@@ -39,9 +40,20 @@
 *
 * @return 
 *******************************************************************************/
-void packComData()
+void packComData(com_data_pt comData)
 {
-    
+
+/* time tag insertion */
+
+/* sequence number insertion */
+
+/* SIP cryptographic mesage signing */
+
+/* calculate CRC checksum */
+
+/* XTEA encryption */
+
+   
 }
 
 /******************************************************************************

@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file dsp_filters_lib.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
- * @date 2019-12-20
+ * @date 2020-01-08
  * 
- * @brief 
+ * @brief signal procesing digital filters implementations
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2019-12-20 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 
@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif // nextern "C"
+#endif /* extern */
 
 /*******************************************************************************
 **                                Includes
@@ -47,7 +47,7 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 
-/*recoursive averageing filter data types definitions*/
+/*recursive averageing filter data types definitions*/
 typedef float iir_avg_data_t;
 typedef uint16_t iir_avg_buffer_samples_t;
 
@@ -72,11 +72,11 @@ typedef struct
     iir_avg_data_t * const outputData;
     const iir_avg_buffer_samples_t bufferSamples;
     
-    iir_avg_data_t coeficient;
+    iir_avg_data_t coefficient;
     iir_avg_data_t lastSample;
-} recoursive_avg_t;
+} recursive_avg_t;
 
-typedef recoursive_avg_t * const recoursive_avg_pt;     /*const pointer to recoursive_avg_t structure*/
+typedef recursive_avg_t * const recursive_avg_pt;     /*const pointer to recursive_avg_t structure*/
 
 typedef struct
 {
@@ -86,7 +86,7 @@ typedef struct
     
     mov_avg_data_t * const avgWinData;
     const mov_avg_window_samples_t avgWinSamples;
-    mov_avg_data_t coeficient;
+    mov_avg_data_t coefficient;
     mov_avg_window_samples_t avgWinPointer;
     
     mov_avg_data_t sum;
@@ -102,7 +102,7 @@ typedef moving_avg_t * const moving_avg_pt;     /*const pointer to moving_avg_t 
 **                     Public function prototypes - API
 *******************************************************************************/
 
-extern void recoursiveAverage(recoursive_avg_t * const filter);
+extern void recursiveAverage(recursive_avg_t * const filter);
 extern void movingAverage(moving_avg_pt filter);
 extern dsp_filter_return_e movingAvgInit(moving_avg_pt filter, mov_avg_data_t initData);
 
@@ -110,10 +110,9 @@ extern dsp_data_t invertSignal(dsp_data_t inputSignal, dsp_data_t origin);
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 #endif /* FILTER_LIB_H */
-
 
 /******************************************************************************
 **                               End Of File
