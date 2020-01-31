@@ -12,8 +12,10 @@ VirtualProcessor::VirtualProcessor()
     id = processor_count++;
     
     /*init function call pointers as NULL pointers*/
+    initFnCallback = NULL;
     userCallback = NULL;
     supervisorCallback = NULL;
+    exitFnCallback = NULL;
 }
 
 VirtualProcessor::~VirtualProcessor()
@@ -38,6 +40,8 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     assert(userCallback);       //checks if user callback function is set
     
     initProcessor(id);
+    
+    comFrame.seqNo = 0;     //init communication frames sequential counter
     
     std::cout << "User application " << +id << " started..." << std::endl;
     
@@ -72,7 +76,10 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     
     assert(supervisorCallback);   //checks if user callback function is set
     
-    initProcessor(id);
+    if(NULL != initFnCallback)      //check if initialisation routine is installed
+    {
+        initProcessor(id);      //run user initialisation routine
+    }
     
     //init buffer flags - indicates unprocessed data
     syncFlagA = false;
@@ -108,7 +115,7 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
         
         if(syncFlagA && syncFlagB) //if data from both channels retreived
         {
-            supervisorCallback(&comFrameA, &comFrameB, &outSample);
+            supervisorCallback(&comFrameA, &comFrameB, &outSample); //run user program
             
             syncFlagA = false;
             syncFlagB = false;
@@ -120,6 +127,12 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
         iterationCount++;
         std::this_thread::sleep_for(std::chrono::milliseconds(VP_SLEEP_TIMEOUT));
     }
+    
+    if(NULL != exitFnCallback)      //check if exit routine installed
+    {
+        exitFnCallback(id);     //run user exit routine
+    }
+    
 }
 
 void VirtualProcessor::installInitCalback(initFncPtr function)
@@ -130,6 +143,11 @@ void VirtualProcessor::installInitCalback(initFncPtr function)
 void VirtualProcessor::installUserCalback(usrFncPtr function)
 {
     userCallback = function;
+}
+
+void VirtualProcessor::installExitCalback(initFncPtr function)
+{
+    exitFnCallback = function;
 }
 
 void VirtualProcessor::installSupervisor(supervisorFncPtr function)

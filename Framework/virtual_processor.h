@@ -23,6 +23,7 @@ private:
     initFncPtr initFnCallback;
     usrFncPtr userCallback;
     supervisorFncPtr supervisorCallback;
+    initFncPtr exitFnCallback;
     run_cycles_t runCycles;
     com_channel_e inComChannel[COM_SOCKETS_NO];
     std::vector<com_socket_e> inSockets; 
@@ -35,7 +36,8 @@ public:
     
     void installInitCalback(initFncPtr);
     void installUserCalback(usrFncPtr);
-    void installSupervisor(supervisorFncPtr);   
+    void installSupervisor(supervisorFncPtr);
+    void installExitCalback(initFncPtr function);
     void initProcessor(uint8_t);
     void executeUserProgram(samples_vector_t&, samples_vector_t&);
     void executeSupervisor(output_vector_t&);

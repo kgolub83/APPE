@@ -132,12 +132,11 @@ typedef enum
  * LOG_LEVEL
  *     -> LOG_EVENT_SUBTYPE
  *         -> UserEvents - place user events here
- * ...
  * 
  * *****************************************************************************/
 typedef enum 
 {
-    VERBOSE_EVENT = VERBOSE*LOG_LEVEL_POSITION,        /*verbose events starts here*/
+    VERBOSE_EVENT = VERBOSE*LOG_LEVEL_POSITION,    /*verbose events starts here*/
         VERBOSE_HAL_EVENT = VERBOSE_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here verbose hardware abstraction layer/drivers events*/
             
         VERBOSE_SYS_EVENT = VERBOSE_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here verbose system/OS events*/
@@ -174,6 +173,7 @@ typedef enum
         INFO_HAL_EVENT = INFO_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here INFO hardware abstraction layer/drivers events*/
             
         INFO_SYS_EVENT = INFO_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here INFO system/OS events*/
+            SYS_INIT,
             PROGRAM_START_SUCCESS,
         INFO_COM_EVENT = INFO_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here INFO communication events*/
             
@@ -233,7 +233,7 @@ typedef struct
 {
     event_code_e eventID; 
     time_t dateTime;
-    time_t cpuTime;
+    clock_t cpuTime;
     log_type_e level;
     event_subtype_e subtype;
     uint16_t line;

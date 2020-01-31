@@ -26,14 +26,14 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 /*******************************************************************************
 **                                Includes
 *******************************************************************************/
 
 #include <stdint.h>
-
+#include <math.h>
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
@@ -122,27 +122,22 @@ extern "C"
 #define DATA_VECTOR_B           1U
 
 /*******************************************************************************
-**                                Macros
-*******************************************************************************/
-
-#ifndef __weak
-#define __weak  __attribute__((weak))
-#endif
-
-/*******************************************************************************
 **                            Data Structures
 *******************************************************************************/
 
-typedef uint32_t sample_data_t;     /*input data sample type deffinition*/
-typedef uint8_t data_vector_no_t;   /*number of input data vectors type*/
-typedef uint16_t data_attribute_t;  /*test data attributes type*/
-typedef uint32_t samples_no_t;      /*number of test data samples type*/
-typedef uint32_t acs_flags_t;       /*acs system flags register type*/
-typedef uint32_t time_stamp_t;      /*communication time stamp type*/
-typedef uint8_t sequence_no_t;      /*communication mesage sequence number type*/
-typedef uint32_t authentication_t;  /*communication authentication signature type*/
-typedef uint16_t crc_t;             /*communication CRC checksum type*/
-typedef uint32_t debug_vector_data_t;
+typedef uint32_t sample_data_t;         /*input data sample type definition*/
+typedef uint8_t data_vector_no_t;       /*number of input data vectors type*/
+typedef uint16_t data_attribute_t;      /*test data attributes type*/
+typedef uint32_t samples_no_t;          /*number of test data samples type*/
+typedef uint32_t acs_flags_t;           /*acs system flags register type*/
+typedef uint32_t time_stamp_t;          /*communication time stamp type*/
+typedef uint16_t sequence_no_t;         /*communication mesage sequence number type*/
+typedef uint32_t authentication_t;      /*communication authentication signature type*/
+typedef uint16_t crc_t;                 /*communication CRC checksum type*/
+typedef uint16_t mesage_id_t;           /*mesage identifier type*/
+typedef uint32_t debug_vector_data_t;   /*debug data type*/
+
+
 
 /*ACS system states definitions*/
 typedef enum
@@ -175,7 +170,7 @@ typedef struct
 
 typedef tst_data_attributes_t* const tst_data_attributes_pt;  /*const pointer to tst_data_attributes_t*/
 
-/*Input data strucutre - mocks actual ADC data*/ 
+/*Input data structure - mocks actual ADC data*/ 
 typedef struct
 {
     sample_data_t sensorSampleA;
@@ -185,19 +180,36 @@ typedef struct
 
 typedef input_data_t* const input_data_pt;  /*const pointer to proces_data_t*/
 
-/*communication data structure between processors and supervisor*/
+/*communication data structure between processors and supervisor
+*
+* COMMUNICATION FRAME MODEL:
+* MSB                                                                     LSB
+* |dataID:2|seqNo:2|dataSample:4|flags:4|time:4|debug:8|crc16:2|signature:4|
+*
+*****************************************************************************/
+
 typedef struct
 {
+    mesage_id_t dataID;
     sample_data_t dataSample;
     acs_flags_t flags;
     time_stamp_t time;
-    sequence_no_t seqNo;
-    debug_vector_data_t channelDebug[DEBUG_VECTORS];    
-    authentication_t signature[SIGNATURE_WORDS];
+    debug_vector_data_t channelDebug[DEBUG_VECTORS];
+    authentication_t signature;
     crc_t crc;
+    sequence_no_t seqNo;
 } com_data_t;
 
 typedef com_data_t* const com_data_pt;  /*const pointer to com_data_t*/
+
+#define ACS_PAYLOAD_DATA_BYTES  ( (uint8_t)(sizeof(mesage_id_t) + sizeof(sequence_no_t)                \
+                                + sizeof(sample_data_t) + sizeof(acs_flags_t) + sizeof(time_stamp_t)    \
+                                + sizeof(debug_vector_data_t)*DEBUG_VECTORS) )
+
+#define CRC_BYTES       ( (uint8_t)sizeof(crc_t) )
+#define SIGNATURE_BYTES ( (uint8_t)sizeof(authentication_t) )
+
+#define ACS_COM_DATA_BYTES      ( (uint8_t)(ACS_PAYLOAD_DATA_BYTES + CRC_BYTES + SIGNATURE_BYTES) )
 
 /*supervisor output data structure - ACS processed data and flags*/
 typedef struct
@@ -209,7 +221,17 @@ typedef struct
 } output_data_t;
 
 typedef output_data_t* const output_data_pt; /*const pointer to output_data_t*/
-    
+
+/*******************************************************************************
+**                                Macros
+*******************************************************************************/
+
+#ifndef __weak
+#define __weak  __attribute__((weak))
+#endif
+
+#define COM_SEQUENCE_NUMBER_RANGE   ((sequence_no_t)pow(2,sizeof(sequence_no_t)*8))
+
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
@@ -221,17 +243,20 @@ extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 *******************************************************************************/
 
 extern void procInitCodeA(uint8_t procID);
-extern void processorCodeA(input_data_pt, com_data_pt);  
+extern void processorCodeA(input_data_pt, com_data_pt); 
+extern void processorExitRoutineA(uint8_t procID); 
 extern void procInitCodeB(uint8_t procID);
 extern void processorCodeB(input_data_pt, com_data_pt); 
+extern void processorExitRoutineB(uint8_t procID); 
 extern void supervisorInitCode(uint8_t procID); 
 extern void supervisorCode(com_data_pt, com_data_pt, output_data_pt);
+extern void supervisorExitRoutine(uint8_t procID);
 extern void setTestDataAttributes(tst_data_attributes_pt);
 extern void getTestDataAttributes(tst_data_attributes_pt);
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 #endif /* C_WRAPPER_H */
 

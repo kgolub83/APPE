@@ -148,6 +148,10 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
         return LOG_DISABLED;
     }
 
+    /*get system time*/
+    time(&record.dateTime);
+    record.cpuTime = clock();
+
     va_start(ap, dataNo);
     if(LOG_MAX_DATA >= dataNo)
     {
@@ -180,9 +184,6 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
         strncpy(record.logString, logString, LOG_STRING_CHARACTERS-1);
     }
     
-    time(&record.dateTime);
-    record.cpuTime = clock();
-    
     if(fifoWrite(&logFifo, &record))
     {
         printf("#ERR: Logger memory buffer write fail!\n");
@@ -205,7 +206,7 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
 * @return void function
 ******************************************************************************/
 
-inline static void writeData(FILE *fp, struct tm *localTime, log_record_t *record, bool vt100FormatingEna)
+static inline void writeData(FILE *fp, struct tm *localTime, log_record_t *record, bool vt100FormatingEna)
 {
     int i;
     if((LOG_WRITE_COMPACT == logSettings.writeLevel) || (LOG_WRITE_FULL == logSettings.writeLevel))
@@ -332,9 +333,6 @@ void installUserLogDumpFn(log_arg_fnp userFunction)
 void logTest(const char *message)
 {
     uint8_t i;
-    
-    /*setup logging parameters*/
-    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
     
     /*demo use example -> generate all logger level mesages - Full logging executed */
     for(i=0; i<LOG_LEVELS_NO; i++)

@@ -7,7 +7,7 @@
  *
  * @date 2020-01-08
  * 
- * @brief wrapper for c functions  
+ * @brief wrapper for c functions and specific user implementation  
  *
  * @version
  *
@@ -64,22 +64,22 @@ void getTestDataAttributes(tst_data_attributes_pt attributes)
 * @return
 *******************************************************************************/
 
-static inline void testProcCode(input_data_pt inputData, com_data_pt outputData)
+static inline void testInitCode(uint8_t id)
+{
+    printf("Processor %d initialised!", id);
+}
+
+static inline void testProcCode(input_data_pt inputData, com_data_pt comData)
 {
     int resultSample;
     int inputDataRange;
     
     inputDataRange = testDataAtributes.resolution - 2*testDataAtributes.guardRegion;
     
-    outputData->seqNo = inputData->sampleNo;
+    comData->seqNo = inputData->sampleNo;
     resultSample = ((int)(inputData->sensorSampleA - inputData->sensorSampleB + inputDataRange)/2)+testDataAtributes.guardRegion;
-    outputData->dataSample = (sample_data_t)resultSample;
-    outputData->time = clock();    
-}
-
-static inline void testInitCode(uint8_t id)
-{
-    printf("Processor %d initialised!", id);
+    comData->dataSample = (sample_data_t)resultSample;
+    comData->time = clock();    
 }
 
 static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
@@ -99,23 +99,38 @@ static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comD
     outputData->state = ACS_ACTIVE;
 }
 
+static inline void testExitCode(uint8_t id)
+{
+    printf("User process %d exited sucessfully!", id);
+}
+
 /**** Function place holders for user implementation ****/
 __weak void procInitCodeA(uint8_t procID)
 {
     testInitCode(procID);
 }
 
-__weak void processorCodeA(input_data_pt inputData, com_data_pt outputData) 
+__weak void processorCodeA(input_data_pt inputData, com_data_pt comData) 
 {
-    testProcCode(inputData, outputData);
+    testProcCode(inputData, comData);
 }
 
-__weak void processorCodeB(input_data_pt inputData, com_data_pt outputData) 
+__weak void processorExitRoutineA(uint8_t procID)
 {
-    testProcCode(inputData, outputData);
+    testInitCode(procID);
+}
+
+__weak void processorCodeB(input_data_pt inputData, com_data_pt comData) 
+{
+    testProcCode(inputData, comData);
 }
 
 __weak void procInitCodeB(uint8_t procID)
+{
+    testInitCode(procID);
+}
+
+__weak void processorExitRoutineB(uint8_t procID)
 {
     testInitCode(procID);
 }
@@ -126,6 +141,11 @@ __weak void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, o
 }
 
 __weak void supervisorInitCode(uint8_t procID)
+{
+    testInitCode(procID);
+}
+
+__weak void supervisorExitRoutine(uint8_t procID)
 {
     testInitCode(procID);
 }

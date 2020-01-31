@@ -53,6 +53,7 @@ extern "C"
 #define SIP32_TEST_HASHES   64U
 #define SIP32_KEY_BYTES     8U
 #define SIP32_32BIT_KEYS    (SIP32_KEY_BYTES/(sizeof(uint32_t)))
+#define SIP_SIGNATURE_BYTES 4
 
 /*******************************************************************************
 **                                Macros

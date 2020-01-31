@@ -63,6 +63,7 @@ extern "C"
 #define CRC16_FINAL_XOR     0x0000      /*Final CRC XORing number 0x0000 default*/
 #define POLYNOMIAL_16       0x1021      /*Polynomial CCITT x16+x12+x5+1 - normal representation x^16 omitted*/
 /*#define POLYNOMIAL        0x3D65      Polynomial DNP x16 + x13 + x12 + x11 + x10 + x8 + x6 + x5 + x2 + 1  - normal representation x^16 omitted*/
+#define CRC16_BYTES         2
 #define WIDTH_16            16
 #define TOPBIT_16           (1 << (WIDTH_16 - 1))
 
@@ -72,8 +73,8 @@ extern "C"
 
 typedef enum
 {
-    NORMAL,     /*MSB first - from BIG ENDIAN perspective*/
-    REVERSE     /*LSB first - from BIG ENDIAN perspective*/
+    CRC_NORMAL_CALC,     /*MSB first - from BIG ENDIAN perspective*/
+    CRC_REVERSE_CALC     /*LSB first - from BIG ENDIAN perspective*/
 } crc_mode_e;
 
 /*******************************************************************************

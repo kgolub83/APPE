@@ -22,6 +22,7 @@
 
 #include "../Framework/c_wrapper.h"
 #include "acs_supervisor.h"
+#include "acs_communications.h"
 #include "fletcher.h"
 #include "sip_hash.h"
 #include "crc16.h"
@@ -55,12 +56,10 @@ void supervisorInitCode(uint8_t procID)
     assert(crc16Test());            /*test CRC checksum implementation*/
     assert(xteaTest());             /*test XTEA encryption implementation*/
     
-    logTest("Test Supervisor");
+    /*setup logging parameters*/
+    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
     
-    /*Flush log events from RAM FIFO to destinatin*/
-    logWrite();
-    
-    printf("Supervisor ID:%d init OK...\n", procID);
+    LogFull_m(SYS_INIT, "Supervisor init OK", 1, 0);
 }
 
 /*!*****************************************************************************
@@ -79,6 +78,8 @@ void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_d
 {
     sample_data_t resultSample;
     
+    unpackComData(comDataProcA);
+    
     resultSample = (comDataProcA->dataSample + comDataProcB->dataSample)*0.5;
     outputData->output = acsDecodingLUT[resultSample];
     outputData->flags = comDataProcA->flags;
@@ -91,6 +92,11 @@ void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_d
     outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_B] = comDataProcB->channelDebug[DEBUG_CHANNEL_B];
     
     //printf("|%x %x|", comDataProcA->flags, comDataProcB->flags);
+}
+
+void supervisorExitRoutine(uint8_t procID)
+{
+    logWrite();     /* dump log data from memory to destination instances*/
 }
 
 /******************************************************************************

@@ -45,6 +45,8 @@ static pthread_mutex_t mutexLock;
 * @function fifoInit
 * 
 * @brief initializes fifo structure with default values
+*        init function must be called after instantiation of the fifo structure
+*        for proper initial conditions and proper operation
 *
 * @param *this pointer to fifo structure
 *
@@ -63,8 +65,8 @@ void fifoInit(struct fifo_ctrl *this)
 * @function fifo_write_ctl
 * 
 * @brief Control function for writing to fifo
-* Function is called when writting to fifo. It handles, tail
-* and head pointer and fifo full flag
+*        Function is called when writting to fifo
+*        It handles, tail and head pointer and fifo full flag
 *
 * @param *this pointer to fifo structure
 *
@@ -94,8 +96,8 @@ static inline void fifo_write_ctl(struct fifo_ctrl *this)
 * @function fifo_read_ctl
 * 
 * @brief Control function for reading from fifo
-* Function is called when reading from fifo. It handles, tail
-* and head pointer and fifo full flag
+*        Function is called when reading from fifo 
+*        It handles, tail and head pointer and fifo full flag
 *
 * @param *this pointer to fifo structure
 *
@@ -122,9 +124,8 @@ static inline void fifo_read_ctl(struct fifo_ctrl *this)
 /*!*****************************************************************************
 * @function fifoWrite
 * 
-* @brief Writes one taskExecutionTime structure to fifo
-* Writes one taskExecutionTime structure to fifo and return
-* whether is executed properly
+* @brief  Writes one data structure to fifo and return whether 
+*         is executed properly
 *
 * @param *this pointer to fifo structure
 * @param data element to be written to fifo
@@ -152,14 +153,12 @@ fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data)
 /*!*****************************************************************************
 * @function fifoRead
 * 
-* @brief Reads one taskExecutionTime structure to fifo
-* Reads one taskExecutionTime structure to fifo and return
-* whether is executed properly
+* @brief Reads one data structure from fifo and returns whether is executed properly
 *
 * @param *this pointer to fifo structure
 * @param *data pointer to element to be read from fifo
 *
-* @return whether writing is executed properly
+* @return whether read is executed properly
 *******************************************************************************/
 fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data)
 {

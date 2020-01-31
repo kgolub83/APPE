@@ -77,6 +77,7 @@ int main(int argc, char **argv)
     //configure supervisor processing unit
     supervisor.installInitCalback(supervisorInitCode);
     supervisor.installSupervisor(supervisorCode);
+    supervisor.installExitCalback(supervisorExitRoutine);
     supervisor.setRunCycles(testData.getSamplesNo());
     supervisor.setInputCom(COM_SOCKET_C, PROC_A_OUT_COM_CHANNEL);
     supervisor.setInputCom(COM_SOCKET_D, PROC_B_OUT_COM_CHANNEL);

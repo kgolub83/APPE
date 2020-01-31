@@ -80,8 +80,6 @@ void procInitCodeA(uint8_t procID)
     
     /*read test mockup meta data and parameters*/
     getTestDataAttributes(&dataAttributes);    
-    
-    logTest("ProcA test");
 
     /* set initial filter conditions */
     iirAvgFilterA.lastSample = dataAttributes.guardRegion;
@@ -90,7 +88,7 @@ void procInitCodeA(uint8_t procID)
     iirAvgFilterB.lastSample = dataAttributes.resolution - dataAttributes.guardRegion;
     iirAvgFilterB_gp = &iirAvgFilterB;
     
-    printf("Processor ID:%d init OK...\n", procID);
+    LogFull_m(SYS_INIT, "Processor A init OK", 1, 1);
     
 }
 
@@ -100,12 +98,12 @@ void procInitCodeA(uint8_t procID)
 * @brief processor A implementation code
 *
 * @param inputData  - pointer to input data samples (ADC mock data) from orthogonal sensors
-* @param outputData - pointer to processed output samples 
+* @param comData - pointer to processed output samples 
 *                   
 * @return void function
 *******************************************************************************/
 
-void processorCodeA(input_data_pt inputData, com_data_pt outputData) 
+void processorCodeA(input_data_pt inputData, com_data_pt comData) 
 {
     processing_state_e state;
     dsp_data_t processedSignalA, processedSignalB, invertedSignalB;
@@ -195,17 +193,17 @@ void processorCodeA(input_data_pt inputData, com_data_pt outputData)
             processedSignal = 0;
             flags |= ACS_SYSTEM_FAULT;
     }
-
+    
     /* write processor A debug data */
-    outputData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
-    outputData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
+    comData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
+    comData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
     
     /* write processed data and processing flags */
-    outputData->dataSample = processedSignal;
-    outputData->flags = flags;
+    comData->dataSample = processedSignal;
+    comData->flags = flags;
     
     /* pack communication data */
-    packComData(outputData);
+    packComData(comData);
 }
 
 /******************************************************************************

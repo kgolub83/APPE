@@ -49,6 +49,12 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 
+enum acsCommunicationID
+{
+    ACS_COM_PROC_A_MESAGE_ID,
+    ACS_COM_PROC_B_MESAGE_ID
+};
+
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
@@ -58,6 +64,7 @@ extern "C"
 *******************************************************************************/
 
 extern void packComData(com_data_pt comData);
+extern void unpackComData(com_data_pt comData);
 
 #ifdef __cplusplus
 } /* extern */

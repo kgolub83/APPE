@@ -105,7 +105,7 @@ uint16_t crc16Calculate(uint8_t *data, uint16_t length, crc_mode_e mode)
     uint32_t crc = CRC16_SEED;
     uint32_t temp;
     
-    if(mode == REVERSE) /*reverse calculation*/ 
+    if(mode == CRC_REVERSE_CALC) /*reverse calculation*/ 
     {
         uint8_t *pt;
         pt = data + length -1;
@@ -187,7 +187,7 @@ bool crc16Test(void)
     
     retVal = false;
     
-    crcResult = crc16Calculate((uint8_t*)&ccitTestData, sizeof(ccitTestData), NORMAL);
+    crcResult = crc16Calculate((uint8_t*)&ccitTestData, sizeof(ccitTestData), CRC_NORMAL_CALC);
     
     if(ccitTestResult == crcResult)
     {

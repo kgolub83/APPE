@@ -82,8 +82,6 @@ void procInitCodeB(uint8_t procID)
 
     getTestDataAttributes(&dataAttributes);
     
-    logTest("ProcB test");
-    
     /*Set filter global pointer and initialises filter*/
     movAvgFilterA_gp = &movAvgFilterA;
     movingAvgInit(movAvgFilterA_gp, dataAttributes.guardRegion);
@@ -92,7 +90,7 @@ void procInitCodeB(uint8_t procID)
     movAvgFilterB_gp = &movAvgFilterB;
     movingAvgInit(movAvgFilterB_gp, dataAttributes.resolution - dataAttributes.guardRegion);
     
-    printf("Processor ID:%d init OK...\n", procID);
+    LogFull_m(SYS_INIT, "Processor B init OK", 1, 2);
 }
 
 /*!*****************************************************************************
@@ -101,12 +99,12 @@ void procInitCodeB(uint8_t procID)
 * @brief processor B implementation code
 *
 * @param inputData  - pointer to input data samples (ADC mock data) from orthogonal sensors
-* @param outputData - pointer to processed output samples 
+* @param comData - pointer to processed output samples 
 *                   
 * @return void function
 *******************************************************************************/
 
-void processorCodeB(input_data_pt inputData, com_data_pt outputData) 
+void processorCodeB(input_data_pt inputData, com_data_pt comData) 
 {
     processing_state_e state;
     dsp_data_t processedSignalA, processedSignalB, invertedSignalA;
@@ -200,13 +198,13 @@ void processorCodeB(input_data_pt inputData, com_data_pt outputData)
             flags |= ACS_SYSTEM_FAULT;
     }
 
-    outputData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
-    outputData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
+    comData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
+    comData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
     
-    outputData->dataSample = processedSignal;
-    outputData->flags = flags;
+    comData->dataSample = processedSignal;
+    comData->flags = flags;
     
-    packComData(outputData);
+    packComData(comData);
 }
 
 /******************************************************************************
