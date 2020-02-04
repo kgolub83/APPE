@@ -26,7 +26,6 @@
 #include "acs_proc_b.h"
 #include "acs_processing_common.h"
 #include "acs_communications.h"
-#include "logger.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -104,13 +103,15 @@ void procInitCodeB(uint8_t procID)
 * @return void function
 *******************************************************************************/
 
-void processorCodeB(input_data_pt inputData, com_data_pt comData) 
+void processorCodeB(input_data_pt inputData, com_channel_pt comFrame) 
 {
     processing_state_e state;
+    com_data_t comData;
     dsp_data_t processedSignalA, processedSignalB, invertedSignalA;
     dsp_data_t processedSignal;
     tst_data_attributes_t dataAttributes;
-       acs_flags_t flags;
+    acs_flags_t flags;
+    static sequence_no_t sequenceNo;
     bool signalAsymmetry;
     
     getTestDataAttributes(&dataAttributes);   
@@ -133,10 +134,10 @@ void processorCodeB(input_data_pt inputData, com_data_pt comData)
     if(ACS_SYSTEM_OK == flags)  /*check if everithing OK*/
     {
         state = PROC_FSM_SIGNAL_HEALTHY; 
-    } else if (!(flags & ACS_SENS_A_FAULTS_MASK)) /*check if signal A OK*/
+    } else if (!(flags & ACS_SENS_A_FLAGS_MASK)) /*check if signal A OK*/
     {
         state = PROC_FSM_SIGNAL_B_FAIL; 
-    } else if (!(flags & ACS_SENS_B_FAULTS_MASK)) /*check if signal B OK*/
+    } else if (!(flags & ACS_SENS_B_FLAGS_MASK)) /*check if signal B OK*/
     {
         state = PROC_FSM_SIGNAL_A_FAIL;
     } else
@@ -198,13 +199,16 @@ void processorCodeB(input_data_pt inputData, com_data_pt comData)
             flags |= ACS_SYSTEM_FAULT;
     }
 
-    comData->channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
-    comData->channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
+    comData.channelDebug[DEBUG_CHANNEL_A] = processedSignalA;
+    comData.channelDebug[DEBUG_CHANNEL_B] = processedSignalB;
     
-    comData->dataSample = processedSignal;
-    comData->flags = flags;
+    comData.dataSample = processedSignal;
+    comData.flags = flags;
     
-    packComData(comData);
+     /* circular sequence number counter insertion */
+    comData.seqNo = sequenceNo++;
+        
+    packComData(&comData, comFrame);
 }
 
 /******************************************************************************

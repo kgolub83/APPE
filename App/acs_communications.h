@@ -55,6 +55,16 @@ enum acsCommunicationID
     ACS_COM_PROC_B_MESAGE_ID
 };
 
+typedef enum
+{
+    ACS_COM_SUCCESS,
+    ACS_TIMEOUT_ERR,
+    ACS_COM_CRC_ERR,
+    ACS_COM_SEQUENCE_ERR,
+    ACS_COM_SIGNATURE_ERR,
+    ACS_COM_CRYPTO_ERR
+} acs_com_ret_val_e;
+
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
@@ -63,8 +73,8 @@ enum acsCommunicationID
 **                     Public function prototypes - API
 *******************************************************************************/
 
-extern void packComData(com_data_pt comData);
-extern void unpackComData(com_data_pt comData);
+extern void packComData(com_data_pt comData, com_channel_pt comFrame);
+extern acs_flags_t unpackComData(com_data_pt comData, com_channel_pt comFrame);
 
 #ifdef __cplusplus
 } /* extern */

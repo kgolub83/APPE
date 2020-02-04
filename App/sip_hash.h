@@ -42,18 +42,19 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-#define SIP_HASH_C_ROUNDS   2U
-#define SIP_HASH_D_ROUNDS   4U
+#define SIP_HASH_C_ROUNDS       2U
+#define SIP_HASH_D_ROUNDS       4U
 
-#define SIP_HASH_VAR0_INIT  0U
-#define SIP_HASH_VAR1_INIT  0U
-#define SIP_HASH_VAR2_INIT  0x6c796765U
-#define SIP_HASH_VAR3_INIT  0x74656462U
+#define SIP_HASH_VAR0_INIT      0U
+#define SIP_HASH_VAR1_INIT      0U
+#define SIP_HASH_VAR2_INIT      0x6c796765U
+#define SIP_HASH_VAR3_INIT      0x74656462U
 
-#define SIP32_TEST_HASHES   64U
-#define SIP32_KEY_BYTES     8U
-#define SIP32_32BIT_KEYS    (SIP32_KEY_BYTES/(sizeof(uint32_t)))
-#define SIP_SIGNATURE_BYTES 4
+#define SIP32_TEST_HASHES       64U
+#define SIP32_KEY_BYTES         8U
+#define SIP32_32BIT_KEYS        (SIP32_KEY_BYTES/(sizeof(uint32_t)))
+#define SIP_SIGNATURE_BYTES     4
+#define SIP_PROCESSING_BYTES    4
 
 /*******************************************************************************
 **                                Macros

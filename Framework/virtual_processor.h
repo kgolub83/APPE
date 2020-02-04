@@ -8,12 +8,12 @@
 #include <queue>
 #include <vector>
 
-#define VP_SLEEP_TIMEOUT                10  //virtual processor sleep timeout
+#define VP_SLEEP_TIMEOUT                1   //virtual processor sleep timeout
 #define SUPERVISOR_OVERRUN_FACTOR       3   //mximum alowable supervisor itterations times number of sample points 
 
 typedef void(*initFncPtr)(uint8_t);
-typedef void (*usrFncPtr)(input_data_pt, com_data_pt);
-typedef void (*supervisorFncPtr)(com_data_pt, com_data_pt, output_data_pt);
+typedef void (*usrFncPtr)(input_data_pt, com_channel_pt);
+typedef void (*supervisorFncPtr)(com_channel_pt, com_channel_pt, output_data_pt);
 typedef uint32_t run_cycles_t;
 
 class VirtualProcessor

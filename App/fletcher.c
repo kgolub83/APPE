@@ -32,7 +32,6 @@
  *
  ******************************************************************************/
 
- 
 /*******************************************************************************
 **                                Includes
 *******************************************************************************/
@@ -59,7 +58,6 @@
 *
 * @return
 *******************************************************************************/
-
 uint32_t fletcher32(uint16_t const *data, int words)
 {
     uint32_t sum1, sum2;
@@ -83,13 +81,13 @@ uint32_t fletcher32(uint16_t const *data, int words)
         
         words -= blockSize;  /* count processed words */
     }
+    
     /* Second reduction step to guarantie reduced sums to 16 bits */
     sum1 = (sum1 & FCS32_16BIT_MASK) + (sum1 >> 16);
     sum2 = (sum2 & FCS32_16BIT_MASK) + (sum2 >> 16);
 
     return ((sum2 << 16) | sum1);
 }
-
 
 /*!*****************************************************************************
 * @function fletcher32Test

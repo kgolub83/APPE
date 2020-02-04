@@ -32,7 +32,7 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
 {
     ComDataObj* const comChannels = ComDataObj::getInstance();
     input_data_t inputData;
-    com_data_t comFrame;
+    com_channel_t  comFrame;
     com_socket_e activeSocket;
     samples_no_t samplesNo;
     
@@ -40,8 +40,6 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     assert(userCallback);       //checks if user callback function is set
     
     initProcessor(id);
-    
-    comFrame.seqNo = 0;     //init communication frames sequential counter
     
     std::cout << "User application " << +id << " started..." << std::endl;
     
@@ -68,7 +66,7 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
 void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
 {
     ComDataObj* const comChannels = ComDataObj::getInstance();   //Instanciate communication queues-FIFOs
-    com_data_t comFrameA, comFrameB;
+    com_channel_t  comFrameA, comFrameB;
     output_data_t outSample;
     run_cycles_t iterations, iterationCount, maxIterations;
     com_channel_e inChannelA, inChannelB;
@@ -86,6 +84,7 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     syncFlagB = false;
     iterations = 0;
     iterationCount = 0;
+
     
     //!@TODO check socket-channel consistency - it should be only two input communication channels defined
     inChannelA = inComChannel[inSockets.front()];

@@ -124,6 +124,10 @@ typedef union{
 **                                Macros
 *******************************************************************************/
 
+/*primitives*/
+
+#define ENDLES_LOOP     for(;;)
+
 /*checks if var is in between min and max including boundaries*/ 
 #define isInRange_m(var, min, max) ((((var) >= (min)) && ((var) <= (max))) ? true : false)
 
@@ -139,48 +143,72 @@ typedef union{
 /* rotates 32 bit variable var for bitsNo number of bits*/
 #define rotLeft32_m(var, bitsNo) (uint32_t)(((var) << (bitsNo)) | ((var) >> (32 - (bitsNo))))
 
+/*parse bytes from byte array to unsigned 16 bit variable*/
+#define bytesToUint16_m(var16, byteVector, index)           \
+{                                                           \
+(var16) = ( (uint32_t) (byteVector)[(index)    ]       )    \
+        | ( (uint32_t) (byteVector)[(index) + 1] <<  8 );   \
+        index += 2;                                         \
+}
+
+/*parse bytes from byte array to unsigned 16 bit variablein reverse order*/
+#define bytesToUint16Reverse_m(var16, byteVector, index)           \
+{                                                           \
+(var16) = ( (uint32_t) (byteVector)[(index)    ] <<  8 )    \
+        | ( (uint32_t) (byteVector)[(index) + 1]       );   \
+        index += 2;                                         \
+}
+
+/*parse bytes from byte array to unsigned 32 bit variable*/
 #define bytesToUint32_m(var32, byteVector, index)           \
 {                                                           \
 (var32) = ( (uint32_t) (byteVector)[(index)    ]       )    \
         | ( (uint32_t) (byteVector)[(index) + 1] <<  8 )    \
         | ( (uint32_t) (byteVector)[(index) + 2] << 16 )    \
         | ( (uint32_t) (byteVector)[(index) + 3] << 24 );   \
+        index += 4;                                         \
 }
 
+/*parse bytes from byte array to unsigned 32 bit variable in reverse order*/
 #define bytesToUint32Reverse_m(var32, byteVector, index)    \
 {                                                           \
 (var32) = ( (uint32_t) (byteVector)[(index)    ] << 24 )    \
         | ( (uint32_t) (byteVector)[(index) + 1] << 16 )    \
         | ( (uint32_t) (byteVector)[(index) + 2] <<  8 )    \
         | ( (uint32_t) (byteVector)[(index) + 3]       );   \
+        index += 4;                                         \
 }
 
-#define uint16ToBytes_m(var16, byteVector, index)            \
-{                                                            \
+/*parse 16 bit unsigned variable to byte array*/
+#define uint16ToBytes_m(var16, byteVector, index)          \
+{                                                          \
     (byteVector)[(index++)] = (uint8_t) ( (var16)       ); \
     (byteVector)[(index++)] = (uint8_t) ( (var16) >>  8 ); \
 }
 
-#define uint16ToBytesReverse_m(var16, byteVector, index)     \
-{                                                            \
-    (byteVector)[(index) + 0] = (uint8_t) ( (var16) >>  8 ); \
-    (byteVector)[(index) + 1] = (uint8_t) ( (var16)       ); \
+/*parse 16 bit unsigned variable to byte array in reverse order*/
+#define uint16ToBytesReverse_m(var16, byteVector, index)   \
+{                                                          \
+    (byteVector)[(index++)] = (uint8_t) ( (var16) >>  8 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var16)       ); \
 }
 
-#define uint32ToBytes_m(var32, byteVector, index)            \
-{                                                            \
-    (byteVector)[(index)    ] = (uint8_t) ( (var32)       ); \
-    (byteVector)[(index) + 1] = (uint8_t) ( (var32) >>  8 ); \
-    (byteVector)[(index) + 2] = (uint8_t) ( (var32) >> 16 ); \
-    (byteVector)[(index) + 3] = (uint8_t) ( (var32) >> 24 ); \
-}
+/*parse 32 bit unsigned variable to byte array*/
+#define uint32ToBytes_m(var32, byteVector, index)          \
+{                                                          \
+    (byteVector)[(index++)] = (uint8_t) ( (var32)       ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >>  8 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >> 16 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >> 24 ); \
+}                      
 
-#define uint32ToBytesReverse_m(var32, byteVector, index)     \
-{                                                            \
-    (byteVector)[(index)    ] = (uint8_t) ( (var32) >> 24 ); \
-    (byteVector)[(index) + 1] = (uint8_t) ( (var32) >> 16 ); \
-    (byteVector)[(index) + 2] = (uint8_t) ( (var32) >>  8 ); \
-    (byteVector)[(index) + 3] = (uint8_t) ( (var32)       ); \
+/*parse 32 bit unsigned variable to byte array in reverse order*/
+#define uint32ToBytesReverse_m(var32, byteVector, index)   \
+{                                                          \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >> 24 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >> 16 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32) >>  8 ); \
+    (byteVector)[(index++)] = (uint8_t) ( (var32)       ); \
 }
 
 /*******************************************************************************

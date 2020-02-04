@@ -71,10 +71,11 @@ uint32_t sipHash32(const uint8_t *in, const siphash_size_t inlen, const uint32_t
     uint32_t v0, v1, v2, v3;
     uint32_t k0, k1;
     uint32_t m, b;
-    siphash_size_t i;
+    siphash_size_t i, j;
     
-    const uint8_t *end4aligned_pt = in + inlen - (inlen % sizeof(uint32_t));
-    const uint8_t left = inlen & LS_2_BITS_MASK;
+    const uint8_t reminder = inlen & LS_2_BITS_MASK;        /*reminder of modulo 4 (%4) operation*/
+    const uint8_t alignedBytes = inlen - reminder;
+    
     
     b = ((uint32_t)inlen) << 24;
     
@@ -94,27 +95,29 @@ uint32_t sipHash32(const uint8_t *in, const siphash_size_t inlen, const uint32_t
     v0 ^= k0;
 
     /* process quad byte groups of input data */
-    for (; end4aligned_pt != in; in += 4) {
-        bytesToUint32_m(m, in, 0);
+    uint32_t index = 0;
+    for(i = 0; i < alignedBytes; i += SIP_PROCESSING_BYTES) 
+    {
+        bytesToUint32_m(m, in, index);
         v3 ^= m;
 
-        for (i = 0; i < SIP_HASH_C_ROUNDS; ++i)
+        for (j = 0; j < SIP_HASH_C_ROUNDS; ++j)
         {
             sipHashProcess_m;
         }
-
+        
         v0 ^= m;
     }
     
     /* process ramaining input bytes */
-    switch (left) 
+    switch (reminder) 
     {
         case 3:
-            b |= ((uint32_t)in[2]) << 16;
+            b |= ((uint32_t)in[alignedBytes + 2]) << 16;
         case 2:
-            b |= ((uint32_t)in[1]) << 8;
+            b |= ((uint32_t)in[alignedBytes + 1]) << 8;
         case 1:
-            b |= ((uint32_t)in[0]);
+            b |= ((uint32_t)in[alignedBytes + 0]);
             break;
         case 0:
             break;
@@ -153,7 +156,7 @@ uint32_t sipHash32(const uint8_t *in, const siphash_size_t inlen, const uint32_t
 
 bool sipHashTest(void)
 {
-    uint8_t i;
+    uint8_t i, index;
     uint8_t in[SIP32_TEST_HASHES], k[SIP32_KEY_BYTES];
     uint32_t keys[SIP32_32BIT_KEYS];
     uint32_t hash;
@@ -166,9 +169,10 @@ bool sipHashTest(void)
         k[i] = i;
     }
     
+    index=0;
     for(i=0; i<SIP32_32BIT_KEYS; i++)
     {
-        bytesToUint32_m(keys[i],k,i*4);
+        bytesToUint32_m(keys[i],k,index);
     }
     
     /* calculate hashes for test data */

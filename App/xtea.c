@@ -23,6 +23,7 @@
 #include "xtea.h"
 #include "helper_functions.h"
 #include <stdio.h>
+#include <string.h>
 
 /*******************************************************************************
 **                       Global and static variables
@@ -110,8 +111,9 @@ void xteaEncrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     uint8_t i;
 
     /*parse input data to 32bit variables*/
-    bytesToUint32Reverse_m( v0, input, 0 );
-    bytesToUint32Reverse_m( v1, input, 4 );
+    i = 0;
+    bytesToUint32Reverse_m( v0, input, i );
+    bytesToUint32Reverse_m( v1, input, i );
 
     /*set initial values*/
     sum = 0; 
@@ -126,8 +128,33 @@ void xteaEncrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     }
 
     /*parse output data*/
-    uint32ToBytesReverse_m( v0, output, 0 );
-    uint32ToBytesReverse_m( v1, output, 4 );
+    i=0;
+    uint32ToBytesReverse_m( v0, output, i );
+    uint32ToBytesReverse_m( v1, output, i );
+}
+
+xtea_ret_val_e xteaByteArrayEncrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes)
+{
+    uint32_t i;
+    xtea_ret_val_e retVal;
+    uint8_t remainder;
+
+    remainder = dataBytes & LS_3_BITS_MASK;  /*remainder of modulo 8 (%8) operation*/
+    
+    if(0 == remainder)
+    {
+        for(i=0; i<dataBytes; i +=XTEA_DATA_BYTES) /*encrypt aligned data*/
+        {
+            xteaEncrypt(key, &(dataToEncrypt[i]), (&dataToEncrypt[i]));
+        }
+        retVal = XTEA_SUCCESS;
+    } else
+    {
+        retVal = XTEA_ENCRYPTION_FAIL;
+        printf("#ERR: XTEA encryption fault");
+    }
+
+    return retVal;
 }
 
 /*!*****************************************************************************
@@ -150,8 +177,9 @@ void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     uint8_t i;
 
     /*parse input data to 32bit variables*/
-    bytesToUint32Reverse_m( v0, input, 0 );
-    bytesToUint32Reverse_m( v1, input, 4 );
+    i = 0;
+    bytesToUint32Reverse_m( v0, input, i );
+    bytesToUint32Reverse_m( v1, input, i );
     
     /*set initial values*/
     delta = XTEA_DELTA_FACTOR;
@@ -166,8 +194,33 @@ void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     }
     
     /*parse output data*/
-    uint32ToBytesReverse_m( v0, output, 0 );
-    uint32ToBytesReverse_m( v1, output, 4 );
+    i = 0;
+    uint32ToBytesReverse_m( v0, output, i );
+    uint32ToBytesReverse_m( v1, output, i );
+}
+
+xtea_ret_val_e xteaByteArrayDecrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes)
+{
+    uint32_t i;
+    xtea_ret_val_e retVal;
+    uint8_t remainder;
+
+    remainder = dataBytes & LS_3_BITS_MASK;  /*remainder of modulo 8 (%8) operation*/
+    
+    if(0 == remainder)
+    {
+        for(i=0; i<dataBytes; i +=XTEA_DATA_BYTES) /*encrypt aligned data*/
+        {
+            xteaDecrypt(key, &(dataToEncrypt[i]), (&dataToEncrypt[i]));
+        }
+        retVal = XTEA_SUCCESS;
+    } else
+    {
+        retVal = XTEA_ENCRYPTION_FAIL;
+        printf("#ERR: XTEA decryption fault");
+    }
+
+    return retVal;  
 }
 
 /*!*****************************************************************************
@@ -180,10 +233,10 @@ void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
 
 bool xteaTest(void)
 {
+    uint32_t testKeys[XTEA_32BIT_KEYS]={0};
     uint8_t testData[XTEA_DATA_BYTES]={0};
     uint8_t encryptedData[XTEA_DATA_BYTES];
     uint8_t decryptedData[XTEA_DATA_BYTES];
-    uint32_t testKeys[XTEA_32BIT_KEYS]={0};
     uint8_t i, j, k;
     bool retVal;
     

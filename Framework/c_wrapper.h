@@ -80,7 +80,8 @@ extern "C"
 #define ACS_SENS_A_WARNING          BIT4
 #define ACS_SENS_A_FAULT            BIT5
 
-#define ACS_SENS_A_FAULTS_MASK      0x000000FFU
+#define ACS_SENS_A_FLAGS_MASK       0x000000FFU
+#define ACS_SENS_A_FLAGS_OFFSET     0
 
 /*Sensor B flags*/
 #define ACS_SENS_B_OUT_OF_BOUNDS    BIT8
@@ -90,26 +91,37 @@ extern "C"
 #define ACS_SENS_B_WARNING          BIT12
 #define ACS_SENS_B_FAULT            BIT13
 
-#define ACS_SENS_B_FAULTS_MASK      0x0000FF00U
+#define ACS_SENS_B_FLAGS_MASK       0x0000FF00U
+#define ACS_SENS_B_FLAGS_OFFSET     8
 
-/*ACS System flags*/
+/*ACS communication channel A flags*/
 #define ACS_WATCHDOG_A              BIT16
 #define ACS_DATA_INTEGRITY_A        BIT17
-#define ACS_TIME_INTEGRITY_A        BIT18
+#define ACS_COM_SEQUENCE_A          BIT18
 #define ACS_AUTHENTICATION_A        BIT19
+
+#define ACS_COM_A_FLAGS_MASK        0x000F0000U
+#define ACS_COM_A_FLAGS_OFFSET      16
+
+/*ACS communication channel B flags*/
 #define ACS_WATCHDOG_B              BIT20
 #define ACS_DATA_INTEGRITY_B        BIT21
-#define ACS_TIME_INTEGRITY_B        BIT22
+#define ACS_COM_SEQUENCE_B          BIT22
 #define ACS_AUTHENTICATION_B        BIT23
 
+#define ACS_COM_B_FLAGS_MASK        0x00F00000U
+#define ACS_COM_B_FLAGS_OFFSET      20
+
+/*ACS System flags*/
 #define ACS_SIGNALS_ASYMMETRY       BIT24
 #define ACS_DATA_ASYMMETRY          BIT25
 #define ACS_INVALID_DATA            BIT26
-#define ACS_SYSTEM_FAULT            BIT27
+#define ACS_SYSTEM_WARNING          BIT27
+#define ACS_SYSTEM_FAULT            BIT28
 
 #define ACS_SYSTEM_OK               0x00000000U
 
-#define ACS_SUPERVISOR_FAULTS_MASK  0xFFFF0000U
+#define ACS_SUPERVISOR_FAULTS_MASK  0xFF000000U
 
 #define XTEA_WORD_LENGTH        2U
 #define MD5_WORD_LENGTH         4U
@@ -137,8 +149,6 @@ typedef uint16_t crc_t;                 /*communication CRC checksum type*/
 typedef uint16_t mesage_id_t;           /*mesage identifier type*/
 typedef uint32_t debug_vector_data_t;   /*debug data type*/
 
-
-
 /*ACS system states definitions*/
 typedef enum
 {
@@ -149,6 +159,18 @@ typedef enum
     ACS_ERROR_SPEED_LIMIT,
     ACS_FATAL_SAFE_STOP
 } acs_state_e;
+
+typedef enum
+{
+    ACS_SYS_OK,
+    ACS_SYS_WAR,
+    ACS_COM_WAR,
+    ACS_SIGNAL_WAR,
+    ACS_PROCESSING_DIF,
+    ACS_SYS_FAULT,
+    ACS_COM_ERR,
+    ACS_SIG_ERR
+} acs_sys_faults_e;
 
 enum debugVectorsNames
 {
@@ -180,36 +202,37 @@ typedef struct
 
 typedef input_data_t* const input_data_pt;  /*const pointer to proces_data_t*/
 
-/*communication data structure between processors and supervisor
-*
-* COMMUNICATION FRAME MODEL:
-* MSB                                                                     LSB
-* |dataID:2|seqNo:2|dataSample:4|flags:4|time:4|debug:8|crc16:2|signature:4|
-*
-*****************************************************************************/
-
 typedef struct
 {
-    mesage_id_t dataID;
     sample_data_t dataSample;
     acs_flags_t flags;
     time_stamp_t time;
     debug_vector_data_t channelDebug[DEBUG_VECTORS];
     authentication_t signature;
-    crc_t crc;
+    mesage_id_t dataID;
     sequence_no_t seqNo;
+    crc_t crc;
 } com_data_t;
 
 typedef com_data_t* const com_data_pt;  /*const pointer to com_data_t*/
 
 #define ACS_PAYLOAD_DATA_BYTES  ( (uint8_t)(sizeof(mesage_id_t) + sizeof(sequence_no_t)                \
-                                + sizeof(sample_data_t) + sizeof(acs_flags_t) + sizeof(time_stamp_t)    \
+                                + sizeof(sample_data_t) + sizeof(acs_flags_t) + sizeof(time_stamp_t)   \
                                 + sizeof(debug_vector_data_t)*DEBUG_VECTORS) )
 
 #define CRC_BYTES       ( (uint8_t)sizeof(crc_t) )
 #define SIGNATURE_BYTES ( (uint8_t)sizeof(authentication_t) )
 
 #define ACS_COM_DATA_BYTES      ( (uint8_t)(ACS_PAYLOAD_DATA_BYTES + CRC_BYTES + SIGNATURE_BYTES) )
+
+#define ACS_COM_CHANNEL_BYTES   ( (uint8_t)(ACS_COM_DATA_BYTES + (8-ACS_COM_DATA_BYTES%8) ) )    //com channel data aligned on 8 bytes
+
+typedef struct
+{
+    uint8_t comChannelData[ACS_COM_CHANNEL_BYTES];
+} com_channel_t;
+
+typedef com_channel_t* const com_channel_pt;  /*const pointer to com_data_t*/
 
 /*supervisor output data structure - ACS processed data and flags*/
 typedef struct
@@ -243,13 +266,13 @@ extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 *******************************************************************************/
 
 extern void procInitCodeA(uint8_t procID);
-extern void processorCodeA(input_data_pt, com_data_pt); 
+extern void processorCodeA(input_data_pt, com_channel_pt); 
 extern void processorExitRoutineA(uint8_t procID); 
 extern void procInitCodeB(uint8_t procID);
-extern void processorCodeB(input_data_pt, com_data_pt); 
+extern void processorCodeB(input_data_pt, com_channel_pt); 
 extern void processorExitRoutineB(uint8_t procID); 
 extern void supervisorInitCode(uint8_t procID); 
-extern void supervisorCode(com_data_pt, com_data_pt, output_data_pt);
+extern void supervisorCode(com_channel_pt, com_channel_pt, output_data_pt);
 extern void supervisorExitRoutine(uint8_t procID);
 extern void setTestDataAttributes(tst_data_attributes_pt);
 extern void getTestDataAttributes(tst_data_attributes_pt);

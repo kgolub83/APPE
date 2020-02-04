@@ -35,6 +35,11 @@ extern "C"
 #include "../Framework/c_wrapper.h"
 #include <stdbool.h>
 #include "dsp_filters_lib.h"
+#include "fletcher.h"
+#include "sip_hash.h"
+#include "crc16.h"
+#include "xtea.h"
+#include "logger.h"
 
 /*******************************************************************************
 **                               Constants

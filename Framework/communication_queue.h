@@ -30,7 +30,7 @@ typedef enum
     COM_SOCKETS_NO
 } com_socket_e;
 
-typedef std::queue<com_data_t> com_queue_t; 
+typedef std::queue<com_channel_t> com_queue_t;     //communication channel data queue type
 
 class ComDataObj
 {
@@ -46,10 +46,9 @@ public:
     //static method that returns only instance of ComDataObje
 
     // ComDataObj functionalities
-    void addElement(com_channel_e, com_data_t&);
-    com_fifo_e getElement(com_channel_e, com_data_t&);
+    void addElement(com_channel_e, com_channel_t data);
+    com_fifo_e getElement(com_channel_e, com_channel_t &data);
     sample_data_t printSize(com_channel_e channel);
-
 };
 
 #endif // COMMUNICATION_QUEUE_H

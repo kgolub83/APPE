@@ -20,12 +20,12 @@ ComDataObj* ComDataObj::getInstance(void)
     return singleInstance_p;
 }
 
-void ComDataObj::addElement(com_channel_e channel, com_data_t& data)
+void ComDataObj::addElement(com_channel_e channel, com_channel_t data)
 {
     comFIFO[channel].push(data);        //write data to FIFO
 }
 
-com_fifo_e ComDataObj::getElement(com_channel_e channel, com_data_t& data)
+com_fifo_e ComDataObj::getElement(com_channel_e channel, com_channel_t& data)
 {
     com_fifo_e ret_val;
     

@@ -24,6 +24,7 @@
 #include <stdio.h> 
 #include <stdint.h>
 #include <time.h>
+#include <string.h>
 
 /*******************************************************************************
 **                       Global and static variables
@@ -69,30 +70,63 @@ static inline void testInitCode(uint8_t id)
     printf("Processor %d initialised!", id);
 }
 
-static inline void testProcCode(input_data_pt inputData, com_data_pt comData)
+static inline void testProcCode(input_data_pt inputData, com_channel_pt comFrame)
 {
-    int resultSample;
+    int sample;
+    sample_data_t resultSample;
     int inputDataRange;
+    uint8_t index, dataSize;
     
     inputDataRange = testDataAtributes.resolution - 2*testDataAtributes.guardRegion;
     
-    comData->seqNo = inputData->sampleNo;
-    resultSample = ((int)(inputData->sensorSampleA - inputData->sensorSampleB + inputDataRange)/2)+testDataAtributes.guardRegion;
-    comData->dataSample = (sample_data_t)resultSample;
-    comData->time = clock();    
-}
-
-static inline void tetsSupervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
-{
-    uint32_t acsOutput;
-    
-    if(comDataProcA->dataSample == comDataProcB->dataSample)
-    {
-        acsOutput = acsDecodingLUT[comDataProcA->dataSample];
-        printf(" |*A: %d B: %d O: %d*| ", comDataProcA->dataSample, comDataProcB->dataSample, acsOutput);
+    //comFrame->seqNo = inputData->sampleNo;
+    dataSize = sizeof(sequence_no_t); 
+    if(dataSize < ACS_COM_CHANNEL_BYTES)
+    {    
+        memcpy(comFrame->comChannelData, &inputData->sampleNo, dataSize);
     } else
     {
-        printf("\n\n###SAMPLE FAULT###\n\n");
+        printf("#ERR: Processor com data test fail!");
+    }
+    index = dataSize;
+    
+    sample = ((int)(inputData->sensorSampleA - inputData->sensorSampleB + inputDataRange)/2)+testDataAtributes.guardRegion;
+    resultSample = (sample_data_t)sample;
+
+   //comFrame->dataSample = (sample_data_t)resultSample;    
+    dataSize = sizeof(sample_data_t);
+    if((index+dataSize) < ACS_COM_CHANNEL_BYTES)
+    {
+        memcpy(comFrame->comChannelData+index, &resultSample, dataSize);
+    } else
+    {
+        printf("#ERR: Processor com data test fail!");
+    }
+}
+
+static inline void testSupervisorCode(com_channel_pt comFrameProcA, com_channel_pt comFrameProcB, output_data_pt outputData)
+{
+    uint32_t acsOutput;
+    sequence_no_t seqNoA, seqNoB;
+    sample_data_t sampleA, sampleB;
+    uint8_t dataSize, index;
+    
+    dataSize = sizeof(sequence_no_t);
+    memcpy(&seqNoA, comFrameProcA->comChannelData, dataSize);
+    memcpy(&seqNoB, comFrameProcB->comChannelData, dataSize);
+    index = dataSize;
+    
+    dataSize = sizeof(sample_data_t);
+    memcpy(&sampleA, comFrameProcA->comChannelData+index, dataSize);
+    memcpy(&sampleB, comFrameProcA->comChannelData+index, dataSize);
+    
+    if(sampleA == sampleB && seqNoA == seqNoB)
+    {
+        acsOutput = acsDecodingLUT[sampleA];
+        printf(" |*N: %d S: %d O: %d*| ", seqNoA, sampleA, acsOutput);
+    } else
+    {
+        printf("#ERR: SAMPLE FAULT\n");
     }
     
     outputData->output = acsOutput;
@@ -110,9 +144,9 @@ __weak void procInitCodeA(uint8_t procID)
     testInitCode(procID);
 }
 
-__weak void processorCodeA(input_data_pt inputData, com_data_pt comData) 
+__weak void processorCodeA(input_data_pt inputData, com_channel_pt comFrame) 
 {
-    testProcCode(inputData, comData);
+    testProcCode(inputData, comFrame);
 }
 
 __weak void processorExitRoutineA(uint8_t procID)
@@ -120,9 +154,9 @@ __weak void processorExitRoutineA(uint8_t procID)
     testInitCode(procID);
 }
 
-__weak void processorCodeB(input_data_pt inputData, com_data_pt comData) 
+__weak void processorCodeB(input_data_pt inputData, com_channel_pt comFrame) 
 {
-    testProcCode(inputData, comData);
+    testProcCode(inputData, comFrame);
 }
 
 __weak void procInitCodeB(uint8_t procID)
@@ -135,9 +169,9 @@ __weak void processorExitRoutineB(uint8_t procID)
     testInitCode(procID);
 }
 
-__weak void supervisorCode(com_data_pt comDataProcA, com_data_pt comDataProcB, output_data_pt outputData)
+__weak void supervisorCode(com_channel_pt comFrameProcA, com_channel_pt comFrameProcB, output_data_pt outputData)
 {
-    tetsSupervisorCode(comDataProcA, comDataProcB, outputData);
+    testSupervisorCode(comFrameProcA, comFrameProcB, outputData);
 }
 
 __weak void supervisorInitCode(uint8_t procID)

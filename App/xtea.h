@@ -57,11 +57,12 @@ extern "C"
 **                            Data Structures
 *******************************************************************************/
 
-typedef struct mbedtls_xtea_context
+typedef enum
 {
-    uint32_t k[4];       /*!< key */
-}
-mbedtls_xtea_context;
+    XTEA_SUCCESS,
+    XTEA_ENCRYPTION_FAIL,
+    XTEA_DECRYPTION_FAIL
+} xtea_ret_val_e;
 
 /*******************************************************************************
 **                       Global and static variables
@@ -72,7 +73,9 @@ mbedtls_xtea_context;
 *******************************************************************************/
 
 extern void xteaEncrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_DATA_BYTES], uint8_t output[XTEA_DATA_BYTES]);
+extern xtea_ret_val_e xteaByteArrayEncrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes);
 extern void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_DATA_BYTES], uint8_t output[XTEA_DATA_BYTES]);
+extern xtea_ret_val_e xteaByteArrayDecrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes);
 extern bool xteaTest(void);
 
 #ifdef __cplusplus
