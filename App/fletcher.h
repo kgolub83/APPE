@@ -87,7 +87,7 @@ extern bool fletcher32Test(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 #endif /* FLETCHER32_H */
 

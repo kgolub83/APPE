@@ -133,7 +133,7 @@ bool integratorTest(integrator_data_t topValue, integrator_data_t hysteresis)
     
     if(testVar == true) /*check if integrator crossed threshold*/
     {
-        for(i=0; i<hysteresis+1; i++)
+        for(i=0; i<hysteresis+5; i++)
         {
             testVar = integratorUp(&testIntegrator);
         }
@@ -166,13 +166,22 @@ bool integratorTest(integrator_data_t topValue, integrator_data_t hysteresis)
     
     if(testVar == false)    /*check if integrator reseted properly*/
     {
-        for(i=0; i<hysteresis+1; i++)
+        for(i=0; i<hysteresis+5; i++)
         {
             testVar = integratorDown(&testIntegrator);
         }
     } else
     {
         printf("#ERR: Integrator failed to reset on low threshold value\n");
+    }
+    
+    if(testIntegrator.accumulator == (topValue - 2*hysteresis)) /*check if value clipped to low clipping value*/
+    {
+        printf("Integrator test success...\n");
+    } else
+    {
+        printf("Integrator low clipping threshold owerflowed!\n");
+        return false;
     }
     
     return true;
