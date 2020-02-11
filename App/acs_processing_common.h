@@ -75,7 +75,6 @@ typedef enum
 **                     Public function prototypes - API
 *******************************************************************************/
 
-acs_flags_t checkSignalIntegrity(const input_data_pt data);
 acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
 bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints);
 

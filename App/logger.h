@@ -45,8 +45,8 @@ extern "C"
 *******************************************************************************/   
 
 /*l#define STD_ERR_OUT               stderr        standard error output definition */
-#define STD_ERR_OUT                 (fopen("std_err_redirect.log", "a+"))
-#define LOG_FILE                    "log_file.log"  /*log file name*/
+#define STD_ERR_OUT                 (fopen("Data/std_err_redirect.log", "a+"))
+#define LOG_FILE                    "Data/log_file.log"  /*log file name*/
 #define LOG_STRING_CHARACTERS       64U             /*user defined logger mesage max characters*/
 #define LOG_FILENAME_CHARACTERS     24U             /*current log file source record max characters*/
 #define LOG_FUNCTION_CHARACTERS     24U             /*urrent log function record max character*/
@@ -270,7 +270,7 @@ typedef struct
 
 extern void installUserLogDumpFn(log_arg_fnp userFunction);
 extern log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool logToFileEna, bool stderrEna, bool vt100FormatingEna);
-extern log_ret_val_e logData(const char *filename, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, int dataNo, ...);
+extern log_ret_val_e logData(const char *filename, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, uint32_t dataNo, ...);
 extern log_ret_val_e logWrite(void);
 extern void logTest(const char *message);
 

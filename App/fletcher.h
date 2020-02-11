@@ -82,7 +82,7 @@ typedef struct
 **                     Public function prototypes - API
 *******************************************************************************/
 
-extern uint32_t fletcher32(uint16_t const *data, int words);
+extern uint32_t fletcher32(uint16_t const *data, uint32_t words);
 extern bool fletcher32Test(void);
 
 #ifdef __cplusplus

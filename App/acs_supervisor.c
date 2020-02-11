@@ -57,7 +57,7 @@ void supervisorInitCode(uint8_t procID)
     /*setup logging parameters*/
     logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
     
-    LogFull_m(SYS_INIT, "Supervisor init OK", 1, 0);
+    LogFull_m(SYS_INIT, "Supervisor init OK", 1, procID);
 }
 
 /*!*****************************************************************************
@@ -234,6 +234,7 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
 
 void supervisorExitRoutine(uint8_t procID)
 {
+    LogFull_m(LOG_SYS_EVENT, "Supervisor routine exited", 1, procID);
     logWrite();     /* dump log data from memory to destination instances*/
 }
 

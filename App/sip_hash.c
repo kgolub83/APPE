@@ -110,17 +110,9 @@ uint32_t sipHash32(const uint8_t *in, const siphash_size_t inlen, const uint32_t
     }
     
     /* process ramaining input bytes */
-    switch (reminder) 
+    for(i=0; i<reminder; i++)
     {
-        case 3:
-            b |= ((uint32_t)in[alignedBytes + 2]) << 16;
-        case 2:
-            b |= ((uint32_t)in[alignedBytes + 1]) << 8;
-        case 1:
-            b |= ((uint32_t)in[alignedBytes + 0]);
-            break;
-        case 0:
-            break;
+        b |= ((uint32_t)in[alignedBytes + i]) << i*8;
     }
 
     v3 ^= b;

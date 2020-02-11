@@ -40,7 +40,7 @@
 * @return
 *******************************************************************************/
 
-int main(int argc, char **argv)
+int main()
 {
     VirtualProcessor codedProcesorA;
     VirtualProcessor codedProcesorB;  
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     threadProcB.join();
     threadSupervisor.join();
     
-    testData.writeCSV("acs_output_data.csv", outputData);
+    testData.writeCSV(OUTPUT_DATA_FILE, outputData);
     
     return 0;
 }

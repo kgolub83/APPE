@@ -85,7 +85,7 @@ void procInitCodeA(uint8_t procID)
     iirAvgFilterB.lastSample = dataAttributes.resolution - dataAttributes.guardRegion;
     iirAvgFilterB_gp = &iirAvgFilterB;
     
-    LogFull_m(SYS_INIT, "Processor A init OK", 1, 1);
+    LogFull_m(SYS_INIT, "Processor A init OK", 1, procID);
     
 }
 

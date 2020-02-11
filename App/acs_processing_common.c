@@ -41,11 +41,6 @@
 *
 * @returnacs_flag_t signal classification 
 *******************************************************************************/
-acs_flags_t checkSignalIntegrity(const input_data_pt data)
-{
-
-    return ACS_SYSTEM_FAULT;    
-}
 
 acs_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t sampleB, const tst_data_attributes_pt constraints)
 {

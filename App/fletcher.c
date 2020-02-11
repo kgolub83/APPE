@@ -58,7 +58,7 @@
 *
 * @return
 *******************************************************************************/
-uint32_t fletcher32(uint16_t const *data, int words)
+uint32_t fletcher32(uint16_t const *data, uint32_t words)
 {
     uint32_t sum1, sum2;
     uint16_t blockSize, i;

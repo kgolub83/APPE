@@ -135,7 +135,7 @@ log_ret_val_e logInit(log_type_e logLevel, log_writeLevel_e logWriteLevel, bool 
 * 
 * @return whether logging succeeded
 ******************************************************************************/
-log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, int dataNo, ...)
+log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t line, event_code_e eventCode, const char *logString, uint32_t dataNo, ...)
 {
     log_record_t record;
     va_list ap;

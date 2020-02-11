@@ -89,7 +89,7 @@ void procInitCodeB(uint8_t procID)
     movAvgFilterB_gp = &movAvgFilterB;
     movingAvgInit(movAvgFilterB_gp, dataAttributes.resolution - dataAttributes.guardRegion);
     
-    LogFull_m(SYS_INIT, "Processor B init OK", 1, 2);
+    LogFull_m(SYS_INIT, "Processor B init OK", 1, procID);
 }
 
 /*!*****************************************************************************
