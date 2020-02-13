@@ -94,9 +94,9 @@ uint32_t fletcher32(uint16_t const *data, uint32_t words)
 * 
 * @brief 
 *
-*
 * @return
 *******************************************************************************/
+
 bool fletcher32Test(void)
 {
     /* test are done assuming Litle Endian byte order from ASCII string input data 
@@ -121,7 +121,7 @@ bool fletcher32Test(void)
             .testData = (uint16_t*)testData2,
             .dataWordsNo = sizeof(testData2)/sizeof(uint16_t), 
             .testResult = 0xEBE19591
-        }        
+        }
     };
     
     const uint32_t testElements = sizeof(testArray)/sizeof(fletcher32Test_t);

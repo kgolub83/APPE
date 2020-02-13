@@ -8,7 +8,7 @@ sps = 1000;               #sample rate
 start_value = 800;        #generated signal start value
 nominal_value = 1023;     #starting nlominal value
 signal_slope = -40;       #slope precent per seconds 
-cutof_freq = 15;           #move average time window
+cutof_freq = 15;          #move average time window
 noise_gain = 10;          #noise in precent
 move_avg_magic_x = 0.196202;
 

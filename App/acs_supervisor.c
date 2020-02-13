@@ -46,18 +46,61 @@
 * @return void function
 *******************************************************************************/
 
+bool checkDecoderLUT(const uint32_t lut[])
+{
+    uint16_t tempLUT[ACS_DECODER_LUT_ELEMENTS-1];       /*temprary LUT table to convert values to 16 bit*/
+    uint32_t checksumCalc, i;
+    
+    /*convert LUT data for fletcher checksum calculation, expecting 16bit input data*/
+    for(i=0; i<ACS_DECODER_LUT_ELEMENTS-1; i++)
+    {
+        tempLUT[i] = (uint16_t)lut[i];
+    }
+    
+    checksumCalc = fletcher32(tempLUT, ACS_DECODER_LUT_ELEMENTS-1);   /*check checksum*/
+
+    if(lut[ACS_DECODER_LUT_ELEMENTS-1] == checksumCalc)
+    {
+        return true;
+    } else
+    {
+        return false;
+    }
+}
+
 void supervisorInitCode(uint8_t procID)
 {
     assert(fletcher32Test());       /*test fletcher32 checksum implementation*/ 
     assert(sipHashTest());          /*test SIP hash implementation*/
     assert(crc16Test());            /*test CRC checksum implementation*/
     assert(xteaTest());             /*test XTEA encryption implementation*/
+    assert(integratorTest(50, 20)); /*test error integrator*/
     
-    integratorTest(50, 20);
+    int checkLUT = 2;
+    
+    if(checkDecoderLUT(acsPrimDecodingLUT))
+    {
+        printf("Primary decoding LUT checked...\n");
+    } else
+    {
+        printf("#ERR: Primary decoding LUT corupted!\n");
+        checkLUT--;
+    }
+    
+    if(checkDecoderLUT(acsBackDecodingLUT))
+    {
+        printf("Backup decoding LUT checked...\n");
+    } else
+    {
+        printf("#ERR: Backup decoding LUT corupted!\n");
+        checkLUT--;
+    }
+    
+    assert(checkLUT>=1);     /*check if both LUTs corrupted*/
+    
     /*setup logging parameters*/
     logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
-    
-    LogFull_m(SYS_INIT, "Supervisor init OK", 1, procID);
+    LogFull_m(SYS_INIT, "Supervisor init OK...", 1, procID);
 }
 
 /*!*****************************************************************************
@@ -219,7 +262,7 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
             acsState = ACS_FATAL_SAFE_STOP;  
     }
     
-    outputData->output = acsDecodingLUT[resultSample];
+    outputData->output = acsPrimDecodingLUT[resultSample];
     outputData->flags = comDataProcB.flags | comDataProcA.flags;
     outputData->state = acsState;
     

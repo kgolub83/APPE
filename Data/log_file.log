@@ -1,0 +1,4 @@
+2020-2-13 17:38:36.1728 ID:3101 fl:acs_proc_a.c fn:procInitCodeA l:88 INFO SYS Processor A init OK 0 
+2020-2-13 17:38:36.1742 ID:3101 fl:acs_proc_b.c fn:procInitCodeB l:92 INFO SYS Processor B init OK 1 
+2020-2-13 17:38:36.2023 ID:3101 fl:acs_supervisor.c fn:supervisorInitCode l:103 INFO SYS Supervisor init OK... 2 
+2020-2-13 17:38:38.78088 ID:4100 fl:acs_supervisor.c fn:supervisorExitRoutine l:280 LOG SYS Supervisor routine exited 2 
