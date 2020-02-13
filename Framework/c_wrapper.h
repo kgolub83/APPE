@@ -34,6 +34,7 @@ extern "C"
 
 #include <stdint.h>
 #include <math.h>
+#include "acs_decoder.h"
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
@@ -258,8 +259,6 @@ typedef output_data_t* const output_data_pt; /*const pointer to output_data_t*/
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
-
-extern const uint32_t acsDecodingLUT[];   /*ACS position decoding table*/
 
 /*******************************************************************************
 **                     Public function prototypes - API

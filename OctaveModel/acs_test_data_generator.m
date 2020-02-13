@@ -67,32 +67,60 @@ dif2_ab = (sensor_b_data - sensor_a_data + range)/2 + guard;
 lut = (decoder_range/(time/1000))*(exp((lut_gen_data-guard)/scale)-1)/shape_a;
 
 lut_adc = (decoder_range/(time/1000))*(exp((adc_vector-guard)/scale)-1)/shape_a;
-lut_adc = int32(lut_adc);
+lut_adc = uint32(lut_adc);
 
 guard_element = uint32(guard);
 
 lut_adc(1:guard_element) = 0;
 lut_adc(resolution-guard_element: resolution+1) = decoder_range;
 
+fletcherChecksum = fletcher32(lut_adc);
+
+#generate decoder lut .c file
 fp = fopen ("acs_decoder.c", 'w+');
+fprintf(fp, "/*file generated with %s.m octave/matlab script %s*/\n", mfilename(), datestr(clock()));
 lut_row_elements = 16;
+lut_rows = uint32((resolution+1)/lut_row_elements);
+lut_elements = columns(lut_adc);
 
 fprintf(fp, "#include <stdint.h>\n\n");
-fprintf(fp, "const uint32_t acsDecodingLUT[] =\n{\n");
 
-lut_rows = uint32((resolution+1)/lut_row_elements);
-
+#write primary table
+fprintf(fp, "/* primary APPE decoding look up table */\n");
+fprintf(fp, "const uint32_t acsPrimDecodingLUT[%d] =\n{\n", lut_elements+1);
 for i=1:lut_rows
   for j=1:lut_row_elements
     fprintf(fp, "%4d", lut_adc(1,(i-1)*lut_row_elements + j));
-    end_marker = ftell(fp);     %mark last comma separator
     fprintf(fp, ", ");
   endfor;
   fprintf(fp, "\n");
 endfor;
+fprintf(fp, "0x%X};\n\n", fletcherChecksum);
 
-fseek(fp, end_marker, SEEK_SET);
-fprintf(fp, "\n};\n");
+#write backup table
+fprintf(fp, "/* backup APPE decoding look up table */\n");
+fprintf(fp, "const uint32_t acsBackDecodingLUT[%d] =\n{\n", lut_elements+1);
+for i=1:lut_rows
+  for j=1:lut_row_elements
+    fprintf(fp, "%4d", lut_adc(1,(i-1)*lut_row_elements + j));
+    fprintf(fp, ", ");
+  endfor;
+  fprintf(fp, "\n");
+endfor;
+fprintf(fp, "0x%X};\n", fletcherChecksum);
+
+fclose(fp);
+
+#generate decoder lut .h file
+fp = fopen ("acs_decoder.h", 'w+');
+fprintf(fp, "/*file generated with %s.m octave/matlab script %s*/\n\n", mfilename(), datestr(clock()));
+fprintf(fp, "#include <stdint.h>\n");
+fprintf(fp, "#ifndef ACS_DECODER_H\n");
+fprintf(fp, "#define ACS_DECODER_H\n\n");
+fprintf(fp, "#define ACS_DECODER_LUT_ELEMENTS  %d\n\n", lut_elements+1);
+fprintf(fp, "extern const uint32_t acsPrimDecodingLUT[];\n");
+fprintf(fp, "extern const uint32_t acsBackDecodingLUT[];\n\n");
+fprintf(fp, "#endif /*ACS_DECODER_H*/\n");
 
 fclose(fp);
 
@@ -114,4 +142,10 @@ fclose(fp);
 sensor_a_data_inverted = resolution - sensor_a_data;
 sensor_b_data_inverted = resolution - sensor_b_data;
 
+figure(1, 'position', [0,0,1900,1024]);
 plot(time_vector, sensor_a_data, time_vector, sensor_b_data, time_vector, sum_ab, time_vector, lut);
+
+print("Figs/MyPng.png", "-dpng", '-r180');
+
+
+

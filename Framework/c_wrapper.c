@@ -20,7 +20,6 @@
 **                                Includes
 *******************************************************************************/   
 #include "c_wrapper.h"
-#include "acs_decoder.h"
 #include <stdio.h> 
 #include <stdint.h>
 #include <time.h>
@@ -122,7 +121,7 @@ static inline void testSupervisorCode(com_channel_pt comFrameProcA, com_channel_
     
     if(sampleA == sampleB && seqNoA == seqNoB)
     {
-        acsOutput = acsDecodingLUT[sampleA];
+        acsOutput = acsPrimDecodingLUT[sampleA];
         printf(" |*N: %d S: %d O: %d*| ", seqNoA, sampleA, acsOutput);
     } else
     {
