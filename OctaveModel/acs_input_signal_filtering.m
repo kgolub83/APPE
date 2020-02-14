@@ -14,7 +14,7 @@ time = ns/sps;                        #input signal time period in seconds
 ########################## User filter settings  ############################### 
 cutof_freq = 30;                      #low pass filter frequency
 move_avg_magic_x = 0.196202;          #cutof frequency calculation factor
-iir_tune_factor = 0.93;               #time domain tune factor
+iir_tune_factor = 0.98;               #time domain tune factor
 
 #move average filter parameters
 average_window = sqrt(1 + sps*sps*move_avg_magic_x/(cutof_freq*cutof_freq)); #number of samples for move average filter
@@ -30,7 +30,7 @@ signal = inputData (2,:);        %get test data
 avg_win = 2*average_window/pi();
 #recoursive average
 iir2_coef = iir_tune_factor*1/avg_win;
-recoursive_filtered = verticalResolution-guard;
+recoursive_filtered = guard;
 iir2_filtered(1) = recoursive_filtered;
 
 for i=2:(ns)
@@ -42,7 +42,7 @@ for i = 1:(ns-average_window)
   move_avg_sum = sum(signal(i:(i+average_window-1)));
   x_avg_filt(i+average_window) = move_avg_sum/average_window;
 endfor
-x_avg_filt(1:average_window) = x_avg_filt(average_window+1);
+x_avg_filt(1:average_window) = recoursive_filtered(1:average_window);     %iir2_filtered(1:average_window);
 
 #filtering error between FIR and IIR implementation
 
@@ -84,10 +84,27 @@ fft_move_avg = fft_move_avg(1:ns/2);      %discard freqs beyound fs/2
 
 f_axis(1) = 0.0001;       %nonzeros for log scale
 
-############# plot results ############
+######################### plot results ################################
+close all;
+figure(1, 'position', [0,50,1900,900]);
 subplot(2,1,1)
-plot(t, signal, ";input signal;", t, x_avg_filt, ";moving average;", t, recoursive_filtered, ";recoursive average;");
+hold on;
+  plot(t, signal); 
+  plot(t, x_avg_filt); 
+  plot(t, recoursive_filtered); 
+  legend("input", "moving average   ", "recoursive");
+  title("Time domain response");
+  xlabel("time [ms]");
+  ylabel("amplitude");
+hold off;
 
 subplot(2,1,2)
-semilogx(f_axis, fft_move_avg, ";move avg;", f_axis, fft_iir_avg, ";recoursive average;");
-axis([1,1000]);
+hold on;
+  semilogx(f_axis, fft_move_avg, ";move avg;", f_axis, fft_iir_avg, ";recoursive average   ;");
+  axis([1,1000]);
+  title("Frequency response");
+  xlabel("frequency [Hz]");
+  ylabel("amplitude");  
+hold off;
+
+print("Figs/filterResponse.svg", "-dsvg", "-S1600, 900");

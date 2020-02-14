@@ -142,10 +142,22 @@ fclose(fp);
 sensor_a_data_inverted = resolution - sensor_a_data;
 sensor_b_data_inverted = resolution - sensor_b_data;
 
-figure(1, 'position', [0,0,1900,1024]);
-plot(time_vector, sensor_a_data, time_vector, sensor_b_data, time_vector, sum_ab, time_vector, lut);
+time_ms = time_vector*1000;
+#plot results
+close all;
+figure(1, 'position', [0,50,1900,900]);
+hold on;
+  plot(time_ms, sensor_a_data); 
+  plot(time_ms, sensor_b_data); 
+  plot(time_ms, sum_ab); 
+  plot(time_ms, lut);
+  title("Input data");
+  xlabel("time [ms]");
+  ylabel("amplitude");
+  legend("Signal A", "Signal B", "Response   ");
+hold off;
 
-print("Figs/MyPng.png", "-dpng", '-r180');
+print("Figs/input.svg", "-dsvg", "-S1600, 900");
 
 
 
