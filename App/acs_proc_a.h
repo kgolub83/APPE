@@ -39,7 +39,7 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-#define IIR_AVG_COEFFICIENT          0.10435f /* filter LP frequency coefficient*/
+#define IIR_AVG_COEFFICIENT     0.0595819f /* filter LP frequency coefficient*/
 
 /*******************************************************************************
 **                                Macros

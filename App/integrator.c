@@ -177,14 +177,12 @@ bool integratorTest(integrator_data_t topValue, integrator_data_t hysteresis)
     
     if(testIntegrator.accumulator == (topValue - 2*hysteresis)) /*check if value clipped to low clipping value*/
     {
-        printf("Integrator test success...\n");
+        return true;
     } else
     {
-        printf("Integrator low clipping threshold owerflowed!\n");
+        printf("#ERR: Integrator low clipping threshold owerflowed!\n");
         return false;
     }
-    
-    return true;
 }
 
 /******************************************************************************

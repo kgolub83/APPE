@@ -25,6 +25,7 @@
 #include "acs_communications.h"
 #include "acs_processing_common.h"
 #include "integrator.h"
+#include "logger.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -70,36 +71,42 @@ bool checkDecoderLUT(const uint32_t lut[])
 
 void supervisorInitCode(uint8_t procID)
 {
-    assert(fletcher32Test());       /*test fletcher32 checksum implementation*/ 
+    assert(fletcher32Test());       /*test fletcher32 checksum implementation*/
+    LogFull_m(INFO_SYS_EVENT, "Flatcher checksum test OK", 0,0);
     assert(sipHashTest());          /*test SIP hash implementation*/
+    LogFull_m(INFO_SYS_EVENT, "SIP hash test OK", 0,0);
     assert(crc16Test());            /*test CRC checksum implementation*/
+    LogFull_m(INFO_SYS_EVENT, "CRC checksum test OK", 0,0);
     assert(xteaTest());             /*test XTEA encryption implementation*/
+    LogFull_m(INFO_SYS_EVENT, "XTEA encryption test OK", 0,0);
     assert(integratorTest(50, 20)); /*test error integrator*/
+    LogFull_m(INFO_SYS_EVENT, "Error integrator test OK", 0,0);
     
     int checkLUT = 2;
     
+    /*setup system logger*/
+    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
+    
     if(checkDecoderLUT(acsPrimDecodingLUT))
     {
-        printf("Primary decoding LUT checked...\n");
+        LogFull_m(DECODING_LUT_CHECKED, "Primary decoding LUT checked", 1, 1);
     } else
     {
-        printf("#ERR: Primary decoding LUT corupted!\n");
+        LogFull_m(ERR_DECODING_LUT, "Primary decoding LUT corrupted!", 1, 1);
         checkLUT--;
     }
     
     if(checkDecoderLUT(acsBackDecodingLUT))
     {
-        printf("Backup decoding LUT checked...\n");
+        LogFull_m(DECODING_LUT_CHECKED, "Backup decoding LUT checked", 1, 2);
     } else
     {
-        printf("#ERR: Backup decoding LUT corupted!\n");
+        LogFull_m(ERR_DECODING_LUT, "Backup decoding LUT corrupted!", 1, 2);
         checkLUT--;
     }
     
     assert(checkLUT>=1);     /*check if both LUTs corrupted*/
     
-    /*setup logging parameters*/
-    logInit(VERBOSE, LOG_WRITE_FULL, LOG_TO_FILE_ENABLED, WRITE_TO_STDERR_ENABLED, VT100_ENABLED);
     LogFull_m(SYS_INIT, "Supervisor init OK...", 1, procID);
 }
 
@@ -139,14 +146,14 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
             mesageCntA++; /*Next espected sequence number*/
         } else
         {
-            printf("#ERR: Com A sequence number error\n");
+            LogFull_m(ERR_COM_SEQUENCE, "Com A sequence number error", 1, 1);
             mesageCntA = comDataProcA.seqNo + 1;
         }
         
     } else
     {
         acsStatus = ACS_COM_WAR;
-        printf("Proc A communication fault!\n");
+        LogFull_m(ERR_COM_CHANNEL_A, "Proc A communication fault!", 0, 0);
     }
     
     /*check communication channel B status*/
@@ -158,17 +165,17 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
             mesageCntB++; /*Next espected sequence number*/
         } else
         {
-            printf("#ERR: Com B sequence number error\n");
+            LogFull_m(ERR_COM_SEQUENCE, "Com B sequence number error", 1, 2);
             mesageCntB = comDataProcB.seqNo + 1;
         }
     } else if(acsStatus == ACS_COM_WAR)
     {
         acsStatus = ACS_COM_ERR;
-        printf("Proc A communication fault!\n");
+        LogFull_m(ERR_COM_CHANNEL_A, "Processor A communication fault", 1, 1);
     } else
     {
         acsStatus = ACS_COM_WAR;
-        printf("System communication fault!\n");
+        LogFull_m(ERR_SYS_COM_FAULT, "System communication fault", 0, 0);
     }
     
     flags = comStatA | (comStatB << (ACS_COM_B_FLAGS_OFFSET-ACS_COM_A_FLAGS_OFFSET));
@@ -187,7 +194,7 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
         if((comDataProcA.flags & ACS_SIGNALS_ASYMMETRY) || (comDataProcB.flags == ACS_SIGNALS_ASYMMETRY))
         {
             acsStatus = ACS_SIGNAL_WAR;
-            printf("Saignal assyimetry warning!\n");
+            LogFull_m(WAR_SIGNAL_ASYMMETRY, "Supervisor signal asymetry warning", 1, comDataProcA.seqNo);
         }
         
         /*compare datata form both channels*/
@@ -195,7 +202,7 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
         {
             acsStatus = ACS_PROCESSING_DIF;
             flags |= ACS_DATA_ASYMMETRY;
-            printf("Supervisor different data received!\n");
+            LogFull_m(WAR_SIGNAL_ASYMMETRY, "Supervisor different data received!", 1, comDataProcA.seqNo);
         }
         
         /*check if both processing units returned error*/
@@ -203,7 +210,7 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
         {
             acsStatus = ACS_SIG_ERR;
             resultSample = 0;
-            printf("Supervisor received both procesors fault!\n");
+            LogFull_m(FATAL_PROCESSING_FAULT, "Supervisor received both procesors fault", 1, comDataProcA.seqNo);
         } else if(comDataProcA.flags & ACS_SYSTEM_FAULT) /*check if processor A returned fault*/
         {
             resultSample = comDataProcB.dataSample;
@@ -225,41 +232,42 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
         case ACS_SYS_WAR:
             resultSample = (comDataProcA.dataSample + comDataProcB.dataSample)*0.5;
             acsState = ACS_WARNING_OPERATIONAL;
-            printf("#WAR: Supervisor SYS!\n");
+            LogFull_m(WAR_SUPERVISOR_SYS, "Supervisor SYS warning", 1, comDataProcA.seqNo);
             break;
         case ACS_COM_WAR:
             resultSample = resultSample;
             acsState = ACS_WARNING_RESTRICTIVE;
-            printf("#WAR: Supervisor COM!\n");
+            LogFull_m(WAR_SUPERVISOR_COM, "Supervisor COM warning", 1, comDataProcA.seqNo);
             break;
         case ACS_SIGNAL_WAR:
             resultSample = (comDataProcA.dataSample + comDataProcB.dataSample)*0.5;
             acsState = ACS_WARNING_RESTRICTIVE;
-            printf("#WAR: Supervisor signal diference!\n");
+            LogFull_m(WAR_SUPERVISOR_SIGNAL_DIF, "Supervisor signal diference", 1, comDataProcA.seqNo);
             break;
         case ACS_PROCESSING_DIF:
             resultSample = (comDataProcA.dataSample + comDataProcB.dataSample)*0.5;
-            printf("#WAR: Supervisor data diference!\n");
+            LogFull_m(WAR_SUPERVISOR_DATA_DIF, "Supervisor data diference", 1, comDataProcA.seqNo);
             acsState = ACS_ERROR_SPEED_LIMIT;
             break;
         case ACS_SYS_FAULT:
             resultSample = 0;
             acsState = ACS_FATAL_SAFE_STOP;
-            printf("#WAR: Supervisor SYS!\n");
+            LogFull_m(FATAL_SUPERVISOR_SYS, "Supervisor system fault", 1, comDataProcA.seqNo);
             break;
         case ACS_COM_ERR:
             resultSample = 0;
             acsState = ACS_FATAL_SAFE_STOP;
-            printf("#ERR: Supervisor COM!\n");
+            LogFull_m(FATAL_SUPERVISOR_SYS, "Supervisor communication fault", 1, comDataProcA.seqNo);
             break;
         case ACS_SIG_ERR:
             resultSample = 0;
             acsState = ACS_FATAL_SAFE_STOP;
-            printf("#ERR: Supervisor signal error!\n");
+            LogFull_m(FATAL_SUPERVISOR_DATA, "Supervisor position signals error", 1, comDataProcA.seqNo);
             break;
         default:
             resultSample = 0;
-            acsState = ACS_FATAL_SAFE_STOP;  
+            acsState = ACS_FATAL_SAFE_STOP;
+            LogFull_m(FATAL_SUPERVISOR_SYS, "Supervisor communication fault", 1, comDataProcA.seqNo);
     }
     
     outputData->output = acsPrimDecodingLUT[resultSample];
@@ -272,7 +280,6 @@ void supervisorCode(com_channel_pt comFrameA, com_channel_pt comFrameB, output_d
     outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_A] = comDataProcB.channelDebug[DEBUG_CHANNEL_A];
     outputData->outputDebug[DEBUG_VECTORS+DEBUG_CHANNEL_B] = comDataProcB.channelDebug[DEBUG_CHANNEL_B];
     
-    //printf("|%x %x|", comDataProcA.flags, comDataProcB.flags);
 }
 
 void supervisorExitRoutine(uint8_t procID)

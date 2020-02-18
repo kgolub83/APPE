@@ -42,7 +42,7 @@
 
 int main()
 {
-    VirtualProcessor codedProcesorA;
+    VirtualProcessor codedProcessorA;
     VirtualProcessor codedProcesorB;  
     VirtualProcessor supervisor;
     IOdata testData;
@@ -63,10 +63,10 @@ int main()
               << mainTerminalStrings[infoConcurrency] << std::endl;
     
     //configure processing unit A  
-    codedProcesorA.installInitCalback(procInitCodeA);
-    codedProcesorA.installUserCalback(processorCodeA);
-    codedProcesorA.setRunCycles(testData.getSamplesNo());
-    codedProcesorA.setOutputCom(COM_SOCKET_A,PROC_A_OUT_COM_CHANNEL);
+    codedProcessorA.installInitCalback(procInitCodeA);
+    codedProcessorA.installUserCalback(processorCodeA);
+    codedProcessorA.setRunCycles(testData.getSamplesNo());
+    codedProcessorA.setOutputCom(COM_SOCKET_A,PROC_A_OUT_COM_CHANNEL);
     
     //configure processing unit B
     codedProcesorB.installInitCalback(procInitCodeB);
@@ -92,7 +92,7 @@ int main()
     std::thread threadSupervisor(&VirtualProcessor::executeSupervisor, &supervisor,
                                 std::ref(outputData));    
     
-    std::thread threadProcA(&VirtualProcessor::executeUserProgram, &codedProcesorA,
+    std::thread threadProcA(&VirtualProcessor::executeUserProgram, &codedProcessorA,
                             std::ref(inputDataA), std::ref(inputDataB));
 
     std::thread threadProcB(&VirtualProcessor::executeUserProgram, &codedProcesorB, 

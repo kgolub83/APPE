@@ -1,18 +1,18 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file main_functions.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
  * @date 2020-01-08
  * 
- * @brief 
+ * @brief functions called from main function
  *
- * @version
+ * @version 0.1
  *
  * @section REVISION HISTORY
- *  - KG 2020-01-08 Initial implementation 
+ *  - 0.1 KG 2020-01-08 Initial implementation 
  *
  ******************************************************************************/
 

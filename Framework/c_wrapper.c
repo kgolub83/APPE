@@ -20,6 +20,7 @@
 **                                Includes
 *******************************************************************************/   
 #include "c_wrapper.h"
+#include "../App/logger.h"
 #include <stdio.h> 
 #include <stdint.h>
 #include <time.h>
@@ -29,7 +30,7 @@
 **                       Global and static variables
 *******************************************************************************/
 
-/* holds input tetst data settings */
+/* holds input test data settings */
 static tst_data_attributes_t testDataAtributes; 
 
 /*******************************************************************************

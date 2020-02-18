@@ -36,6 +36,7 @@
 #include "crc16.h"
 #include "xtea.h"
 #include "helper_functions.h"
+#include "logger.h"
 
 /*******************************************************************************
 **                       Global and static variables
@@ -112,7 +113,7 @@ acs_flags_t unpackComData(com_data_pt comData, com_channel_pt comFrame)
     /* XTEA encryption */
     if(xteaByteArrayDecrypt(xteaKeys, comFrame->comChannelData, ACS_COM_CHANNEL_BYTES))
     {
-        printf("#ERR: XTEA decryption fault\n");
+        LogFull_m(ERR_XTEA_DECRYPTION, "Com decryption fault!", 0, 0);
         retVal |= ACS_AUTHENTICATION_A;
     } else
     {
@@ -133,7 +134,7 @@ acs_flags_t unpackComData(com_data_pt comData, com_channel_pt comFrame)
         
         if(sipCalculated != comData->signature)
         {
-            printf("#ERR: Com signature failed\n"); 
+            LogFull_m(ERR_SIP_SIGNATURE, "Com signature fault!", 0, 0);
             retVal = ACS_AUTHENTICATION_A;
         } 
         
@@ -142,13 +143,11 @@ acs_flags_t unpackComData(com_data_pt comData, com_channel_pt comFrame)
         
         if(crcCalculated != comData->crc)
         {
-            printf("#ERR: Com CRC failed\n");
+            LogFull_m(ERR_CRC_CHECKSUM, "Data integrity fault!",0,0);
             retVal = ACS_DATA_INTEGRITY_A;
         }
     }
     
-    //printf("|CRC: %04X %04X SIP: %08X %08X|", comData->crc, crcCalculated, comData->signature, sipCalculated);
-
     return retVal;
 }
 

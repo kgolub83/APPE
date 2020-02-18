@@ -142,7 +142,7 @@ bool checkComplementarity(const dsp_data_t sampleA, const dsp_data_t sampleB, co
     } else
     {
         signalOffset = constraints->resolution - signalSum;
-        printf(" #DIF:%d # ", (int)signalOffset);
+        LogFull_m(WAR_DATA_DIFFERENCE, "Sampple data difference", 1, (int)signalOffset);
         retVal = false;
     }
     

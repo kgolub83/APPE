@@ -1,3 +1,22 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file communication_queue.c
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief singleton class emulating communication channels between processors and
+ *        supervisor
+ *
+ * @version
+ *
+ * @section REVISION HISTORY
+ *  - KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
 #include <iostream>
 #include "communication_queue.h"
 

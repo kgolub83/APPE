@@ -1,3 +1,21 @@
+/*!*******************************Copyright (c)*********************************
+ *                                GlobalLogic
+ * 
+ * @file virtual_processor.c
+ *
+ * @author Kristijan Golub - kristijan.golub@globallogic.com
+ *
+ * @date 2020-01-08
+ * 
+ * @brief modeled processor container class
+ *
+ * @version 0.1
+ *
+ * @section REVISION HISTORY
+ *  - 0.1 KG 2020-01-08 Initial implementation 
+ *
+ ******************************************************************************/
+
 #include "virtual_processor.h"
 #include "communication_queue.h"
 #include <iostream>

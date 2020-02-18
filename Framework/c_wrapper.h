@@ -1,13 +1,13 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file .c
+ * @file c_wrapper.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
  * @date 2020-01-08
  * 
- * @brief 
+ * @brief wrapper for c functions and specific user implementation  
  *
  * @version
  *

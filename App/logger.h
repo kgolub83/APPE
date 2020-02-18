@@ -44,8 +44,8 @@ extern "C"
 **                               Constants
 *******************************************************************************/   
 
-/*l#define STD_ERR_OUT               stderr        standard error output definition */
-#define STD_ERR_OUT                 (fopen("Data/std_err_redirect.log", "a+"))
+#define STD_ERR_OUT               stderr        /*standard error output definition*/
+/*#define STD_ERR_OUT                 (fopen("Data/std_err_redirect.log", "a+"))*/
 #define LOG_FILE                    "Data/log_file.log"  /*log file name*/
 #define LOG_STRING_CHARACTERS       64U             /*user defined logger mesage max characters*/
 #define LOG_FILENAME_CHARACTERS     24U             /*current log file source record max characters*/
@@ -175,6 +175,7 @@ typedef enum
         INFO_SYS_EVENT = INFO_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here INFO system/OS events*/
             SYS_INIT,
             PROGRAM_START_SUCCESS,
+            DECODING_LUT_CHECKED,
         INFO_COM_EVENT = INFO_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here INFO communication events*/
             
         INFO_APP_EVENT = INFO_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here INFO application events*/
@@ -196,20 +197,31 @@ typedef enum
         WARNING_HAL_EVENT = WARNING_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here WARNING hardware abstraction layer/drivers events*/
             
         WARNING_SYS_EVENT = WARNING_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here WARNING system/OS events*/
-            
+            WAR_DATA_DIFFERENCE,
+            WAR_SIGNAL_ASYMMETRY,
         WARNING_COM_EVENT = WARNING_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here WARNING communication events*/
-            
+
         WARNING_APP_EVENT = WARNING_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here WARNING application events*/
-            
+            WAR_SUPERVISOR,
+            WAR_SUPERVISOR_COM,
+            WAR_SUPERVISOR_SYS,
+            WAR_SUPERVISOR_DATA_DIF,
+            WAR_SUPERVISOR_SIGNAL_DIF,
         WARNING_HMI_EVENT = WARNING_EVENT + HMI*EVENT_SUBTYPE_POSITION, /*place here WARNING presentation events*/
         
     ERROR_EVENT = ERROR*LOG_LEVEL_POSITION,        /*error events starts here*/
         ERROR_HAL_EVENT = ERROR_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here ERROR hardware abstraction layer/drivers events*/
             
         ERROR_SYS_EVENT = ERROR_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here ERROR system/OS events*/
-            
+            ERR_DECODING_LUT,
+            ERR_SYS_COM_FAULT,
         ERROR_COM_EVENT = ERROR_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here ERROR communication events*/
-            
+            ERR_XTEA_DECRYPTION,
+            ERR_SIP_SIGNATURE,
+            ERR_CRC_CHECKSUM,
+            ERR_COM_SEQUENCE,
+            ERR_COM_CHANNEL_A,
+            ERR_COM_CHANNEL_B,
         ERROR_APP_EVENT = ERROR_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here ERROR application events*/
             
         ERROR_HMI_EVENT = ERROR_EVENT + HMI*EVENT_SUBTYPE_POSITION, /*place here ERROR presentation events*/
@@ -218,11 +230,12 @@ typedef enum
         FATAL_HAL_EVENT = FATAL_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here FATAL hardware abstraction layer/drivers events*/
             
         FATAL_SYS_EVENT = FATAL_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here FATAL system/OS events*/
-
+            FATAL_PROCESSING_FAULT,
         FATAL_COM_EVENT = FATAL_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here FATAL communication events*/
             
         FATAL_APP_EVENT = FATAL_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here FATAL application events*/
-            
+            FATAL_SUPERVISOR_SYS,
+            FATAL_SUPERVISOR_DATA,
         FATAL_HMI_EVENT = FATAL_EVENT + HMI*EVENT_SUBTYPE_POSITION, /*place here FATAL presentation events*/
             
     NUM_OF_LOG_EVENTS

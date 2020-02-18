@@ -140,12 +140,11 @@ bool fletcher32Test(void)
     
     if(testElements == passedTests)
     {
-        retVal = true;
-        printf("Fletcher Test OK...\n");
+        retVal = true;        
     } else
     {
         retVal = false;
-        printf("#FLETCHER TEST ERROR\n");
+        printf("#ERR: flatcher test fault!\n");
     }
     return retVal;
 }

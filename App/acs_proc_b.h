@@ -39,7 +39,7 @@ extern "C"
 **                               Constants
 *******************************************************************************/  
 
-#define MOV_AVG_WIN_SAMPLES      14     /*move average filter averaging window samples*/
+#define MOV_AVG_WIN_SAMPLES    29 /*move average filter averaging window samples*/
 
 /*******************************************************************************
 **                                Macros

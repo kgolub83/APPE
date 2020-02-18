@@ -25,6 +25,7 @@
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
+
 const char* mainTerminalStrings[] =
 {
     [initCom] = "Virtual Communication channels initialized at ",
@@ -32,6 +33,7 @@ const char* mainTerminalStrings[] =
     [initFramework] = "Dual processing framework started...", 
     [infoConcurrency] = " physical concurrent processing units available"
 };
+
 /*******************************************************************************
 **                                 Code
 *******************************************************************************/

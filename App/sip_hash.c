@@ -175,17 +175,12 @@ bool sipHashTest(void)
         
         if(sip32TestHashVactor[i] != hash) /* check hashes */
         {
-            printf("SIP#ERR %d: %08X\n", i, hash);
+            printf("#ERR SIP %d: %08X\n", i, hash);
             retVal = false;
         }
         
     }
 
-    if(true == retVal)
-    {
-        printf("SIP Test OK...\n");
-    }
-    
     return retVal;
 }
 

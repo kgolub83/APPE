@@ -256,7 +256,7 @@ bool xteaTest(void)
                 if(((uint8_t*)xteaKeyTest)[XTEA_DATA_BYTES-1-k+(j+i*WORD32_BITS)*XTEA_DATA_BYTES] != encryptedData[k])
                 {
                     retVal = false;
-                    printf("#XTEA KEY#ENCRYPT#ERR\n");
+                    printf("#ERR: XTEA encrypt\n");
                 }
             }
             
@@ -267,7 +267,7 @@ bool xteaTest(void)
                 if(testData[k] != decryptedData[k])     /*check decription result*/
                 {
                     retVal = false;
-                    printf("#XTEA KEY#DECRYPT#ERR\n");
+                    printf("#ERR: XTEA decrypt\n");
                 }
             }
         }
@@ -293,7 +293,7 @@ bool xteaTest(void)
                 if(((uint8_t*)xteaDataTest)[XTEA_DATA_BYTES-1-k+(j+i*BYTE_BITS)*XTEA_DATA_BYTES] != encryptedData[k]) /*check encryption result*/
                 {
                     retVal = false;
-                    printf("#XTEA DATA#ENCRYPT#ERR\n");
+                    printf("#ERR: XTEA encrypt\n");
                 }
             }
 
@@ -304,18 +304,13 @@ bool xteaTest(void)
                 if(testData[k] != decryptedData[k])     /*check decription result*/
                 {
                     retVal = false;
-                    printf("#XTEA DATA#DECRYPT#ERR\n");
+                    printf("#ERR: XTEA decrypt");
                 }
             }
         }
         testData[i] = 0;
     }
-    
-    if(true == retVal)
-    {
-        printf("XTEA test OK...\n");
-    }
-    
+
     return retVal;
 }
 
