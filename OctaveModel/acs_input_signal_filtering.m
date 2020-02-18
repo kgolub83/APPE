@@ -11,10 +11,10 @@ decoderRange = inputData(1,5);
 
 time = ns/sps;                        #input signal time period in seconds
               
-########################## User filter settings  ############################### 
-cutof_freq = 30;                      #low pass filter frequency
+########################## User filter settings ################################ 
+cutof_freq = 15;                      #low pass filter frequency
 move_avg_magic_x = 0.196202;          #cutof frequency calculation factor
-iir_tune_factor = 0.98;               #time domain tune factor
+iir_tune_factor = 1.1;                #time domain tune factor
 
 #move average filter parameters
 average_window = sqrt(1 + sps*sps*move_avg_magic_x/(cutof_freq*cutof_freq)); #number of samples for move average filter
@@ -84,10 +84,15 @@ fft_move_avg = fft_move_avg(1:ns/2);      %discard freqs beyound fs/2
 
 f_axis(1) = 0.0001;       %nonzeros for log scale
 
+################## integrate impulse response #########################
+
+sum(x_avg_response)
+sum(iir2_filtered)
+
 ######################### plot results ################################
 close all;
 figure(1, 'position', [0,50,1900,900]);
-subplot(2,1,1)
+subplot(2,2,1)
 hold on;
   plot(t, signal); 
   plot(t, x_avg_filt); 
@@ -98,7 +103,7 @@ hold on;
   ylabel("amplitude");
 hold off;
 
-subplot(2,1,2)
+subplot(2,2,3)
 hold on;
   semilogx(f_axis, fft_move_avg, ";move avg;", f_axis, fft_iir_avg, ";recoursive average   ;");
   axis([1,1000]);
@@ -106,5 +111,22 @@ hold on;
   xlabel("frequency [Hz]");
   ylabel("amplitude");  
 hold off;
+
+subplot(2,2,2)
+hold on;
+  plot(t, x_avg_response, ";move avg;");
+  title("Impulse response moving average filter");
+  xlabel("time [ms]");
+  ylabel("amplitude");  
+hold off;
+
+subplot(2,2,4)
+hold on;
+  plot(t, iir2_filtered, ";recoursive average   ;");
+  title("Impulse response recoursive average filter");
+  xlabel("time [ms]");
+  ylabel("amplitude");  
+hold off;
+
 
 print("Figs/filterResponse.svg", "-dsvg", "-S1600, 900");

@@ -60,7 +60,7 @@ hold off;
 subplot(2,2,2)
 hold on;
   plot(timeAxis, resultVector(systemFlags,:));
-  title("System flags");
+  title("Output state");
   xlabel("time [ms]");
   ylabel("amplitude");
 hold off;
@@ -70,7 +70,7 @@ figure(1, 'position', [0,50,1900,900]);
 subplot(2,2,4)
 hold on;
   plot(timeAxis, resultVector(outputState,:));
-  title("Output state");
+  title("System flags");
   xlabel("time [ms]");
   ylabel("amplitude");
 hold off;
