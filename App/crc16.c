@@ -1,7 +1,7 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file acs_supervisor.h
+ * @file appe_supervisor.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
@@ -191,11 +191,10 @@ bool crc16Test(void)
     
     if(ccitTestResult == crcResult)
     {
-        printf("CRC test OK...\n");
         retVal = true;
     } else
     {
-        printf("#CRC#ERROR: %X\n", crcResult);
+        printf("#ERR: CRC16 test %X\n", crcResult);
         retVal = false;
     }
     

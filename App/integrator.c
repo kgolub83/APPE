@@ -40,7 +40,6 @@
 *
 * @return 
 *******************************************************************************/
-
 void integratorReset(integrator_pt integrator)
 {
     integrator->accumulator = 0;
@@ -63,6 +62,15 @@ inline bool integratorUp(integrator_pt integrator)
     return integrator->status;
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return 
+*******************************************************************************/
 inline bool integratorDown(integrator_pt integrator)
 {
     integrator->accumulator -= integrator->downCount;
@@ -79,6 +87,15 @@ inline bool integratorDown(integrator_pt integrator)
     return integrator->status;
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return 
+*******************************************************************************/
 inline bool integratorStatus(integrator_pt integrator)
 {    
     if(integrator->accumulator >= integrator->upThreshold)
@@ -100,6 +117,15 @@ inline bool integratorStatus(integrator_pt integrator)
     return integrator->status;
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return 
+*******************************************************************************/
 bool integratorTest(integrator_data_t topValue, integrator_data_t hysteresis)
 {
     integrator_data_t i;

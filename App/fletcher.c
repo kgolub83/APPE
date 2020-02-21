@@ -96,10 +96,9 @@ uint32_t fletcher32(uint16_t const *data, uint32_t words)
 *
 * @return
 *******************************************************************************/
-
 bool fletcher32Test(void)
 {
-    /* test are done assuming Litle Endian byte order from ASCII string input data 
+    /* test are done assuming Little Endian byte order from ASCII string input data 
      *  \0 is natively used for padding 16bit input data*/
     uint8_t testData0[] = "abcde";
     uint8_t testData1[] = "abcdef"; 

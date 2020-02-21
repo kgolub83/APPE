@@ -151,7 +151,7 @@ typedef union{
         index += 2;                                         \
 }
 
-/*parse bytes from byte array to unsigned 16 bit variablein reverse order*/
+/*parse bytes from byte array to unsigned 16 bit variable in reverse order*/
 #define bytesToUint16Reverse_m(var16, byteVector, index)           \
 {                                                           \
 (var16) = ( (uint32_t) (byteVector)[(index)    ] <<  8 )    \

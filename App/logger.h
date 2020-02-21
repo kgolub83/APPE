@@ -51,7 +51,7 @@ extern "C"
 #define LOG_FILENAME_CHARACTERS     24U             /*current log file source record max characters*/
 #define LOG_FUNCTION_CHARACTERS     24U             /*urrent log function record max character*/
 #define LOG_MAX_DATA                5U              /*max data containers per record*/
-#define LOG_BUFFER_RECORDS          1024U           /*RAM log records FIFO buffer elements*/
+#define LOG_BUFFER_RECORDS          4096U           /*RAM log records FIFO buffer elements*/
 
 #define LOG_LEVEL_POSITION          0x1000          /*1 represents nibble (4 bits) position for log level encoding*/
 #define LOG_LEVEL_MASK              (LOG_LEVEL_POSITION * 0xF)
@@ -155,7 +155,7 @@ typedef enum
         TRACE_COM_EVENT = TRACE_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here TRACE communication events*/
             
         TRACE_APP_EVENT = TRACE_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here TRACE application events*/
-            
+            TRACE_APPE_OUTPUT,
         TRACE_HMI_EVENT = TRACE_EVENT + HMI*EVENT_SUBTYPE_POSITION, /*place here TRACE presentation events*/
         
     DEBUG_EVENT = DEBUG*LOG_LEVEL_POSITION,        /*debug events starts here*/
@@ -176,6 +176,7 @@ typedef enum
             SYS_INIT,
             PROGRAM_START_SUCCESS,
             DECODING_LUT_CHECKED,
+            SYSTEM_STATE_CHANGED,
         INFO_COM_EVENT = INFO_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here INFO communication events*/
             
         INFO_APP_EVENT = INFO_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here INFO application events*/
@@ -222,13 +223,14 @@ typedef enum
             ERR_COM_SEQUENCE,
             ERR_COM_CHANNEL_A,
             ERR_COM_CHANNEL_B,
+            ERR_SYS_COM,
         ERROR_APP_EVENT = ERROR_EVENT + APP*EVENT_SUBTYPE_POSITION, /*place here ERROR application events*/
             
         ERROR_HMI_EVENT = ERROR_EVENT + HMI*EVENT_SUBTYPE_POSITION, /*place here ERROR presentation events*/
         
     FATAL_EVENT = FATAL*LOG_LEVEL_POSITION,        /*fatal events starts here*/
         FATAL_HAL_EVENT = FATAL_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here FATAL hardware abstraction layer/drivers events*/
-            
+            FATAL_DECODING_LUTS,
         FATAL_SYS_EVENT = FATAL_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here FATAL system/OS events*/
             FATAL_PROCESSING_FAULT,
         FATAL_COM_EVENT = FATAL_EVENT + COM*EVENT_SUBTYPE_POSITION, /*place here FATAL communication events*/

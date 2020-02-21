@@ -39,7 +39,7 @@
 *******************************************************************************/  
 
 #define VP_SLEEP_TIMEOUT                1   //virtual processor sleep timeout
-#define SUPERVISOR_OVERRUN_FACTOR       3   //mximum alowable supervisor itterations times number of sample points 
+#define SUPERVISOR_OVERRUN_FACTOR       3   //maximum alowable supervisor iterations times number of sample points 
 
 /*******************************************************************************
 **                                Macros

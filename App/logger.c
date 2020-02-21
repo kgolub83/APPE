@@ -186,6 +186,13 @@ log_ret_val_e logData(const char *fileName, const char *functionName, uint16_t l
     
     if(fifoWrite(&logFifo, &record))
     {
+        /*set error mesage parameters*/
+        strncpy(record.logString, "#LOGGER_ERR: Logger memory buffer write fail", LOG_STRING_CHARACTERS-1);
+        record.eventID = FATAL_APP_EVENT;
+        record.level = FATAL;
+        fifoDelLastElement(&(logFifo.ctrl));    /*delete last record in buffer*/
+        fifoWrite(&logFifo, &record);       /*write error masage*/
+        
         printf("#ERR: Logger memory buffer write fail!\n");
     }
     

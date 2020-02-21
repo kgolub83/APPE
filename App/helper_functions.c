@@ -39,7 +39,6 @@
 *
 * @return 
 *******************************************************************************/
-
 inline bool isInRange (const signalVar_t var, const signalVar_t min, const signalVar_t max)
 {
     if ((var >= min) && (var <= max))
@@ -51,6 +50,15 @@ inline bool isInRange (const signalVar_t var, const signalVar_t min, const signa
     }
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return 
+*******************************************************************************/
 inline signalCheck_e signalCheck(const signalVar_t var, const signalVar_t min, const signalVar_t max)
 {
     signalCheck_e retVal;

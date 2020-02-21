@@ -1,17 +1,32 @@
 #!/bin/bash
+#********************************Copyright (c)********************************
+#                                  GlobalLogic
+#
+# @author Kristijan Golub - kristijan.golub@globallogic.com
+#
+# @date 2019-12-20
+# 
+# @brief generate input test data (emulating ADC values from position sensor)
+#		-generated data saved in a appe_test_data.csv file
+#
+# @version 0.1
+#
+# @section REVISION HISTORY
+#  - KG 2019-12-20 Initial implementation 
+#
+#*****************************************************************************/
 
-echo "ACS Test data generator..."
+echo "APPE Test data generator..."
 
 #run octave script
 cd OctaveModel
-octave acs_test_data_generator.m
+octave appe_test_data_generator.m
 
 #copy data to destination
-cp -p acs_decoder.c ../Framework
-cp -p acs_decoder.h ../Framework
+cp -p appe_decoder.c ../Framework
+cp -p appe_decoder.h ../Framework
 
 #plot data
-
 eog --fullscreen Figs/input.svg
 
 cd ..

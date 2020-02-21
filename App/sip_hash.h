@@ -99,7 +99,7 @@ extern bool sipHashTest(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif /* nextern "C" */
+#endif /* extern "C" */
 
 #endif /* SIP_HASH_H */
 

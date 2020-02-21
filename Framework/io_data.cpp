@@ -42,13 +42,36 @@
 *
 * @return
 *******************************************************************************/
+
 IOdata::IOdata()
 {
+
 }
+
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 IOdata::~IOdata()
 {
+
 }
+
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 IOdata_ret_val_t IOdata::readCSV(std::string fileName)
 {
@@ -63,7 +86,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     inputFile.clear();
     inputFile.open(fileName, std::fstream::in);   //open input data *.csv file
     
-    assert(inputFile.is_open());      //check if file opened seccessfuly
+    assert(inputFile.is_open());      //check if file opened seccessfully
   
     //reset fault flags
     flagEmpty = false;      
@@ -91,7 +114,7 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     /****** Read input test data vectors ******/
     for(data_vector_no_t i = 0; i< DATA_VECTORS_NO; i++) 
     {   
-        inputFile >> line;          //read rows untill the end of file
+        inputFile >> line;          //read rows until the end of file
         dataSamples[i].clear(); 
         streamBuffer.clear();
         streamBuffer.str(line);     //convert line string to stream
@@ -128,12 +151,22 @@ IOdata_ret_val_t IOdata::readCSV(std::string fileName)
     } 
     else
     {
-        std::cout << dataSamplesNo << " data points successfuly loaded!" << std::endl;
+        std::cout << dataSamplesNo << " data points successfully loaded!" << std::endl;
         retVal = IO_DATA_SUCCESS;
     }
     
     return retVal;
 }
+
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
 {
@@ -209,10 +242,30 @@ IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
     return retVal;
 }
 
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 samples_vector_t IOdata::getSensorData(data_vector_no_t vectorNo)
 {
     return dataSamples[vectorNo];
 }
+
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 void IOdata::getDataAttributes(tst_data_attributes_t& attributes)
 {
@@ -223,14 +276,21 @@ void IOdata::getDataAttributes(tst_data_attributes_t& attributes)
     attributes.decoderRange = decoderRange;
 }
 
+/*!*****************************************************************************
+* @function IOdata()
+* 
+* @brief constructor method for IOdata object
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 samples_no_t IOdata::getSamplesNo(void)
 {
     return dataSamplesNo;
 }
 
-
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
-
-

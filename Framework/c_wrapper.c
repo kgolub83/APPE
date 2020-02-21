@@ -37,6 +37,16 @@ static tst_data_attributes_t testDataAtributes;
 **                                 Code
 *******************************************************************************/
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 void setTestDataAttributes(tst_data_attributes_pt attributes)
 {
     testDataAtributes.decoderRange = attributes->decoderRange;
@@ -45,6 +55,16 @@ void setTestDataAttributes(tst_data_attributes_pt attributes)
     testDataAtributes.sampleRate = attributes->sampleRate;
     testDataAtributes.samplesNo = attributes->samplesNo;
 }
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return
+*******************************************************************************/
 
 void getTestDataAttributes(tst_data_attributes_pt attributes)
 {
@@ -70,6 +90,16 @@ static inline void testInitCode(uint8_t id)
     printf("Processor %d initialised!", id);
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 static inline void testProcCode(input_data_pt inputData, com_channel_pt comFrame)
 {
     int sample;
@@ -81,7 +111,7 @@ static inline void testProcCode(input_data_pt inputData, com_channel_pt comFrame
     
     //comFrame->seqNo = inputData->sampleNo;
     dataSize = sizeof(sequence_no_t); 
-    if(dataSize < ACS_COM_CHANNEL_BYTES)
+    if(dataSize < APPE_COM_CHANNEL_BYTES)
     {    
         memcpy(comFrame->comChannelData, &inputData->sampleNo, dataSize);
     } else
@@ -95,7 +125,7 @@ static inline void testProcCode(input_data_pt inputData, com_channel_pt comFrame
 
    //comFrame->dataSample = (sample_data_t)resultSample;    
     dataSize = sizeof(sample_data_t);
-    if((index+dataSize) < ACS_COM_CHANNEL_BYTES)
+    if((index+dataSize) < APPE_COM_CHANNEL_BYTES)
     {
         memcpy(comFrame->comChannelData+index, &resultSample, dataSize);
     } else
@@ -104,9 +134,19 @@ static inline void testProcCode(input_data_pt inputData, com_channel_pt comFrame
     }
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 static inline void testSupervisorCode(com_channel_pt comFrameProcA, com_channel_pt comFrameProcB, output_data_pt outputData)
 {
-    uint32_t acsOutput;
+    uint32_t appeOutput;
     sequence_no_t seqNoA, seqNoB;
     sample_data_t sampleA, sampleB;
     uint8_t dataSize, index;
@@ -122,23 +162,32 @@ static inline void testSupervisorCode(com_channel_pt comFrameProcA, com_channel_
     
     if(sampleA == sampleB && seqNoA == seqNoB)
     {
-        acsOutput = acsPrimDecodingLUT[sampleA];
-        printf(" |*N: %d S: %d O: %d*| ", seqNoA, sampleA, acsOutput);
+        appeOutput = appePrimDecodingLUT[sampleA];
+        printf(" |*N: %d S: %d O: %d*| ", seqNoA, sampleA, appeOutput);
     } else
     {
         printf("#ERR: SAMPLE FAULT\n");
     }
     
-    outputData->output = acsOutput;
-    outputData->state = ACS_ACTIVE;
+    outputData->output = appeOutput;
+    outputData->state = APPE_ACTIVE;
 }
 
 static inline void testExitCode(uint8_t id)
 {
-    printf("User process %d exited sucessfully!", id);
+    printf("User process %d exited successfully!", id);
 }
 
-/**** Function place holders for user implementation ****/
+/*!*****************************************************************************
+* @function 
+* 
+* @brief Function place holders for user implementation
+*
+* @param 
+*
+* @return
+*******************************************************************************/
+
 __weak void procInitCodeA(uint8_t procID)
 {
     testInitCode(procID);

@@ -46,7 +46,6 @@ extern "C"
 **                              Data Structures
 *******************************************************************************/
 
-
 typedef enum
 {
     FIFO_CLEAN = 0,     /* clean exit return value */
@@ -89,11 +88,11 @@ typedef struct
 /*******************************************************************************
 **                               Public function prototypes - API
 *******************************************************************************/
-extern void fifoInit(struct fifo_ctrl *this);
-extern fifo_ret_val_t fifoDelElement(struct fifo_ctrl *this);
 
+extern void fifoInit(struct fifo_ctrl *this);
 extern fifo_ret_val_t fifoWrite(circ_fifo_t * const this, const void *data);
 extern fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data);
+extern int fifoDelLastElement(struct fifo_ctrl *this);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -133,6 +133,15 @@ void xteaEncrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     uint32ToBytesReverse_m( v1, output, i );
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 xtea_ret_val_e xteaByteArrayEncrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes)
 {
     uint32_t i;
@@ -199,6 +208,15 @@ void xteaDecrypt(const uint32_t key[XTEA_32BIT_KEYS], const uint8_t input[XTEA_D
     uint32ToBytesReverse_m( v1, output, i );
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 xtea_ret_val_e xteaByteArrayDecrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t *dataToEncrypt, const uint32_t dataBytes)
 {
     uint32_t i;
@@ -230,7 +248,6 @@ xtea_ret_val_e xteaByteArrayDecrypt(const uint32_t key[XTEA_32BIT_KEYS], uint8_t
 *
 * @return true if all tests finished successfully, false if any test fails
 *******************************************************************************/
-
 bool xteaTest(void)
 {
     uint32_t testKeys[XTEA_32BIT_KEYS]={0};

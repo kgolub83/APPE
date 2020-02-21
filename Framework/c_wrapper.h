@@ -34,7 +34,7 @@ extern "C"
 
 #include <stdint.h>
 #include <math.h>
-#include "acs_decoder.h"
+#include "appe_decoder.h"
 /*******************************************************************************
 **                               Constants
 *******************************************************************************/  
@@ -74,56 +74,59 @@ extern "C"
 #define BIT31   0x80000000U
 
 /*Sensor A flags*/
-#define ACS_SENS_A_OUT_OF_BOUNDS    BIT0
-#define ACS_SENS_A_STALL            BIT1
-#define ACS_SENS_A_DYNAMIC_FAULT    BIT2
-#define ACS_SENS_A_HEALTHY          BIT3
-#define ACS_SENS_A_WARNING          BIT4
-#define ACS_SENS_A_FAULT            BIT5
+#define APPE_SENS_A_OUT_OF_BOUNDS    BIT0
+#define APPE_SENS_A_STALL            BIT1
+#define APPE_SENS_A_DYNAMIC_FAULT    BIT2
+#define APPE_SENS_A_HEALTHY          BIT3
+#define APPE_SENS_A_WARNING          BIT4
+#define APPE_SENS_A_FAULT            BIT5
 
-#define ACS_SENS_A_FLAGS_MASK       0x000000FFU
-#define ACS_SENS_A_FLAGS_OFFSET     0
+#define APPE_SENS_A_FLAGS_MASK       0x000000FFU
+#define APPE_SENS_A_FLAGS_OFFSET     0
 
 /*Sensor B flags*/
-#define ACS_SENS_B_OUT_OF_BOUNDS    BIT8
-#define ACS_SENS_B_STALL            BIT9
-#define ACS_SENS_B_DYNAMIC_FAULT    BIT10
-#define ACS_SENS_B_HEALTHY          BIT11
-#define ACS_SENS_B_WARNING          BIT12
-#define ACS_SENS_B_FAULT            BIT13
+#define APPE_SENS_B_OUT_OF_BOUNDS    BIT8
+#define APPE_SENS_B_STALL            BIT9
+#define APPE_SENS_B_DYNAMIC_FAULT    BIT10
+#define APPE_SENS_B_HEALTHY          BIT11
+#define APPE_SENS_B_WARNING          BIT12
+#define APPE_SENS_B_FAULT            BIT13
 
-#define ACS_SENS_B_FLAGS_MASK       0x0000FF00U
-#define ACS_SENS_B_FLAGS_OFFSET     8
+#define APPE_SENS_B_FLAGS_MASK       0x0000FF00U
+#define APPE_SENS_B_FLAGS_OFFSET     8
 
-/*ACS communication channel A flags*/
-#define ACS_WATCHDOG_A              BIT16
-#define ACS_DATA_INTEGRITY_A        BIT17
-#define ACS_COM_SEQUENCE_A          BIT18
-#define ACS_AUTHENTICATION_A        BIT19
+/*APPE communication channel A flags*/
+#define APPE_WATCHDOG_A              BIT16
+#define APPE_DATA_INTEGRITY_A        BIT17
+#define APPE_COM_SEQUENCE_A          BIT18
+#define APPE_AUTHENTICATION_A        BIT19
 
-#define ACS_COM_A_FLAGS_MASK        0x000F0000U
-#define ACS_COM_A_FLAGS_OFFSET      16
+#define APPE_COM_A_FLAGS_MASK        0x000F0000U
+#define APPE_COM_A_FLAGS_OFFSET      16
 
-/*ACS communication channel B flags*/
-#define ACS_WATCHDOG_B              BIT20
-#define ACS_DATA_INTEGRITY_B        BIT21
-#define ACS_COM_SEQUENCE_B          BIT22
-#define ACS_AUTHENTICATION_B        BIT23
+/*APPE communication channel B flags*/
+#define APPE_WATCHDOG_B              BIT20
+#define APPE_DATA_INTEGRITY_B        BIT21
+#define APPE_COM_SEQUENCE_B          BIT22
+#define APPE_AUTHENTICATION_B        BIT23
 
-#define ACS_COM_B_FLAGS_MASK        0x00F00000U
-#define ACS_COM_B_FLAGS_OFFSET      20
+#define APPE_COM_B_FLAGS_MASK        0x00F00000U
+#define APPE_COM_B_FLAGS_OFFSET      20
 
-/*ACS System flags*/
-#define ACS_SIGNALS_ASYMMETRY       BIT24
-#define ACS_DATA_ASYMMETRY          BIT25
-#define ACS_INVALID_DATA            BIT26
-#define ACS_SYSTEM_WARNING          BIT27
-#define ACS_SYSTEM_FAULT            BIT28
+/*APPE System flags*/
+#define APPE_SIGNALS_ASYMMETRY       BIT24
+#define APPE_DATA_ASYMMETRY          BIT25
+#define APPE_INVALID_DATA            BIT26
+#define APPE_SYSTEM_WARNING          BIT27
+#define APPE_SYSTEM_FAULT            BIT28
+#define APPE_LUT_A_CORRUPTED         BIT29
+#define APPE_LUT_B_CORRUPTED         BIT30
 
-#define ACS_SYSTEM_OK               0x00000000U
+#define APPE_SYSTEM_OK               0x00000000U
 
-#define ACS_SUPERVISOR_FAULTS_MASK  0xFF000000U
+#define APPE_SUPERVISOR_FAULTS_MASK  0xFF000000U
 
+#define FATAL_OUTPUT_VALUE      0U
 #define XTEA_WORD_LENGTH        2U
 #define MD5_WORD_LENGTH         4U
 #define AES256_WORD_LENGTH      8U
@@ -142,7 +145,7 @@ typedef uint32_t sample_data_t;         /*input data sample type definition*/
 typedef uint8_t data_vector_no_t;       /*number of input data vectors type*/
 typedef uint16_t data_attribute_t;      /*test data attributes type*/
 typedef uint32_t samples_no_t;          /*number of test data samples type*/
-typedef uint32_t acs_flags_t;           /*acs system flags register type*/
+typedef uint32_t appe_flags_t;           /*appe system flags register type*/
 typedef uint32_t time_stamp_t;          /*communication time stamp type*/
 typedef uint16_t sequence_no_t;         /*communication mesage sequence number type*/
 typedef uint32_t authentication_t;      /*communication authentication signature type*/
@@ -150,28 +153,28 @@ typedef uint16_t crc_t;                 /*communication CRC checksum type*/
 typedef uint16_t mesage_id_t;           /*mesage identifier type*/
 typedef uint32_t debug_vector_data_t;   /*debug data type*/
 
-/*ACS system states definitions*/
+/*APPE system states definitions*/
 typedef enum
 {
-    ACS_IDLE,
-    ACS_ACTIVE,
-    ACS_WARNING_OPERATIONAL,
-    ACS_WARNING_RESTRICTIVE,
-    ACS_ERROR_SPEED_LIMIT,
-    ACS_FATAL_SAFE_STOP
-} acs_state_e;
+    APPE_IDLE,
+    APPE_ACTIVE,
+    APPE_WARNING_OPERATIONAL,
+    APPE_WARNING_RESTRICTIVE,
+    APPE_ERROR_SPEED_LIMIT,
+    APPE_FATAL_SAFE_STOP
+} appe_state_e;
 
 typedef enum
 {
-    ACS_SYS_OK,
-    ACS_SYS_WAR,
-    ACS_COM_WAR,
-    ACS_SIGNAL_WAR,
-    ACS_PROCESSING_DIF,
-    ACS_SYS_FAULT,
-    ACS_COM_ERR,
-    ACS_SIG_ERR
-} acs_sys_faults_e;
+    APPE_SYS_OK,
+    APPE_SYS_WAR,
+    APPE_COM_WAR,
+    APPE_SIGNAL_WAR,
+    APPE_PROCESSING_DIF,
+    APPE_SYS_FAULT,
+    APPE_COM_ERR,
+    APPE_SIG_ERR
+} appe_sys_faults_e;
 
 enum debugVectorsNames
 {
@@ -206,7 +209,7 @@ typedef input_data_t* const input_data_pt;  /*const pointer to proces_data_t*/
 typedef struct
 {
     sample_data_t dataSample;
-    acs_flags_t flags;
+    appe_flags_t flags;
     time_stamp_t time;
     debug_vector_data_t channelDebug[DEBUG_VECTORS];
     authentication_t signature;
@@ -217,30 +220,30 @@ typedef struct
 
 typedef com_data_t* const com_data_pt;  /*const pointer to com_data_t*/
 
-#define ACS_PAYLOAD_DATA_BYTES  ( (uint8_t)(sizeof(mesage_id_t) + sizeof(sequence_no_t)                \
-                                + sizeof(sample_data_t) + sizeof(acs_flags_t) + sizeof(time_stamp_t)   \
+#define APPE_PAYLOAD_DATA_BYTES  ( (uint8_t)(sizeof(mesage_id_t) + sizeof(sequence_no_t)                \
+                                + sizeof(sample_data_t) + sizeof(appe_flags_t) + sizeof(time_stamp_t)   \
                                 + sizeof(debug_vector_data_t)*DEBUG_VECTORS) )
 
 #define CRC_BYTES       ( (uint8_t)sizeof(crc_t) )
 #define SIGNATURE_BYTES ( (uint8_t)sizeof(authentication_t) )
 
-#define ACS_COM_DATA_BYTES      ( (uint8_t)(ACS_PAYLOAD_DATA_BYTES + CRC_BYTES + SIGNATURE_BYTES) )
+#define APPE_COM_DATA_BYTES      ( (uint8_t)(APPE_PAYLOAD_DATA_BYTES + CRC_BYTES + SIGNATURE_BYTES) )
 
-#define ACS_COM_CHANNEL_BYTES   ( (uint8_t)(ACS_COM_DATA_BYTES + (8-ACS_COM_DATA_BYTES%8) ) )    //com channel data aligned on 8 bytes
+#define APPE_COM_CHANNEL_BYTES   ( (uint8_t)(APPE_COM_DATA_BYTES + (8-APPE_COM_DATA_BYTES%8) ) )    //com channel data aligned on 8 bytes
 
 typedef struct
 {
-    uint8_t comChannelData[ACS_COM_CHANNEL_BYTES];
+    uint8_t comChannelData[APPE_COM_CHANNEL_BYTES];
 } com_channel_t;
 
 typedef com_channel_t* const com_channel_pt;  /*const pointer to com_data_t*/
 
-/*supervisor output data structure - ACS processed data and flags*/
+/*supervisor output data structure - APPE processed data and flags*/
 typedef struct
 {
     sample_data_t output;
-    acs_flags_t flags;
-    acs_state_e state;
+    appe_flags_t flags;
+    appe_state_e state;
     debug_vector_data_t outputDebug[DEBUG_VECTORS*DATA_VECTORS_NO];    
 } output_data_t;
 

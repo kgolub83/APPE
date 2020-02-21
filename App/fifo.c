@@ -169,12 +169,53 @@ fifo_ret_val_t fifoRead(circ_fifo_t * const this, void *data)
     }
 
     /* pull data from fifo */
+    FifoCriticalSectionLock_m(&mutexLock);        /*Enter critical section*/
     memcpy(data, this->buffer + this->ctrl.dataElementSize*(this->ctrl.tail++), this->ctrl.dataElementSize);
-
+    FifoCriticalSectionUnlock_m(&mutexLock);        /*Leave critical section*/
     /* manage fifo controll variables */
     fifo_read_ctl(&this->ctrl); 
 
     return FIFO_CLEAN;
+}
+
+/*!********************************************************
+* @function Fifo_delElement
+* @brief Deletes fifo element
+*
+* Deletes last (most recently added) element from fifo
+*
+* @param *this pointer to fifo structure
+*
+* @return whether deletion is executed properly
+**********************************************************/
+int fifoDelLastElement(struct fifo_ctrl *this)
+{
+    /* check if fifo is empty */
+    if ((this->head == this->tail) && (this->full == false))        
+    {
+        return FIFO_EMPTY; 
+    }
+
+    /* delete data from fifo */
+    this->head--;    
+
+    /* menage fifo controll variables */    
+    if(this->head >= this->elements)
+    {
+        /* set fifo head pointer to last qeue element */
+        this->head = this->elements -1;        
+    }
+
+    if (this->head == this->tail)
+    {
+        /* rise fifo empty flag */
+        this->empty = true;    
+    }
+
+    /* reset fifo full flag */
+    this->full = false;        
+    
+    return FIFO_CLEAN;        
 }
 
 /******************************************************************************

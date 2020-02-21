@@ -17,32 +17,82 @@
  *
  ******************************************************************************/
 
+/*******************************************************************************
+**                                Includes
+*******************************************************************************/
+
 #include <iostream>
 #include "communication_queue.h"
 
+/*******************************************************************************
+**                       Global and static variables
+*******************************************************************************/
+
 ComDataObj* ComDataObj::singleInstance_p = NULL;
 
+/*******************************************************************************
+**                                 Code
+*******************************************************************************/
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 
 ComDataObj::ComDataObj()
 {
     
 }
-    
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
+
 ComDataObj* ComDataObj::getInstance(void)   
 {
-    if (NULL == singleInstance_p) // if not yet instantiated
+    if (NULL == singleInstance_p)   // if not yet instantiated
     {
-          singleInstance_p = new ComDataObj;
-          //create one and only object
+        singleInstance_p = new ComDataObj;  //create one and only object      
     }
 
     return singleInstance_p;
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
+
 void ComDataObj::addElement(com_channel_e channel, com_channel_t data)
 {
     comFIFO[channel].push(data);        //write data to FIFO
 }
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 
 com_fifo_e ComDataObj::getElement(com_channel_e channel, com_channel_t& data)
 {
@@ -60,6 +110,16 @@ com_fifo_e ComDataObj::getElement(com_channel_e channel, com_channel_t& data)
     return ret_val;
 }    
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
+
 sample_data_t ComDataObj::printSize(com_channel_e channel)
 {
     sample_data_t fifoSize;
@@ -69,3 +129,7 @@ sample_data_t ComDataObj::printSize(com_channel_e channel)
     
     return fifoSize;
 }
+
+/******************************************************************************
+**                               End Of File
+*******************************************************************************/

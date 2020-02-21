@@ -36,7 +36,7 @@ OBJ_C = $(SRC_FILES_C:%.c=$(BUILD_DIR)/%.o)
 OBJ_CPP = $(SRC_FILES_CPP:%.cpp=$(BUILD_DIR)/%.o)
 OBJ = $(OBJ_C) $(OBJ_CPP)
 DEPS = $(OBJ:%.o= %.d)
-EXEC = ACS
+EXEC = appeExec
 
 # Command macros
 MOVE = mv

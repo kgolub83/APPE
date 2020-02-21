@@ -1,7 +1,7 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file virtual_processor.c
+ * @file virtual_processor.cpp
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
@@ -16,17 +16,40 @@
  *
  ******************************************************************************/
 
+/*******************************************************************************
+**                                Includes
+*******************************************************************************/
+
 #include "virtual_processor.h"
 #include "communication_queue.h"
 #include <iostream>
 #include <thread>
 #include <cassert>
 
+/*******************************************************************************
+**                       Global and static variables
+*******************************************************************************/
+
 static uint8_t processor_count; 
+
+
+/*******************************************************************************
+**                                 Code
+*******************************************************************************/
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 
 VirtualProcessor::VirtualProcessor()
 {
-    std::cout << "Virtual processor crearted..." << +processor_count << std::endl;
+    std::cout << "Virtual processor created..." << +processor_count << std::endl;
     id = processor_count++;
     
     /*init function call pointers as NULL pointers*/
@@ -35,6 +58,16 @@ VirtualProcessor::VirtualProcessor()
     supervisorCallback = NULL;
     exitFnCallback = NULL;
 }
+
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
 
 VirtualProcessor::~VirtualProcessor()
 {
@@ -46,6 +79,16 @@ void VirtualProcessor::initProcessor(uint8_t id)
     initFnCallback(id);
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
+
 void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_vector_t &inputDataB)
 {
     ComDataObj* const comChannels = ComDataObj::getInstance();
@@ -54,7 +97,7 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     com_socket_e activeSocket;
     samples_no_t samplesNo;
     
-    assert(initFnCallback);     //chek if initialistion function is installed
+    assert(initFnCallback);     //check if initialisation function is installed
     assert(userCallback);       //checks if user callback function is set
     
     initProcessor(id);
@@ -81,9 +124,19 @@ void VirtualProcessor::executeUserProgram(samples_vector_t &inputDataA, samples_
     std::cout << "User function " << +id << " executed!" << std::endl;
 }
 
+/*!*****************************************************************************
+* @function 
+* 
+* @brief 
+*
+* @param 
+*
+* @returns 
+*******************************************************************************/
+
 void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
 {
-    ComDataObj* const comChannels = ComDataObj::getInstance();   //Instanciate communication queues-FIFOs
+    ComDataObj* const comChannels = ComDataObj::getInstance();   //Instantiate communication queues-FIFOs
     com_channel_t  comFrameA, comFrameB;
     output_data_t outSample;
     run_cycles_t iterations, iterationCount, maxIterations;
@@ -130,7 +183,7 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
             }
         }
         
-        if(syncFlagA && syncFlagB) //if data from both channels retreived
+        if(syncFlagA && syncFlagB) //if data from both channels retrieved
         {
             supervisorCallback(&comFrameA, &comFrameB, &outSample); //run user program
             
@@ -151,6 +204,11 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     }
     
 }
+
+/*******************************************************************************
+**                                Setters   
+*******************************************************************************/
+
 
 void VirtualProcessor::installInitCalback(initFncPtr function)
 {
@@ -188,3 +246,7 @@ void VirtualProcessor::setOutputCom(com_socket_e socket, com_channel_e channel)
     outComChannel[socket] = channel;
     outSockets.push_back(socket);
 }
+
+/******************************************************************************
+**                               End Of File
+*******************************************************************************/

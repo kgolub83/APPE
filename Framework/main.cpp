@@ -43,10 +43,10 @@
 int main()
 {
     VirtualProcessor codedProcessorA;
-    VirtualProcessor codedProcesorB;  
+    VirtualProcessor codedProcessorB;  
     VirtualProcessor supervisor;
     IOdata testData;
-    ComDataObj* comChannels = ComDataObj::getInstance();   //Instanciate communication queues-FIFOs
+    ComDataObj* comChannels = ComDataObj::getInstance();   //Instantiate communication queues-FIFOs
     samples_vector_t inputDataA, inputDataB;
     tst_data_attributes_t inputDataAttributes;
     output_vector_t outputData;
@@ -69,10 +69,10 @@ int main()
     codedProcessorA.setOutputCom(COM_SOCKET_A,PROC_A_OUT_COM_CHANNEL);
     
     //configure processing unit B
-    codedProcesorB.installInitCalback(procInitCodeB);
-    codedProcesorB.installUserCalback(processorCodeB);
-    codedProcesorB.setRunCycles(testData.getSamplesNo());
-    codedProcesorB.setOutputCom(COM_SOCKET_A, PROC_B_OUT_COM_CHANNEL);
+    codedProcessorB.installInitCalback(procInitCodeB);
+    codedProcessorB.installUserCalback(processorCodeB);
+    codedProcessorB.setRunCycles(testData.getSamplesNo());
+    codedProcessorB.setOutputCom(COM_SOCKET_A, PROC_B_OUT_COM_CHANNEL);
     
     //configure supervisor processing unit
     supervisor.installInitCalback(supervisorInitCode);
@@ -95,7 +95,7 @@ int main()
     std::thread threadProcA(&VirtualProcessor::executeUserProgram, &codedProcessorA,
                             std::ref(inputDataA), std::ref(inputDataB));
 
-    std::thread threadProcB(&VirtualProcessor::executeUserProgram, &codedProcesorB, 
+    std::thread threadProcB(&VirtualProcessor::executeUserProgram, &codedProcessorB, 
                             std::ref(inputDataA), std::ref(inputDataB));
     
     threadProcA.join();
