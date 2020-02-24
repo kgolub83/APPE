@@ -55,22 +55,22 @@ A safe state may be the intended operating mode, a degraded operating mode, or a
 The safe states for our APPEare either full operation (full torque availability), restricted operation (0 < Torque < Full), or switched off mode (zero torque).
 
 APPE safe states:
-    • SafeState1 - warningOperational
-    • SafeState2 - warningRestrictive
-    • SafeState3 - errorSpeedLimit
-    • SafeState4 - fatalSafeStop
-    
+- SafeState1 -> warningOperational
+- SafeState2 -> warningRestrictive
+- SafeState3 -> errorSpeedLimit
+- SafeState4 -> fatalSafeStop
+
 The acceleration pedal position maps (LUT) are to be checked: 
-    • one map corrupted -> SS1
-    • all redundant maps corrupted -> SS4 
+- one map corrupted -> SS1
+- all redundant maps corrupted -> SS4 
 
 The communications channels between the APPS and the ACS are to be checked
-    • packet lost/data corruption -> SS1 --comWarningIntegrator (2,1,2)
-    • communication timeout single channel -> SS2 --timeout 2 communication intervals (2,1,4)
+- packet lost/data corruption -> SS1 --comWarningIntegrator (2,1,2)
+- communication timeout single channel -> SS2 --timeout 2 communication intervals (2,1,4)
 
 In case of a failure of one redundant element, the ACS is to transition into Safe State
-    • determent fault -> SS2 -> one position sensor out of range, invalid value change, single processing fault
-    • uncertainty fault -> SS3 -> different parallel processing algorithm results
+- determent fault -> SS2 -> one position sensor out of range, invalid value change, single processing fault
+- uncertainty fault -> SS3 -> different parallel processing algorithm results
 
 In case of a failure of one redundant element -> SS3
 
@@ -85,7 +85,8 @@ case of a failure in detecting the throttle position, the system is to transitio
 1. Install GNU Octave
 2. Add octave to Path variable
 3. Run testGenerate.sh script
-4. Run make -all
+4. Run make all
+5. execute appeExec
 5. Run analyzeResults.sh script
 
 ## License
