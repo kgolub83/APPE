@@ -1,11 +1,11 @@
-Introduction
+# Acceleration pedal position encoder
 
 Purpose of this model is to identify safety requirements and safety measures according to functional safety methodology and ISO26262 standard. For model purpose hypothetical example of electronic accelerator pedal position encoder as part of the vehicles electronic acceleration control and throttle control system is used (APPE from this point). 
 The primary purpose of this model is to study and analyze the potential hazards that could result with failures impacting the functions of acceleration control systems where the throttle position is controlled electronically. Model focus will be on the safety software mechanisms and system architecture that can be used to achieve target ASIL (Automotive Safety Integrity Level) and minimize potential hazard risk. There are various implementation strategies to achieve target ASIL, this model should not be taken as guideline to achieve target ASIL, goal is to encourage critical thinking and studying regarding systems safety. The ISO 26262 standard provides a flexible framework and explicit guidance to different methods and approaches and various implementations may employ a variety of techniques to do so. Identification of the safety integrity requirements and implementation techniques of these functions are covered at the concept level and are not based on the actual system implementation.
 
 The objective of the functional safety concept is to derive a set of functional safety requirements from the safety goals, and to allocate them to the preliminary architectural elements of the system, or to external measures (Part 3 Clause 8.1 in ISO 26262). 
 
-Hazard classification
+## Hazard classification
 
 For our model we will identify potential hazardous situations as follows:
 - potential uncontrolled vehicle acceleration
@@ -13,7 +13,7 @@ For our model we will identify potential hazardous situations as follows:
 - erroneous acceleration/deceleration response
 - potential vehicle stalling
 
-Model description
+## Model description
 
 Focus of models case study will be acceleration pedal position encoder, targeted for ASIL D applications. The Acceleration Pedal (AP) assembly allows the driver to command a desired torque. When the driver presses the AP, the AP Position Sensor (APPS) measures the angular position of the AP. The APPS converts the angular position of the AP to a voltage signal, processed and encoded by the processing unit – APPE and transmitted to the Engine Control Module (ECM). The signals are processed bay two independent processing units, sent over redundant communication channels to APPE supervisor unit, where the signal is validated and encoded using calibration tables (LUTs).
 
@@ -38,7 +38,7 @@ Communication data is protected with data integrity checksum (CRC16 – CCITT po
 
 Arbitration unit checks data integrity, compares results from both processing units, run system checks, decoding LUT tables integrity and provides acceleration position output data, switches to appropriate system state (or safe state) and writes system log.
 
-Faults
+## Faults
 
 APPS communication fault – corrupted/missing data
 APPS refresh rate fault, signal discontinued – watchdog fault
@@ -49,7 +49,7 @@ APP value change fault – change over time out of bounds (step change)
 APP range fault – guard region (to detect open, short hardware faults)
 APPE processing fault – control algorithm, data inconsistency
 
-Safe states definitions
+## Safe states definitions
 
 A safe state may be the intended operating mode, a degraded operating mode, or a switched off mode (Part 1 Clause 1.102 of ISO 26262). The developer of the functional safety concept attempts to maximize the availability of the item while ensuring the safety of the vehicle operation. Therefore, a careful consideration must be given to selecting the safe states in relation to the potential failure modes. 
 The safe states for our APPEare either full operation (full torque availability), restricted operation (0 < Torque < Full), or switched off mode (zero torque).
@@ -59,6 +59,7 @@ APPE safe states:
     • SafeState2 - warningRestrictive
     • SafeState3 - errorSpeedLimit
     • SafeState4 - fatalSafeStop
+    
 The acceleration pedal position maps (LUT) are to be checked: 
     • one map corrupted -> SS1
     • all redundant maps corrupted -> SS4 
@@ -79,11 +80,14 @@ transition into Safe State -> SS3
 All faults that result in a failure to determine the pedal position are to be detected. In
 case of a failure in detecting the throttle position, the system is to transition into Safe -> SS4
 
-Quick start 
+## Usage
 
 1. Install GNU Octave
 2. Add octave to Path variable
 3. Run testGenerate.sh script
 4. Run make -all
 5. Run analyzeResults.sh script
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
  
