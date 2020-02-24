@@ -26,6 +26,10 @@ octave appe_test_data_generator.m
 cp -p appe_decoder.c ../Framework
 cp -p appe_decoder.h ../Framework
 
+#remove files
+rm appe_decoder.c
+rm appe_decoder.h
+
 #plot data
 eog --fullscreen Figs/input.svg
 

@@ -28,3 +28,27 @@
 2020-2-21 13:28:12.115116 ID:5304 fl:appe_supervisor.c fn:supervisorCode l:275 WARN APP Supervisor data difference 1001 4 
 2020-2-21 13:28:12.115121 ID:3104 fl:appe_supervisor.c fn:supervisorCode l:318 INFO SYS APPE state changed 1001 4 33554433 
 2020-2-21 13:28:12.115131 ID:4100 fl:appe_supervisor.c fn:supervisorExitRoutine l:342 LOG SYS Supervisor routine exited 2 
+2020-2-24 11:56:5.2854 ID:3101 fl:appe_proc_a.c fn:procInitCodeA l:87 INFO SYS Processor A init OK 0 
+2020-2-24 11:56:5.2956 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:83 INFO SYS Flatcher checksum test OK 
+2020-2-24 11:56:5.3054 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:85 INFO SYS SIP hash test OK 
+2020-2-24 11:56:5.3056 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:87 INFO SYS CRC checksum test OK 
+2020-2-24 11:56:5.3098 ID:3101 fl:appe_proc_b.c fn:procInitCodeB l:92 INFO SYS Processor B init OK 1 
+2020-2-24 11:56:5.3302 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:89 INFO SYS XTEA encryption test OK 
+2020-2-24 11:56:5.3307 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:91 INFO SYS Error integrator test OK 
+2020-2-24 11:56:5.3333 ID:3103 fl:appe_supervisor.c fn:supervisorInitCode l:100 INFO SYS Primary decoding LUT checked 1 
+2020-2-24 11:56:5.3343 ID:3103 fl:appe_supervisor.c fn:supervisorInitCode l:109 INFO SYS Backup decoding LUT checked 2 
+2020-2-24 11:56:5.3345 ID:3101 fl:appe_supervisor.c fn:supervisorInitCode l:121 INFO SYS Supervisor init OK 2 
+2020-2-24 11:56:5.3361 ID:3104 fl:appe_supervisor.c fn:supervisorCode l:318 INFO SYS APPE state changed 1 1 0 
+2020-2-24 11:56:8.152435 ID:4100 fl:appe_supervisor.c fn:supervisorExitRoutine l:342 LOG SYS Supervisor routine exited 2 
+2020-2-24 12:14:22.2803 ID:3101 fl:appe_proc_a.c fn:procInitCodeA l:87 INFO SYS Processor A init OK 0 
+2020-2-24 12:14:22.2988 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:83 INFO SYS Flatcher checksum test OK 
+2020-2-24 12:14:22.2997 ID:3101 fl:appe_proc_b.c fn:procInitCodeB l:92 INFO SYS Processor B init OK 1 
+2020-2-24 12:14:22.3063 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:85 INFO SYS SIP hash test OK 
+2020-2-24 12:14:22.3065 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:87 INFO SYS CRC checksum test OK 
+2020-2-24 12:14:22.3231 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:89 INFO SYS XTEA encryption test OK 
+2020-2-24 12:14:22.3234 ID:3100 fl:appe_supervisor.c fn:supervisorInitCode l:91 INFO SYS Error integrator test OK 
+2020-2-24 12:14:22.3245 ID:3103 fl:appe_supervisor.c fn:supervisorInitCode l:100 INFO SYS Primary decoding LUT checked 1 
+2020-2-24 12:14:22.3255 ID:3103 fl:appe_supervisor.c fn:supervisorInitCode l:109 INFO SYS Backup decoding LUT checked 2 
+2020-2-24 12:14:22.3257 ID:3101 fl:appe_supervisor.c fn:supervisorInitCode l:121 INFO SYS Supervisor init OK 2 
+2020-2-24 12:14:22.3274 ID:3104 fl:appe_supervisor.c fn:supervisorCode l:318 INFO SYS APPE state changed 1 1 0 
+2020-2-24 12:14:24.115176 ID:4100 fl:appe_supervisor.c fn:supervisorExitRoutine l:342 LOG SYS Supervisor routine exited 2 

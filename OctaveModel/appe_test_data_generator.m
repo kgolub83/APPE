@@ -6,7 +6,7 @@ clear all;
 ################################## USER INPUT ##################################
 time = 1000;              %data time span: [ms]
 sample_rate = 1000;       %data sample rate: [sps]
-noise_gain = 10;           %noise gain: [%]
+noise_gain = 10;          %noise gain: [%]
 bit_depth = 10;           %vertical data resolution [bits]
 idle_state = 0;           %idle signal time in miliseconds
 safety_margin = 10;       %accelerator data safety guards [%]
