@@ -43,6 +43,7 @@ Arbitration unit checks data integrity, compares results from both processing un
 |    parameters       |
 |                     |
 +-----------+---------+
+
             |
             v
 +-----------+---------------+           +--------------------+
