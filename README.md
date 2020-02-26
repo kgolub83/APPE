@@ -52,7 +52,7 @@ APPE processing fault – control algorithm, data inconsistency
 ## Safe states definitions
 
 A safe state may be the intended operating mode, a degraded operating mode, or a switched off mode (Part 1 Clause 1.102 of ISO 26262). The developer of the functional safety concept attempts to maximize the availability of the item while ensuring the safety of the vehicle operation. Therefore, a careful consideration must be given to selecting the safe states in relation to the potential failure modes. 
-The safe states for our APPEare either full operation (full torque availability), restricted operation (0 < Torque < Full), or switched off mode (zero torque).
+The safe states for our APPE are either full operation (full torque availability), restricted operation (0 < Torque < Full), or switched off mode (zero torque).
 
 APPE safe states:
 - SafeState1 -> warningOperational
@@ -83,7 +83,7 @@ case of a failure in detecting the throttle position, the system is to transitio
 ## Usage
 
 1. Install GNU Octave
-2. Add octave to Path variable
+2. Instal eog (eye of GNOME)
 3. Run testGenerate.sh script
 4. Run make all
 5. execute appeExec
