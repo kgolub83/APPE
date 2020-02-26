@@ -38,55 +38,6 @@ Communication data is protected with data integrity checksum (CRC16 – CCITT po
 
 Arbitration unit checks data integrity, compares results from both processing units, run system checks, decoding LUT tables integrity and provides acceleration position output data, switches to appropriate system state (or safe state) and writes system log.
 
-+---------------------+
-|    User defined     |
-|    parameters       |
-|                     |
-+-----------+---------+
-            |
-            v
-+-----------+---------------+           +--------------------+
-|                           |           |   Sensor data      |
-|appe_test_data_generator.m +---------->+   input generator  |
-|                           |           |                    |
-+---------------------------+           +-+---------------+--+
-                                          |               |
-                                          v               v
-                          +---------------+---+        +--+------------------+
-                          |  appe_decoder.c   |        |                     |
-                          |  apppe_decoder.h  |        | appe_test_data.csv  |
-                          |                   |        |                     |
-                          +--------+----------+        +---+--------------+--+
-                                   |                       |              |
-                                   |                       v              v
-                                   |         +-------------+---+        +-+--------------+
-                                   |         |  Thread_1       |        | Thread_2       |
-                                   |         |  Processor_A    |        | Processor_B    |
-                                   |         |                 |        |                |
-                                   |         +---------+-------+        +-------+--------+
-                                   |                   |                        |
-                                   |                   v                        v
-                                   |              +----+------------------------+----+
-                                   |              |             Thread_3             |
-                                   +------------->+  Arbitration unit + Supervisor   |
-                                                  |                                  |
-                                                  +-----------------+----------------+
-                                                                    |
-                                                                    v
-                                                        +-----------+-------------+
-                                                        |                         |
-                                                        |  appe_output_data.csv   |
-                                                        |                         |
-                                                        +-----------+-------------+
-                                                                    |
-                                                                    v
-                +-----------------------------+         +-----------+-------------+
-                |                             |         |                         |
-                | appe_test_data_validation.m +-------->+    Validation script    |
-                |                             |         |                         |
-                +-----------------------------+         +-------------------------+
-
-
 ## Faults
 
 APPS communication fault – corrupted/missing data
