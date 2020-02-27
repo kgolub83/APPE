@@ -1,4 +1,4 @@
-/*file generated with appe_test_data_generator.m octave/matlab script 24-Feb-2020 12:19:22*/
+/*file generated with appe_test_data_generator.m octave/matlab script 27-Feb-2020 08:36:32*/
 #include <stdint.h>
 
 /* primary APPE decoding look up table */

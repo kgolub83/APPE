@@ -25,6 +25,7 @@ octave appe_test_data_generator.m
 #copy data to destination
 cp -p appe_decoder.c ../Framework
 cp -p appe_decoder.h ../Framework
+cp -p appe_test_data.csv ../Data
 
 #remove files
 rm appe_decoder.c

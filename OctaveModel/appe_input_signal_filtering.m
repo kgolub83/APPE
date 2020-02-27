@@ -21,6 +21,8 @@ average_window = sqrt(1 + sps*sps*move_avg_magic_x/(cutof_freq*cutof_freq)); #nu
 average_window = floor(average_window);
 move_average_time = average_window/sps;
 
+moveAverageBuffer = linspace (guard, guard, average_window);
+
 t = linspace(0,time,ns);         %time axis
 signal = inputData (2,:);        %get test data
 
@@ -42,7 +44,14 @@ for i = 1:(ns-average_window)
   move_avg_sum = sum(signal(i:(i+average_window-1)));
   x_avg_filt(i+average_window) = move_avg_sum/average_window;
 endfor
-x_avg_filt(1:average_window) = recoursive_filtered(1:average_window);     %iir2_filtered(1:average_window);
+
+for i = 1:average_window
+  moveAverageBuffer = shift(moveAverageBuffer, -1);
+  moveAverageBuffer(average_window) = signal(i);
+  x_avg_filt(i+1) = sum(moveAverageBuffer)/average_window;
+endfor
+
+x_avg_filt(1) = guard;
 
 #filtering error between FIR and IIR implementation
 
@@ -75,14 +84,25 @@ endfor
 x_avg_response(1:average_window) = 0;
 
 %recoursive average wave spectrum
-fft_iir_avg = abs(fft(iir2_filtered));   %negative frequencyes to positive 
-fft_iir_avg = fft_iir_avg(1:ns/2);          %discard freqs beyound fs/2
+fft_result = fft(iir2_filtered);
+fft_iir_avg = abs(fft_result);            %negative frequencyes to positive 
+fft_iir_avg = fft_iir_avg(1:ns/2);        %discard freqs beyound fs/2
+
+%recoursive phase response
+iir_avg_phase = atan2(imag(fft_result), real(fft_result)); %calculate phase
+#iir_avg_phase = unwrap(iir_avg_phase);
+iir_avg_phase = iir_avg_phase(1:ns/2)*180/pi;
 
 %move average wave spectrum
-fft_move_avg = abs(fft(x_avg_response));  %negative frequencyes to positive 
+fft_result = fft(x_avg_response);
+fft_move_avg = abs(fft_result);           %negative frequencyes to positive 
 fft_move_avg = fft_move_avg(1:ns/2);      %discard freqs beyound fs/2
 
-f_axis(1) = 0.0001;       %nonzeros for log scale
+move_avg_phase = atan2(imag(fft_result), real(fft_result)); %calculate phase
+#move_avg_phase = unwrap(move_avg_phase);
+move_avg_phase = move_avg_phase(1:ns/2)*180/pi;
+
+f_axis(1) = 0.1;       %nonzeros for log scale
 
 ################## integrate impulse response #########################
 
@@ -97,7 +117,7 @@ hold on;
   plot(t, signal); 
   plot(t, x_avg_filt); 
   plot(t, recoursive_filtered); 
-  legend("input", "moving average   ", "recoursive");
+  legend("input", "moving average   ", "recoursive average");
   title("Time domain response");
   xlabel("time [ms]");
   ylabel("amplitude");
@@ -105,8 +125,10 @@ hold off;
 
 subplot(2,2,3)
 hold on;
-  semilogx(f_axis, fft_move_avg, ";move avg;", f_axis, fft_iir_avg, ";recoursive average   ;");
-  axis([1,1000]);
+  semilogx(f_axis, fft_move_avg); 
+  semilogx(f_axis, fft_iir_avg);
+  axis([0.1,1000]);
+  legend("moving average", "recoursive average");
   title("Frequency response");
   xlabel("frequency [Hz]");
   ylabel("amplitude");  
@@ -114,19 +136,23 @@ hold off;
 
 subplot(2,2,2)
 hold on;
-  plot(t, x_avg_response, ";move avg;");
-  title("Impulse response moving average filter");
+  plot(t, x_avg_response);
+  plot(t, iir2_filtered);
+  legend("moving average", "recoursive average");  
+  title("Impulse response");
   xlabel("time [ms]");
   ylabel("amplitude");  
 hold off;
 
 subplot(2,2,4)
 hold on;
-  plot(t, iir2_filtered, ";recoursive average   ;");
-  title("Impulse response recoursive average filter");
-  xlabel("time [ms]");
-  ylabel("amplitude");  
+  semilogx(f_axis, move_avg_phase);
+  semilogx(f_axis, iir_avg_phase);
+  axis([0.1, 1000]);
+  legend("moving average", "recoursive average");    
+  title("Phase response");
+  xlabel("frequency [Hz]");
+  ylabel("angle [deg]");  
 hold off;
-
 
 print("Figs/filterResponse.svg", "-dsvg", "-S1600, 900");

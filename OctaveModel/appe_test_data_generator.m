@@ -6,7 +6,7 @@ clear all;
 ################################## USER INPUT ##################################
 time = 1000;              %data time span: [ms]
 sample_rate = 1000;       %data sample rate: [sps]
-noise_gain = 10;          %noise gain: [%]
+noise_gain = 0;           %noise gain: [%]
 bit_depth = 10;           %vertical data resolution [bits]
 idle_state = 0;           %idle signal time in miliseconds
 safety_margin = 10;       %accelerator data safety guards [%]
@@ -47,10 +47,10 @@ sensor_b_data(1:idle_ns) = resolution - guard;
 time_vector = linspace(0, (time+idle_state)/1000, ns+idle_ns);
          
 #noise generator
-noise_vector = rand(ns+idle_ns);                            %get uniform random data 
-noise_amplitude = (noise_gain/100) * resolution;    %calculate noise amplitude
-noise_vector = noise_vector(1,:) * noise_amplitude; %scale to noise amplitude                
-noise_vector = noise_vector - noise_amplitude/2;    %simetric around zero      
+noise_vector = rand(ns+idle_ns);                      %get uniform random data 
+noise_amplitude = (noise_gain/100) * resolution;      %calculate noise amplitude
+noise_vector = noise_vector(1,:) * noise_amplitude;   %scale to noise amplitude                
+noise_vector = noise_vector - noise_amplitude/2;      %simetric around zero      
 
 lut_gen_data = sensor_a_data;
 sensor_a_data += noise_vector - offset_a;
