@@ -14,6 +14,8 @@
 #
 #*****************************************************************************/
 
+TARGET := appeExec
+
 # Compiler settings
 CC = gcc
 CXX = g++
@@ -22,42 +24,45 @@ LINKFLAGS = -pthread
 CFLAGS = -g -O0 -Wall -Werror -Wextra 
 CXXFLAGS = -g -O0 -Wall -Werror -Wextra 
 
-# Input deffinitions 
+# Input definitions
 SOURCE_DIR := App
-BUILD_DIR := Output
 FRAMEWORK_DIR := Framework
+
+BUILD_DIR := Output
+
+.DEFAULT_GOAL :=  $(BUILD_DIR)/$(TARGET)
+
+# sources
 SRC_C := $(wildcard $(SOURCE_DIR)/*.c) $(wildcard $(FRAMEWORK_DIR)/*.c)
 SRC_CPP := $(wildcard $(FRAMEWORK_DIR)/*.cpp)
-SRC_FILES_C := $(shell ls -R | grep "\.c$$")
-SRC_FILES_CPP := $(shell ls -R | grep "\.cpp$$")
 
-# Build output deffinitions
-OBJ_C = $(SRC_FILES_C:%.c=$(BUILD_DIR)/%.o)
-OBJ_CPP = $(SRC_FILES_CPP:%.cpp=$(BUILD_DIR)/%.o)
-OBJ = $(OBJ_C) $(OBJ_CPP)
-DEPS = $(OBJ:%.o= %.d)
-EXEC = appeExec
+#make sure all objects are located in build directory
+OBJECTS := $(addprefix $(BUILD_DIR)/,$(SRC_C) $(SRC_CPP))
+#also make sure objects have .o extension
+OBJECTS := $(addsuffix .o,$(OBJECTS))
 
-# Command macros
-MOVE = mv
-DEL = rm
+#include generated dependency files to allow incremental build when only headers change
+-include $(OBJECTS:%.o=%.d)
 
-all: $(EXEC)
+$(BUILD_DIR)/$(TARGET): $(OBJECTS)
+	@echo Creating executable: $@
+	@$(LINK) $(CXXFLAGS) $^ -o $@ $(LINKFLAGS)
 
-$(EXEC): $(OBJ)
-	$(LINK) $(CXXFLAGS) $^ -o $@ $(LINKFLAGS)
+$(BUILD_DIR)/%.c.o: %.c
+	@mkdir -p $(@D)
+	@echo Building: $<
+	@$(CC) $(CFLAGS) -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -c "$<" -o "$@"
 
-$(OBJ_C): $(SRC_C) 
-	$(CC) $(CFLAGS) -MMD -MP -MT"$@" -c $^
-	$(MOVE) *.o $(BUILD_DIR)/
-	$(MOVE) *.d $(BUILD_DIR)/
+$(BUILD_DIR)/%.cpp.o: %.cpp
+	@mkdir -p $(@D)
+	@echo Building: $<
+	@$(CXX) $(CXXFLAGS) -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -c "$<" -o "$@"
 
-$(OBJ_CPP): $(SRC_CPP)
-	$(CXX) $(CXXFLAGS) -MMD -MP -MT"$@" -c $^
-	$(MOVE) *.o $(BUILD_DIR)/
-	$(MOVE) *.d $(BUILD_DIR)/
-
-#-include $(DEPS)
+exec: $(BUILD_DIR)/$(TARGET)
+	@chmod +x ./testGenerate.sh && ./testGenerate.sh
+	@./$(BUILD_DIR)/$(TARGET)
+	@chmod +x analyseResults.sh && ./analyseResults.sh
 
 clean:
-	$(DEL) $(OBJ) $(EXEC) $(DEPS)
+	@echo Cleaning up.
+	@rm -rf $(BUILD_DIR)/
