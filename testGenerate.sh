@@ -20,6 +20,7 @@ echo "APPE Test data generator..."
 
 #run octave script
 cd OctaveModel
+mkdir -p Figs
 octave appe_test_data_generator.m
 
 #copy data to destination
