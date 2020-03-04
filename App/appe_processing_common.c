@@ -22,6 +22,7 @@
 
 #include "appe_processing_common.h"
 #include "helper_functions.h"
+#include "logger.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -66,9 +67,11 @@ appe_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t s
             break;
         case SIGNAL_OVER:
             retVal |= APPE_SENS_A_OUT_OF_BOUNDS;
+            LogFull_m(ERR_SIGNAL_OUT_OF_BOUNDS, "Sensor signal A over limits", 0,0);
             break;
         case SIGNAL_UNDER:
             retVal |= APPE_SENS_A_OUT_OF_BOUNDS;
+            LogFull_m(ERR_SIGNAL_OUT_OF_BOUNDS, "Sensor signal A under limits", 0,0);
             break;
         case SIGNAL_IN_RANGE:
             retVal |= APPE_SYSTEM_OK;
@@ -94,9 +97,11 @@ appe_flags_t checkSignalConstraints(const dsp_data_t sampleA, const dsp_data_t s
             break;
         case SIGNAL_OVER:
             retVal |= APPE_SENS_B_OUT_OF_BOUNDS;
+            LogFull_m(ERR_SIGNAL_OUT_OF_BOUNDS, "Sensor signal B over limits", 0,0);
             break;
         case SIGNAL_UNDER:
             retVal |= APPE_SENS_B_OUT_OF_BOUNDS;
+            LogFull_m(ERR_SIGNAL_OUT_OF_BOUNDS, "Sensor signal B under limits", 0,0);
             break;
         case SIGNAL_IN_RANGE:
             retVal |= APPE_SYSTEM_OK;

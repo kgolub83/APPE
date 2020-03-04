@@ -88,9 +88,9 @@ void packComData(com_data_pt comData, com_channel_pt comFrame)
     
     /* CRC checksum calculation */
     comData->crc = crc16Calculate(comFrame->comChannelData, APPE_PAYLOAD_DATA_BYTES, CRC_NORMAL_CALC);
-    
+
     uint16ToBytesReverse_m(comData->crc, comFrame->comChannelData, index); /*add crc checksum to com byte array*/
-    
+
     /* SIP cryptographic mesage signing */
     comData->signature = sipHash32(comFrame->comChannelData,APPE_PAYLOAD_DATA_BYTES+CRC_BYTES, sipKeys);
     

@@ -1,23 +1,41 @@
+#********************************Copyright (c)*********************************
+#                                GlobalLogic
+#
+# @author Kristijan Golub - kristijan.golub@globallogic.com
+#
+# @date 2020-02-25
+# 
+# @brief
+#
+# @version 0.1
+#
+# @section REVISION HISTORY
+#  - KG 2020-02-25 Initial implementation 
+#
+#******************************************************************************/
+
 clear all;
 pkg load signal;
 
+#read input data and set input parameters
 inputData = csvread("appe_test_data.csv");
 
-sps = inputData(1,1);                 #input signal sample rate 
-ns = inputData(1,2);                  #get number of samples
-verticalResolution = inputData(1,3);  #get vertical resolution
-guard = inputData(1,4);               #get guard region
-decoderRange = inputData(1,5);        
+sps = inputData(1,1);                 %input signal sample rate 
+ns = inputData(1,2);                  %get number of samples
+verticalResolution = inputData(1,3);  %get vertical resolution
+guard = inputData(1,4);               %get guard region
+decoderRange = inputData(1,5);        %decoder range definition        
 
-time = ns/sps;                        #input signal time period in seconds
+time = ns/sps;                        %input signal time period in seconds
               
 ########################## User filter settings ################################ 
-cutof_freq = 15;                      #low pass filter frequency
-move_avg_magic_x = 0.196202;          #cutof frequency calculation factor
-iir_tune_factor = 1.1;                #time domain tune factor
+cutof_freq = 15;                      %low pass filter frequency
+move_avg_magic_x = 0.196202;          %cutof frequency calculation factor
+iir_tune_factor = 1;                  %time domain tune factor
+line_width = 2;                       %line width deffinition
 
 #move average filter parameters
-average_window = sqrt(1 + sps*sps*move_avg_magic_x/(cutof_freq*cutof_freq)); #number of samples for move average filter
+average_window = sqrt(1 + sps*sps*move_avg_magic_x/(cutof_freq*cutof_freq)); %number of samples for move average filter
 average_window = floor(average_window);
 move_average_time = average_window/sps;
 
@@ -114,10 +132,10 @@ close all;
 figure(1, 'position', [0,50,1900,900]);
 subplot(2,2,1)
 hold on;
-  plot(t, signal); 
-  plot(t, x_avg_filt); 
-  plot(t, recoursive_filtered); 
-  legend("input", "moving average   ", "recoursive average");
+  plot(t, signal, "linewidth", line_width); 
+  plot(t, x_avg_filt, "linewidth", line_width); 
+  plot(t, recoursive_filtered, "linewidth", line_width); 
+  legend("input", "moving average   ", "recoursive average   ");
   title("Time domain response");
   xlabel("time [ms]");
   ylabel("amplitude");
@@ -125,10 +143,10 @@ hold off;
 
 subplot(2,2,3)
 hold on;
-  semilogx(f_axis, fft_move_avg); 
-  semilogx(f_axis, fft_iir_avg);
+  semilogx(f_axis, fft_move_avg, "linewidth", line_width); 
+  semilogx(f_axis, fft_iir_avg, "linewidth", line_width);
   axis([0.1,1000]);
-  legend("moving average", "recoursive average");
+  legend("moving average     ", "recoursive average   ");
   title("Frequency response");
   xlabel("frequency [Hz]");
   ylabel("amplitude");  
@@ -136,9 +154,9 @@ hold off;
 
 subplot(2,2,2)
 hold on;
-  plot(t, x_avg_response);
-  plot(t, iir2_filtered);
-  legend("moving average", "recoursive average");  
+  plot(t, x_avg_response, "linewidth", line_width);
+  plot(t, iir2_filtered, "linewidth", line_width);
+  legend("moving average      ", "recoursive average   ");  
   title("Impulse response");
   xlabel("time [ms]");
   ylabel("amplitude");  
@@ -146,10 +164,10 @@ hold off;
 
 subplot(2,2,4)
 hold on;
-  semilogx(f_axis, move_avg_phase);
-  semilogx(f_axis, iir_avg_phase);
+  semilogx(f_axis, move_avg_phase, "linewidth", line_width);
+  semilogx(f_axis, iir_avg_phase, "linewidth", line_width);
   axis([0.1, 1000]);
-  legend("moving average", "recoursive average");    
+  legend("moving average     ", "recoursive average   ");    
   title("Phase response");
   xlabel("frequency [Hz]");
   ylabel("angle [deg]");  

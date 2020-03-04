@@ -212,7 +212,7 @@ typedef enum
         
     ERROR_EVENT = ERROR*LOG_LEVEL_POSITION,        /*error events starts here*/
         ERROR_HAL_EVENT = ERROR_EVENT + HAL*EVENT_SUBTYPE_POSITION, /*place here ERROR hardware abstraction layer/drivers events*/
-            
+            ERR_SIGNAL_OUT_OF_BOUNDS,
         ERROR_SYS_EVENT = ERROR_EVENT + SYS*EVENT_SUBTYPE_POSITION, /*place here ERROR system/OS events*/
             ERR_DECODING_LUT,
             ERR_SYS_COM_FAULT,

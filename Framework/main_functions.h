@@ -40,6 +40,9 @@
 **                               Constants
 *******************************************************************************/  
 
+#define APPE_VERSION        0
+#define APPE_SUB_VERSION    1
+
 #define INPUT_DATA_FILE     "Data/appe_test_data.csv"
 #define OUTPUT_DATA_FILE    "Data/appe_output_data.csv"
 
@@ -59,13 +62,23 @@ enum mainMessages
     infoConcurrency
 };
 
+enum appeModelRetVal
+{
+    APPE_CLEAN_EXIT,
+    APPE_FAULT_RETURN
+};
+
 /*******************************************************************************
 **                       Global and static variables
 *******************************************************************************/
+
 extern const char* mainTerminalStrings[];
+
 /*******************************************************************************
 **                     Public function prototypes - API
 *******************************************************************************/
+
+extern void printLogo(uint8_t majorVersion, uint8_t subVersion);
 
 #endif // MAIN_FUNCTIONS_H
 

@@ -200,7 +200,9 @@ void VirtualProcessor::executeSupervisor(output_vector_t &outputData)
     
     if(NULL != exitFnCallback)      //check if exit routine installed
     {
+        std::cout << std::endl;  
         exitFnCallback(id);     //run user exit routine
+        std::cout << std::endl;  
     }
     
 }

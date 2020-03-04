@@ -38,13 +38,13 @@ static tst_data_attributes_t testDataAtributes;
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function setTestDataAttributes
 * 
-* @brief 
+* @brief sets test environment data attributes
 *
-* @param 
-*
-* @return
+* @param attributes - condst pointer to metadata structure
+* 
+* @return void function
 *******************************************************************************/
 
 void setTestDataAttributes(tst_data_attributes_pt attributes)
@@ -57,13 +57,13 @@ void setTestDataAttributes(tst_data_attributes_pt attributes)
 }
 
 /*!*****************************************************************************
-* @function 
+* @function getTestDataAttributes
 * 
-* @brief 
+* @brief getTestDataAttributes
 *
-* @param 
+* @param attributes - const pointer to metadatadata structure
 *
-* @return
+* @return void function
 *******************************************************************************/
 
 void getTestDataAttributes(tst_data_attributes_pt attributes)

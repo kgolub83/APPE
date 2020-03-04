@@ -145,7 +145,7 @@ typedef uint32_t sample_data_t;         /*input data sample type definition*/
 typedef uint8_t data_vector_no_t;       /*number of input data vectors type*/
 typedef uint16_t data_attribute_t;      /*test data attributes type*/
 typedef uint32_t samples_no_t;          /*number of test data samples type*/
-typedef uint32_t appe_flags_t;           /*appe system flags register type*/
+typedef uint32_t appe_flags_t;          /*appe system flags register type*/
 typedef uint32_t time_stamp_t;          /*communication time stamp type*/
 typedef uint16_t sequence_no_t;         /*communication mesage sequence number type*/
 typedef uint32_t authentication_t;      /*communication authentication signature type*/
@@ -156,7 +156,7 @@ typedef uint32_t debug_vector_data_t;   /*debug data type*/
 /*APPE system states definitions*/
 typedef enum
 {
-    APPE_IDLE,
+    APPE_IDLE = 0,
     APPE_ACTIVE,
     APPE_WARNING_OPERATIONAL,
     APPE_WARNING_RESTRICTIVE,
@@ -164,9 +164,10 @@ typedef enum
     APPE_FATAL_SAFE_STOP
 } appe_state_e;
 
+/*APPE system falgs definitions*/
 typedef enum
 {
-    APPE_SYS_OK,
+    APPE_SYS_OK = 0,
     APPE_SYS_WAR,
     APPE_COM_WAR,
     APPE_SIGNAL_WAR,
@@ -176,6 +177,7 @@ typedef enum
     APPE_SIG_ERR
 } appe_sys_faults_e;
 
+/*APPE debug channels definitions*/
 enum debugVectorsNames
 {
     DEBUG_CHANNEL_A = 0,
@@ -229,7 +231,7 @@ typedef com_data_t* const com_data_pt;  /*const pointer to com_data_t*/
 
 #define APPE_COM_DATA_BYTES      ( (uint8_t)(APPE_PAYLOAD_DATA_BYTES + CRC_BYTES + SIGNATURE_BYTES) )
 
-#define APPE_COM_CHANNEL_BYTES   ( (uint8_t)(APPE_COM_DATA_BYTES + (8-APPE_COM_DATA_BYTES%8) ) )    //com channel data aligned on 8 bytes
+#define APPE_COM_CHANNEL_BYTES   ( (uint8_t)(APPE_COM_DATA_BYTES + (8-APPE_COM_DATA_BYTES%8) ) )    /*com channel data aligned on 8 bytes - 32 bytes of data*/
 
 typedef struct
 {

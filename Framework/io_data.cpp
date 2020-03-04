@@ -178,8 +178,6 @@ IOdata_ret_val_t IOdata::writeCSV(std::string fileName, output_vector_t &data)
 
     assert(outFile.is_open());  //check if file opened successfully
     
-    std::cout << data.size();
-    
     /* write input data vectors */
     for(data_vector_no_t i = 0; i<DATA_VECTORS_NO; i++)
     {

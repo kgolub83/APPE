@@ -1,17 +1,23 @@
 /*!*******************************Copyright (c)*********************************
  *                                GlobalLogic
  * 
- * @file main.cpp
+ * @file appe_communications.h
  *
  * @author Kristijan Golub - kristijan.golub@globallogic.com
  *
  * @date 2020-01-08
  * 
- * @brief   - redundant - asymmetric processor A implementation 
- *          - one of two acceleration pedal position encoder processing models 
- *          - procesing, filtering and domain checking of two orthogonal position 
- *          sensor signals  
+ * @brief   - acceleration control sensor communication model functions
+ *          - defines application, data integrity, safety, security and packet layer
+ *          - communication between processors and supervisor
+ *
+ * COMMUNICATION FRAME MODEL:
  * 
+ * MSB                                                                     LSB
+ * |dataID:2|seqNo:2|dataSample:4|flags:4|time:4|debug:8|crc16:2|signature:4|
+ *
+ * BIG ENDIAN - MSB first
+ *
  * @version 0.1
  *
  * @section REVISION HISTORY

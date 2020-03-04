@@ -200,7 +200,7 @@ void processorCodeA(input_data_pt inputData, com_channel_pt comFrame)
     comData.flags = flags;
     
      /* circular sequence number counter insertion */
-    comData.seqNo = sequenceNo++;
+    comData.seqNo = (sequenceNo++);
     
     /* add message data identifier */
     comData.dataID = APPE_MESAGE_ID_COM_PROC_A;

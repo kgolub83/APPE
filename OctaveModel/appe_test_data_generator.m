@@ -1,12 +1,27 @@
-# data generator for functional safety design example of
-# acceleration pedal position encoder model
+#********************************Copyright (c)*********************************
+#                                GlobalLogic
+#
+# @author Kristijan Golub - kristijan.golub@globallogic.com
+#
+# @date 2020-02-25
+# 
+# @brief  data generator for functional safety design example of
+#         acceleration pedal position encoder model
+#
+# @version 0.1
+#
+# @section REVISION HISTORY
+#  - KG 2020-02-25 Initial implementation 
+#
+#******************************************************************************/
 
 clear all;
 
 ################################## USER INPUT ##################################
+
 time = 1000;              %data time span: [ms]
 sample_rate = 1000;       %data sample rate: [sps]
-noise_gain = 0;           %noise gain: [%]
+noise_gain = 35;          %noise gain: [%]
 bit_depth = 10;           %vertical data resolution [bits]
 idle_state = 0;           %idle signal time in miliseconds
 safety_margin = 10;       %accelerator data safety guards [%]
@@ -16,7 +31,11 @@ shape_b = 10;             %logaritmic function generator shape [>0]
 offset_b = 0;             %test signal offset
 decoder_range = 1000;     %linearization decoding range
 data_vectors = 2;         %generated test data vectors
+line_width = 2;           %plot linewidths
 
+################################################################################
+
+#calculate system parameters and constraint variables
 ns = (time/1000)*sample_rate + 1;           %calculate number of data samples
 idle_ns = (idle_state/1000)*sample_rate;    %idle samples
 time_vector = linspace(0, time/1000, ns);   %generate taime axis
@@ -46,15 +65,25 @@ sensor_b_data(1:idle_ns) = resolution - guard;
 
 time_vector = linspace(0, (time+idle_state)/1000, ns+idle_ns);
          
+lut_gen_data = sensor_a_data;
+        
 #noise generator
 noise_vector = rand(ns+idle_ns);                      %get uniform random data 
 noise_amplitude = (noise_gain/100) * resolution;      %calculate noise amplitude
 noise_vector = noise_vector(1,:) * noise_amplitude;   %scale to noise amplitude                
 noise_vector = noise_vector - noise_amplitude/2;      %simetric around zero      
 
-lut_gen_data = sensor_a_data;
-sensor_a_data += noise_vector - offset_a;
+sensor_a_data += noise_vector + offset_a;
+
+noise_vector = rand(ns+idle_ns);                      %get uniform random data 
+noise_amplitude = (noise_gain/100) * resolution;      %calculate noise amplitude
+noise_vector = noise_vector(1,:) * noise_amplitude;   %scale to noise amplitude                
+noise_vector = noise_vector - noise_amplitude/2;      %simetric around zero 
+
 sensor_b_data += noise_vector + offset_b;
+
+sensor_a_data = abs(sensor_a_data);
+sensor_b_data = abs(sensor_b_data);
 
 input_data (2,:) = int32(sensor_a_data);
 input_data (3,:) = int32(sensor_b_data);
@@ -143,18 +172,19 @@ sensor_a_data_inverted = resolution - sensor_a_data;
 sensor_b_data_inverted = resolution - sensor_b_data;
 
 time_ms = time_vector*1000;
+
 #plot results
 close all;
 figure(1, 'position', [0,50,1900,900]);
 hold on;
-  plot(time_ms, sensor_a_data); 
-  plot(time_ms, sensor_b_data); 
-  plot(time_ms, sum_ab); 
-  plot(time_ms, lut);
+  plot(time_ms, sensor_a_data, "linewidth", line_width); 
+  plot(time_ms, sensor_b_data, "linewidth", line_width); 
+  plot(time_ms, sum_ab, "linewidth", line_width); 
+  plot(time_ms, lut, "linewidth", line_width);
   title("Input data");
   xlabel("time [ms]");
   ylabel("amplitude");
-  legend("Signal A", "Signal B", "Response   ");
+  legend("Input signal A", "Input signal B", "Control signal  ", "Output response   ");
 hold off;
 
 print("Figs/input.svg", "-dsvg", "-S1600, 900");

@@ -31,13 +31,13 @@
 *******************************************************************************/
 
 /*!*****************************************************************************
-* @function 
+* @function main
 * 
-* @brief 
+* @brief main function 
 *
 * @param 
 *
-* @return
+* @return 
 *******************************************************************************/
 
 int main()
@@ -50,6 +50,8 @@ int main()
     samples_vector_t inputDataA, inputDataB;
     tst_data_attributes_t inputDataAttributes;
     output_vector_t outputData;
+
+    printLogo(APPE_VERSION, APPE_SUB_VERSION);
 
     std::cout << mainTerminalStrings[initCom] << std::hex << comChannels << std::endl;
     std::cout << std::dec << std::endl;
@@ -101,14 +103,13 @@ int main()
     threadProcA.join();
     threadProcB.join();
     threadSupervisor.join();
-    
+  
     testData.writeCSV(OUTPUT_DATA_FILE, outputData);
     
-    return 0;
+    return APPE_CLEAN_EXIT;
 }
 
 /******************************************************************************
 **                               End Of File
 *******************************************************************************/
 
- 
