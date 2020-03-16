@@ -59,7 +59,7 @@ $(BUILD_DIR)/%.cpp.o: %.cpp
 	@$(CXX) $(CXXFLAGS) -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -c "$<" -o "$@"
 
 exec: $(BUILD_DIR)/$(TARGET)
-	@chmod +x ./testGenerate.sh && ./testGenerate.sh
+	@chmod +x ./testGenerate.sh && ./testGenerate.sh -e
 	@./$(BUILD_DIR)/$(TARGET)
 	@chmod +x analyseResults.sh && ./analyseResults.sh
 

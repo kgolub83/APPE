@@ -84,10 +84,8 @@ case of a failure in detecting the throttle position, the system is to transitio
 
 1. Install GNU Octave
 2. Instal eog (eye of GNOME)
-3. Run testGenerate.sh script
-4. Run make all
-5. execute appeExec
-5. Run analyzeResults.sh script
+3. Run make
+4. Run make exec
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -1,1 +1,5 @@
-**/Figs/*
+OctaveModel/Figs/*
+OctaveModel/*.csv
+Data/*
+Output/*
+
